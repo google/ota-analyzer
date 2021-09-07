@@ -146,9 +146,7 @@ export class Payload {
           }
         }
         this.payload = writer.getData()
-        break
-      }
-      if (entry.filename == 'META-INF/com/android/metadata') {
+      } else if (entry.filename == 'META-INF/com/android/metadata') {
         this.metadata = await entry.getData(new zip.TextWriter())
       }
     }
