@@ -15,15 +15,14 @@
 -->
 
 <template>
-  <h4> {{ partition.partitionName }} </h4>
+  <h4>{{ partition.partitionName }}</h4>
   <p v-if="partition.estimateCowSize">
     <strong> Estimate COW Size: </strong> {{ partition.estimateCowSize }} Bytes
   </p>
-  <div
-    class="toggle"
-    @click="toggle('showInfo')"
-  >
-    <h4> Partition Infos </h4>
+  <div class="toggle">
+    <h4 @click="toggle('showInfo')" v-bind:class="{ active: showInfo }">
+      Partition Infos
+    </h4>
     <ul v-if="showInfo">
       <li v-if="partition.oldPartitionInfo">
         <strong>
@@ -35,7 +34,9 @@
         <strong>
           Old Partition Hash:
         </strong>
-        {{ octToHex(partition.oldPartitionInfo.hash, false, 16) }}
+        <div class="hex">
+          {{ octToHex(partition.oldPartitionInfo.hash, false, 16) }}
+        </div>
       </li>
       <li>
         <strong>
@@ -47,26 +48,22 @@
         <strong>
           New Partition Hash:
         </strong>
-        {{ octToHex(partition.newPartitionInfo.hash, false, 16) }}
+        <div class="hex">
+          {{ octToHex(partition.newPartitionInfo.hash, false, 16) }}
+        </div>
       </li>
     </ul>
   </div>
-  <div
-    class="toggle"
-    @click="toggle('showOPs')"
-  >
-    <h4> Total Operations: {{ partition.operations.length }} </h4>
-    <ul
-      v-if="showOPs"
-    >
+  <div class="toggle" v-bind:class="{ active: showOPs }">
+    <h4 @click="toggle('showOPs')">
+      Total Operations: {{ partition.operations.length }}
+    </h4>
+    <ul v-if="showOPs">
       <li
         v-for="operation in partition.operations"
         :key="operation.dataSha256Hash"
       >
-        <OperationDetail
-          :operation="operation"
-          :mapType="opType.mapType"
-        />
+        <OperationDetail :operation="operation" :mapType="opType.mapType" />
       </li>
     </ul>
   </div>
@@ -78,19 +75,19 @@ import OperationDetail from '@/components/OperationDetail.vue'
 
 export default {
   components: {
-    OperationDetail,
+    OperationDetail
   },
   props: {
     partition: {
       type: Object,
-      required: true,
-    },
+      required: true
+    }
   },
   data() {
     return {
       showOPs: false,
       showInfo: false,
-      opType: null,
+      opType: null
     }
   },
   created() {
@@ -100,8 +97,8 @@ export default {
     toggle(key) {
       this[key] = !this[key]
     },
-    octToHex: octToHex,
-  },
+    octToHex: octToHex
+  }
 }
 </script>
 
@@ -114,5 +111,12 @@ export default {
 
 li {
   list-style-type: none;
+}
+.hex {
+  word-break: break-all;
+}
+
+.active {
+  color: blue;
 }
 </style>

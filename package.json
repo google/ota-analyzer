@@ -19,6 +19,7 @@
     "flush-promises": "^1.0.2",
     "jest": "^27.0.6",
     "material-design-icons": "^3.0.1",
+    "pbjs": "^0.0.14",
     "protobufjs": "^6.11.2",
     "roboto-fontface": "*",
     "vue": "^3.0.0-0",
@@ -30,7 +31,6 @@
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
-    "@vue/cli-plugin-eslint": "~4.5.0",
     "@vue/cli-plugin-router": "~4.5.0",
     "@vue/cli-plugin-unit-jest": "~4.5.0",
     "@vue/cli-plugin-vuex": "~4.5.0",

@@ -33,35 +33,36 @@ const /** Number */ _MANIFEST_LEN_SIZE = 8
 const /** Number */ _METADATA_SIGNATURE_LEN_SIZE = 4
 
 const /** Number */ _PAYLOAD_HEADER_SIZE =
-  _MAGIC.length + _VERSION_SIZE + _MANIFEST_LEN_SIZE + _METADATA_SIGNATURE_LEN_SIZE
+    _MAGIC.length +
+    _VERSION_SIZE +
+    _MANIFEST_LEN_SIZE +
+    _METADATA_SIGNATURE_LEN_SIZE
 
 const /** Number */ _BRILLO_MAJOR_PAYLOAD_VERSION = 2
 export const /** Array<Object> */ MetadataFormat = [
-  {
-    prefix: 'pre-build',
-    key: 'preBuild',
-    name: 'Pre-build'
-  },
-  {
-    prefix: 'pre-build-incremental',
-    key: 'preBuildVersion',
-    name: 'Pre-build version'
-  },
-  {
-    prefix: 'post-build',
-    key: 'postBuild',
-    name: 'Post-build'
-  },
-  {
-    prefix: 'post-build-incremental',
-    key: 'postBuildVersion',
-    name: 'Post-build version'
-  }
-]
+    {
+      prefix: 'pre-build',
+      key: 'preBuild',
+      name: 'Pre-build'
+    },
+    {
+      prefix: 'pre-build-incremental',
+      key: 'preBuildVersion',
+      name: 'Pre-build version'
+    },
+    {
+      prefix: 'post-build',
+      key: 'postBuild',
+      name: 'Post-build'
+    },
+    {
+      prefix: 'post-build-incremental',
+      key: 'postBuildVersion',
+      name: 'Post-build version'
+    }
+  ]
 
-class StopIteration extends Error {
-
-}
+class StopIteration extends Error {}
 
 class OTAPayloadBlobWriter extends zip.Writer {
   /**
@@ -72,7 +73,7 @@ class OTAPayloadBlobWriter extends zip.Writer {
    * @param {Payload} payload
    * @param {String} contentType
    */
-  constructor(payload, contentType = "") {
+  constructor(payload, contentType = '') {
     super()
     this.offset = 0
     this.contentType = contentType
@@ -91,13 +92,13 @@ class OTAPayloadBlobWriter extends zip.Writer {
     if (this.offset >= _PAYLOAD_HEADER_SIZE) {
       await this.payload.readHeader(this.blob)
       this.prefixLength =
-        _PAYLOAD_HEADER_SIZE
-        + this.payload.manifest_len
-        + this.payload.metadata_signature_len
-      console.log(`Computed metadata length: ${this.prefixLength}`);
+        _PAYLOAD_HEADER_SIZE +
+        this.payload.manifest_len +
+        this.payload.metadata_signature_len
+      console.log(`Computed metadata length: ${this.prefixLength}`)
     }
     if (this.prefixLength > 0) {
-      console.log(`${this.offset}/${this.prefixLength}`);
+      console.log(`${this.offset}/${this.prefixLength}`)
       if (this.offset >= this.prefixLength) {
         await this.payload.readManifest(this.blob)
         await this.payload.readSignature(this.blob)
@@ -133,7 +134,7 @@ export class Payload {
     this.payload = null
     for (let entry of entries) {
       if (entry.filename == 'payload.bin') {
-        let writer = new OTAPayloadBlobWriter(this, "")
+        let writer = new OTAPayloadBlobWriter(this, '')
         try {
           await entry.getData(writer)
         } catch (e) {
@@ -172,26 +173,26 @@ export class Payload {
    */
   readInt(size) {
     let /** DataView */ view = new DataView(
-      this.buffer.slice(this.cursor, this.cursor + size))
-    if (typeof view.getBigUint64 !== "function") {
-      view.getBigUint64 =
-        function (offset) {
-          const a = BigInt(view.getUint32(offset))
-          const b = BigInt(view.getUint32(offset + 4))
-          const bigNumber = a * 4294967296n + b
-          return bigNumber
-        }
+        this.buffer.slice(this.cursor, this.cursor + size)
+      )
+    if (typeof view.getBigUint64 !== 'function') {
+      view.getBigUint64 = function(offset) {
+        const a = BigInt(view.getUint32(offset))
+        const b = BigInt(view.getUint32(offset + 4))
+        const bigNumber = a * 4294967296n + b
+        return bigNumber
+      }
     }
     this.cursor += size
     switch (size) {
-    case 2:
-      return view.getUInt16(0)
-    case 4:
-      return view.getUint32(0)
-    case 8:
-      return Number(view.getBigUint64(0))
-    default:
-      throw 'Cannot read this integer with size ' + size
+      case 2:
+        return view.getUInt16(0)
+      case 4:
+        return view.getUint32(0)
+      case 8:
+        return Number(view.getBigUint64(0))
+      default:
+        throw 'Cannot read this integer with size ' + size
     }
   }
 
@@ -199,12 +200,11 @@ export class Payload {
    * Read the header of payload.bin, including the magic, header_version,
    * manifest_len, metadata_signature_len.
    */
-  async readHeader(/** @type {Blob} */buffer) {
+  async readHeader(/** @type {Blob} */ buffer) {
     this.buffer = await buffer.slice(0, _PAYLOAD_HEADER_SIZE).arrayBuffer()
     let /** TextDecoder */ decoder = new TextDecoder()
     try {
-      this.magic = decoder.decode(
-        this.buffer.slice(this.cursor, _MAGIC.length))
+      this.magic = decoder.decode(this.buffer.slice(this.cursor, _MAGIC.length))
       if (this.magic != _MAGIC) {
         throw new Error('MAGIC is not correct, please double check.')
       }
@@ -213,9 +213,10 @@ export class Payload {
       this.manifest_len = this.readInt(_MANIFEST_LEN_SIZE)
       if (this.header_version == _BRILLO_MAJOR_PAYLOAD_VERSION) {
         this.metadata_signature_len = this.readInt(_METADATA_SIGNATURE_LEN_SIZE)
-      }
-      else {
-        throw new Error(`Unexpected major version number: ${this.header_version}`)
+      } else {
+        throw new Error(
+          `Unexpected major version number: ${this.header_version}`
+        )
       }
     } catch (err) {
       console.log(err)
@@ -228,29 +229,35 @@ export class Payload {
    * The structure of the manifest can be found in:
    * aosp/system/update_engine/update_metadata.proto
    */
-  async readManifest(/** @type {Blob} */buffer) {
-    buffer = await buffer.slice(
-      this.cursor, this.cursor + this.manifest_len).arrayBuffer()
+  async readManifest(/** @type {Blob} */ buffer) {
+    buffer = await buffer
+      .slice(this.cursor, this.cursor + this.manifest_len)
+      .arrayBuffer()
     this.cursor += this.manifest_len
-    this.manifest = update_metadata_pb.DeltaArchiveManifest
-      .decode(new Uint8Array(buffer))
+    this.manifest = update_metadata_pb.DeltaArchiveManifest.decode(
+      new Uint8Array(buffer)
+    )
     this.manifest.nonAB = false
   }
 
-  async readSignature(/** @type {Blob} */buffer) {
-    buffer = await buffer.slice(
-      this.cursor, this.cursor + this.metadata_signature_len).arrayBuffer()
+  async readSignature(/** @type {Blob} */ buffer) {
+    buffer = await buffer
+      .slice(this.cursor, this.cursor + this.metadata_signature_len)
+      .arrayBuffer()
     this.cursor += this.metadata_signature_len
-    this.metadata_signature = update_metadata_pb.Signatures
-      .decode(new Uint8Array(buffer))
+    this.metadata_signature = update_metadata_pb.Signatures.decode(
+      new Uint8Array(buffer)
+    )
   }
 
   parseMetadata() {
     for (let formatter of MetadataFormat) {
       let regex = new RegExp(formatter.prefix + '.+')
       if (this.metadata.match(regex)) {
-        this[formatter.key] =
-          trimEntry(this.metadata.match(regex)[0], formatter.prefix)
+        this[formatter.key] = trimEntry(
+          this.metadata.match(regex)[0],
+          formatter.prefix
+        )
       } else this[formatter.key] = ''
     }
   }
@@ -259,7 +266,6 @@ export class Payload {
     await this.unzip()
     this.parseMetadata()
   }
-
 }
 
 export class DefaultMap extends Map {
@@ -280,7 +286,8 @@ export class OpType {
    * update_metadata.proto and must be decoded before any usage.
    */
   constructor() {
-    let /** Array<{String: Number}>*/ types = update_metadata_pb.InstallOperation.Type
+    let /** Array<{String: Number}>*/ types =
+        update_metadata_pb.InstallOperation.Type
     this.mapType = new DefaultMap()
     for (let key of Object.keys(types)) {
       this.mapType.set(types[key], key)
@@ -296,7 +303,7 @@ export class MergeOpType {
    */
   constructor() {
     let /** Array<{String: Number}>*/ types =
-      update_metadata_pb.CowMergeOperation.Type
+        update_metadata_pb.CowMergeOperation.Type
     this.mapType = new DefaultMap()
     for (let key of Object.keys(types)) {
       this.mapType.set(types[key], key)
@@ -307,12 +314,13 @@ export class MergeOpType {
 export function octToHex(bufferArray, space = true, maxLine = 16) {
   let hex_table = ''
   for (let i = 0; i < bufferArray.length; i++) {
-    if (bufferArray[i].toString(16).length === 2) {
-      hex_table += bufferArray[i].toString(16) + (space ? ' ' : '')
+    const hex /** String **/ = bufferArray[i].toString(16).toUpperCase()
+    if (hex.length === 2) {
+      hex_table += hex + (space ? ' ' : '')
     } else {
-      hex_table += '0' + bufferArray[i].toString(16) + (space ? ' ' : '')
+      hex_table += '0' + hex + (space ? ' ' : '')
     }
-    if ((i + 1) % maxLine == 0) {
+    if ((i + 1) % maxLine == 0 && space) {
       hex_table += '\n'
     }
   }
