@@ -1,19 +1,3 @@
-/**
- * Copyright 2021 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 /*eslint-disable block-scoped-var, id-length, no-control-regex, no-magic-numbers, no-prototype-builtins, no-redeclare, no-shadow, no-var, sort-vars*/
 import * as $protobuf from "protobufjs/minimal";
 
@@ -1265,7 +1249,6 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
          * @property {number|Long|null} [dstLength] InstallOperation dstLength
          * @property {Uint8Array|null} [dataSha256Hash] InstallOperation dataSha256Hash
          * @property {Uint8Array|null} [srcSha256Hash] InstallOperation srcSha256Hash
-         * @property {Object.<string,number>|null} [xorMap] InstallOperation xorMap
          */
 
         /**
@@ -1279,7 +1262,6 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
         function InstallOperation(properties) {
             this.srcExtents = [];
             this.dstExtents = [];
-            this.xorMap = {};
             if (properties)
                 for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null)
@@ -1359,14 +1341,6 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
         InstallOperation.prototype.srcSha256Hash = $util.newBuffer([]);
 
         /**
-         * InstallOperation xorMap.
-         * @member {Object.<string,number>} xorMap
-         * @memberof chromeos_update_engine.InstallOperation
-         * @instance
-         */
-        InstallOperation.prototype.xorMap = $util.emptyObject;
-
-        /**
          * Creates a new InstallOperation instance using the specified properties.
          * @function create
          * @memberof chromeos_update_engine.InstallOperation
@@ -1409,9 +1383,6 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
                 writer.uint32(/* id 8, wireType 2 =*/66).bytes(message.dataSha256Hash);
             if (message.srcSha256Hash != null && Object.hasOwnProperty.call(message, "srcSha256Hash"))
                 writer.uint32(/* id 9, wireType 2 =*/74).bytes(message.srcSha256Hash);
-            if (message.xorMap != null && Object.hasOwnProperty.call(message, "xorMap"))
-                for (let keys = Object.keys(message.xorMap), i = 0; i < keys.length; ++i)
-                    writer.uint32(/* id 10, wireType 2 =*/82).fork().uint32(/* id 1, wireType 0 =*/8).uint32(keys[i]).uint32(/* id 2, wireType 0 =*/16).uint32(message.xorMap[keys[i]]).ldelim();
             return writer;
         };
 
@@ -1442,7 +1413,7 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
         InstallOperation.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.chromeos_update_engine.InstallOperation(), key, value;
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.chromeos_update_engine.InstallOperation();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
@@ -1476,28 +1447,6 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
                     break;
                 case 9:
                     message.srcSha256Hash = reader.bytes();
-                    break;
-                case 10:
-                    if (message.xorMap === $util.emptyObject)
-                        message.xorMap = {};
-                    let end2 = reader.uint32() + reader.pos;
-                    key = 0;
-                    value = 0;
-                    while (reader.pos < end2) {
-                        let tag2 = reader.uint32();
-                        switch (tag2 >>> 3) {
-                        case 1:
-                            key = reader.uint32();
-                            break;
-                        case 2:
-                            value = reader.uint32();
-                            break;
-                        default:
-                            reader.skipType(tag2 & 7);
-                            break;
-                        }
-                    }
-                    message.xorMap[key] = value;
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -1550,6 +1499,7 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
             case 7:
             case 10:
             case 9:
+            case 11:
                 break;
             }
             if (message.dataOffset != null && message.hasOwnProperty("dataOffset"))
@@ -1588,17 +1538,6 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
             if (message.srcSha256Hash != null && message.hasOwnProperty("srcSha256Hash"))
                 if (!(message.srcSha256Hash && typeof message.srcSha256Hash.length === "number" || $util.isString(message.srcSha256Hash)))
                     return "srcSha256Hash: buffer expected";
-            if (message.xorMap != null && message.hasOwnProperty("xorMap")) {
-                if (!$util.isObject(message.xorMap))
-                    return "xorMap: object expected";
-                let key = Object.keys(message.xorMap);
-                for (let i = 0; i < key.length; ++i) {
-                    if (!$util.key32Re.test(key[i]))
-                        return "xorMap: integer key{k:uint32} expected";
-                    if (!$util.isInteger(message.xorMap[key[i]]))
-                        return "xorMap: integer{k:uint32} expected";
-                }
-            }
             return null;
         };
 
@@ -1658,6 +1597,10 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
             case "PUFFDIFF":
             case 9:
                 message.type = 9;
+                break;
+            case "ZUCCHINI":
+            case 11:
+                message.type = 11;
                 break;
             }
             if (object.dataOffset != null)
@@ -1726,13 +1669,6 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
                     $util.base64.decode(object.srcSha256Hash, message.srcSha256Hash = $util.newBuffer($util.base64.length(object.srcSha256Hash)), 0);
                 else if (object.srcSha256Hash.length)
                     message.srcSha256Hash = object.srcSha256Hash;
-            if (object.xorMap) {
-                if (typeof object.xorMap !== "object")
-                    throw TypeError(".chromeos_update_engine.InstallOperation.xorMap: object expected");
-                message.xorMap = {};
-                for (let keys = Object.keys(object.xorMap), i = 0; i < keys.length; ++i)
-                    message.xorMap[keys[i]] = object.xorMap[keys[i]] >>> 0;
-            }
             return message;
         };
 
@@ -1753,8 +1689,6 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
                 object.srcExtents = [];
                 object.dstExtents = [];
             }
-            if (options.objects || options.defaults)
-                object.xorMap = {};
             if (options.defaults) {
                 object.type = options.enums === String ? "REPLACE" : 0;
                 if ($util.Long) {
@@ -1828,12 +1762,6 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
                 object.dataSha256Hash = options.bytes === String ? $util.base64.encode(message.dataSha256Hash, 0, message.dataSha256Hash.length) : options.bytes === Array ? Array.prototype.slice.call(message.dataSha256Hash) : message.dataSha256Hash;
             if (message.srcSha256Hash != null && message.hasOwnProperty("srcSha256Hash"))
                 object.srcSha256Hash = options.bytes === String ? $util.base64.encode(message.srcSha256Hash, 0, message.srcSha256Hash.length) : options.bytes === Array ? Array.prototype.slice.call(message.srcSha256Hash) : message.srcSha256Hash;
-            let keys2;
-            if (message.xorMap && (keys2 = Object.keys(message.xorMap)).length) {
-                object.xorMap = {};
-                for (let j = 0; j < keys2.length; ++j)
-                    object.xorMap[keys2[j]] = message.xorMap[keys2[j]];
-            }
             return object;
         };
 
@@ -1863,6 +1791,7 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
          * @property {number} DISCARD=7 DISCARD value
          * @property {number} BROTLI_BSDIFF=10 BROTLI_BSDIFF value
          * @property {number} PUFFDIFF=9 PUFFDIFF value
+         * @property {number} ZUCCHINI=11 ZUCCHINI value
          */
         InstallOperation.Type = (function() {
             const valuesById = {}, values = Object.create(valuesById);
@@ -1877,6 +1806,7 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
             values[valuesById[7] = "DISCARD"] = 7;
             values[valuesById[10] = "BROTLI_BSDIFF"] = 10;
             values[valuesById[9] = "PUFFDIFF"] = 9;
+            values[valuesById[11] = "ZUCCHINI"] = 11;
             return values;
         })();
 
@@ -1892,7 +1822,7 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
          * @property {chromeos_update_engine.CowMergeOperation.Type|null} [type] CowMergeOperation type
          * @property {chromeos_update_engine.IExtent|null} [srcExtent] CowMergeOperation srcExtent
          * @property {chromeos_update_engine.IExtent|null} [dstExtent] CowMergeOperation dstExtent
-         * @property {number|Long|null} [srcOffset] CowMergeOperation srcOffset
+         * @property {number|null} [srcOffset] CowMergeOperation srcOffset
          */
 
         /**
@@ -1936,11 +1866,11 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
 
         /**
          * CowMergeOperation srcOffset.
-         * @member {number|Long} srcOffset
+         * @member {number} srcOffset
          * @memberof chromeos_update_engine.CowMergeOperation
          * @instance
          */
-        CowMergeOperation.prototype.srcOffset = $util.Long ? $util.Long.fromBits(0,0,true) : 0;
+        CowMergeOperation.prototype.srcOffset = 0;
 
         /**
          * Creates a new CowMergeOperation instance using the specified properties.
@@ -1973,7 +1903,7 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
             if (message.dstExtent != null && Object.hasOwnProperty.call(message, "dstExtent"))
                 $root.chromeos_update_engine.Extent.encode(message.dstExtent, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
             if (message.srcOffset != null && Object.hasOwnProperty.call(message, "srcOffset"))
-                writer.uint32(/* id 4, wireType 0 =*/32).uint64(message.srcOffset);
+                writer.uint32(/* id 4, wireType 0 =*/32).uint32(message.srcOffset);
             return writer;
         };
 
@@ -2018,7 +1948,7 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
                     message.dstExtent = $root.chromeos_update_engine.Extent.decode(reader, reader.uint32());
                     break;
                 case 4:
-                    message.srcOffset = reader.uint64();
+                    message.srcOffset = reader.uint32();
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -2075,8 +2005,8 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
                     return "dstExtent." + error;
             }
             if (message.srcOffset != null && message.hasOwnProperty("srcOffset"))
-                if (!$util.isInteger(message.srcOffset) && !(message.srcOffset && $util.isInteger(message.srcOffset.low) && $util.isInteger(message.srcOffset.high)))
-                    return "srcOffset: integer|Long expected";
+                if (!$util.isInteger(message.srcOffset))
+                    return "srcOffset: integer expected";
             return null;
         };
 
@@ -2117,14 +2047,7 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
                 message.dstExtent = $root.chromeos_update_engine.Extent.fromObject(object.dstExtent);
             }
             if (object.srcOffset != null)
-                if ($util.Long)
-                    (message.srcOffset = $util.Long.fromValue(object.srcOffset)).unsigned = true;
-                else if (typeof object.srcOffset === "string")
-                    message.srcOffset = parseInt(object.srcOffset, 10);
-                else if (typeof object.srcOffset === "number")
-                    message.srcOffset = object.srcOffset;
-                else if (typeof object.srcOffset === "object")
-                    message.srcOffset = new $util.LongBits(object.srcOffset.low >>> 0, object.srcOffset.high >>> 0).toNumber(true);
+                message.srcOffset = object.srcOffset >>> 0;
             return message;
         };
 
@@ -2145,11 +2068,7 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
                 object.type = options.enums === String ? "COW_COPY" : 0;
                 object.srcExtent = null;
                 object.dstExtent = null;
-                if ($util.Long) {
-                    let long = new $util.Long(0, 0, true);
-                    object.srcOffset = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
-                } else
-                    object.srcOffset = options.longs === String ? "0" : 0;
+                object.srcOffset = 0;
             }
             if (message.type != null && message.hasOwnProperty("type"))
                 object.type = options.enums === String ? $root.chromeos_update_engine.CowMergeOperation.Type[message.type] : message.type;
@@ -2158,10 +2077,7 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
             if (message.dstExtent != null && message.hasOwnProperty("dstExtent"))
                 object.dstExtent = $root.chromeos_update_engine.Extent.toObject(message.dstExtent, options);
             if (message.srcOffset != null && message.hasOwnProperty("srcOffset"))
-                if (typeof message.srcOffset === "number")
-                    object.srcOffset = options.longs === String ? String(message.srcOffset) : message.srcOffset;
-                else
-                    object.srcOffset = options.longs === String ? $util.Long.prototype.toString.call(message.srcOffset) : options.longs === Number ? new $util.LongBits(message.srcOffset.low >>> 0, message.srcOffset.high >>> 0).toNumber(true) : message.srcOffset;
+                object.srcOffset = message.srcOffset;
             return object;
         };
 
