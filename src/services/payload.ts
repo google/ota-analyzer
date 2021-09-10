@@ -23,13 +23,12 @@
  * @package protobufjs
  */
 
-// const {
-//   ZipReader,
-//   Writer,
-//   TextWriter,
-//   BlobReader
-// } = require('@zip.js/zip.js/dist/zip')
-import * as zip from '@zip.js/zip.js/dist/zip.js'
+import {
+  BlobReader,
+  TextWriter,
+  Writer,
+  ZipReader
+} from '@zip.js/zip.js/dist/zip.js'
 
 // import '@zip.js/zip.js'
 import { chromeos_update_engine as update_metadata_pb } from './update_metadata_pb'
@@ -73,7 +72,7 @@ export const /** Array<Object> */ MetadataFormat = [
 
 class StopIteration extends Error {}
 
-class OTAPayloadBlobWriter extends zip.Writer {
+class OTAPayloadBlobWriter extends Writer {
   offset: number
   contentType: string
   blob: Blob
@@ -131,7 +130,7 @@ class OTAPayloadBlobWriter extends zip.Writer {
 }
 
 export class Payload {
-  packedFile: zip.ZipReader
+  packedFile: ZipReader
   cursor: number
   payload: Blob | undefined
   metadata: any
@@ -147,7 +146,7 @@ export class Payload {
    * @param {File} file A OTA.zip file read from user's machine.
    */
   constructor(file: File) {
-    this.packedFile = new zip.ZipReader(new zip.BlobReader(file))
+    this.packedFile = new ZipReader(new BlobReader(file))
     this.cursor = 0
   }
 
@@ -173,7 +172,7 @@ export class Payload {
         }
         this.payload = writer.getData()
       } else if (entry.filename == 'META-INF/com/android/metadata') {
-        this.metadata = await entry.getData!(new zip.TextWriter())
+        this.metadata = await entry.getData!(new TextWriter())
       }
     }
     if (!this.payload) {

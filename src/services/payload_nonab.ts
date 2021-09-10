@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as zip from '@zip.js/zip.js/dist/zip.js'
+import { TextWriter, ZipReader } from '@zip.js/zip.js/dist/zip.js'
 import { chromeos_update_engine } from './update_metadata_pb.js'
 
 /**
@@ -24,8 +24,8 @@ import { chromeos_update_engine } from './update_metadata_pb.js'
 export class PayloadNonAB extends chromeos_update_engine.DeltaArchiveManifest {
   nonAB: boolean = true
   Blocksize: number = 4096
-  packedFile: zip.ZipReader
-  constructor(packedFile: zip.ZipReader) {
+  packedFile: ZipReader
+  constructor(packedFile: ZipReader) {
     super()
     this.packedFile = packedFile
   }
@@ -46,7 +46,7 @@ export class PayloadNonAB extends chromeos_update_engine.DeltaArchiveManifest {
         let newPartition = new chromeos_update_engine.PartitionUpdate({
           partitionName: match
         })
-        newPartition.rawText = await entry.getData!(new zip.TextWriter())
+        newPartition.rawText = await entry.getData!(new TextWriter())
         await this.parseTransferList(newPartition)
         this.partitions.push(newPartition)
       }

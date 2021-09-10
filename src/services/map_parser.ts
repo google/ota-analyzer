@@ -22,12 +22,12 @@
  * MapParser.query(address, datalength).
  */
 
-import * as zip from '@zip.js/zip.js/dist/zip.js'
+import {ZipReader, BlobReader, TextWriter} from '@zip.js/zip.js/dist/zip.js'
 
 import { chromeos_update_engine } from './update_metadata_pb'
 
 export class MapParser {
-  build: zip.ZipReader
+  build: ZipReader
   mapFiles: Map<any, any>
   maps: Map<any, any>
   /**
@@ -35,7 +35,7 @@ export class MapParser {
    * @param {File} targetFile
    */
   constructor(targetFile: File) {
-    this.build = new zip.ZipReader(new zip.BlobReader(targetFile))
+    this.build = new ZipReader(new BlobReader(targetFile))
     this.mapFiles = new Map()
     this.maps = new Map()
   }
@@ -68,7 +68,7 @@ export class MapParser {
     if (this.mapFiles.get(partitionName)) {
       let /** String */ mapText = await this.mapFiles
           .get(partitionName)
-          .getData(new zip.TextWriter())
+          .getData(new TextWriter())
       let /** Array<String> */ fileEntries = mapText.split('\n')
       // Each line of the .map file in Android build starts with the filename
       // Followed by the block address, either a number or a range, for example:

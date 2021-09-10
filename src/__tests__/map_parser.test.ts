@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import * as zip from '@zip.js/zip.js/dist/zip-full.min.js'
+import * as zip from '@zip.js/zip.js/dist/zip.js'
 import { MapParser } from '@/services/map_parser.js'
 
 var targetFile = new Blob()
-var mapParser
+var mapParser: any;
 // Please refer to system_test.map for more details.
 const systemMap = [
   '//system/apex/com.android.test1.apex',
