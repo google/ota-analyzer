@@ -20,9 +20,10 @@
  * partitions been analysed and metrics.
  */
 
-import { OpType, MergeOpType } from '@/services/payload.js'
-import { EchartsData } from '@/services/echarts_data.js'
-import { MapParser } from '@/services/map_parser.js'
+import { OpType, MergeOpType } from './payload'
+import { EchartsData } from './echarts_data'
+import { MapParser } from './map_parser'
+import { chromeos_update_engine } from './update_metadata_pb'
 
 /**
  * Add a <value> to a element associated to <key>. If the element dose not
@@ -31,11 +32,11 @@ import { MapParser } from '@/services/map_parser.js'
  * @param {String} key
  * @param {Number} value
  */
-function addNumberToMap(map, key, value) {
+function addNumberToMap(map: Map<String, number>, key: String, value: number) {
   if (!map.get(key)) {
     map.set(key, 0)
   }
-  map.set(key, map.get(key) + value)
+  map.set(key, map.get(key)! + value)
 }
 
 /**
@@ -45,7 +46,9 @@ function addNumberToMap(map, key, value) {
  * @param {Array<PartitionUpdate>} partitions
  * @return {Map}
  */
-export function operatedBlockStatistics(partitions) {
+export function operatedBlockStatistics(
+  partitions: Array<chromeos_update_engine.PartitionUpdate>
+) {
   let /** Map */ operatedBlocks = new Map()
   let /** OpType */ opType = new OpType()
   for (let partition of partitions) {
@@ -61,7 +64,10 @@ export function operatedBlockStatistics(partitions) {
   return operatedBlocks
 }
 
-export function mergeOperationStatistics(partitions, blockSize) {
+export function mergeOperationStatistics(
+  partitions: Array<chromeos_update_engine.PartitionUpdate>,
+  blockSize: number
+) {
   let /** Map */ mergeOperations = new Map()
   let /** MergeOpType */ opType = new MergeOpType()
   let /** Number */ totalBlocks = 0
@@ -71,10 +77,15 @@ export function mergeOperationStatistics(partitions, blockSize) {
       addNumberToMap(
         mergeOperations,
         operationType,
-        operation.dstExtent.numBlocks
+        operation.dstExtent!.numBlocks
       )
     }
     // The total blocks number should be rounded up
+    if (partition.newPartitionInfo == null) {
+      throw new Error(
+        `Partition ${partition.partitionName} doesn't have new_partition_info field.`
+      )
+    }
     totalBlocks += Math.ceil(partition.newPartitionInfo.size / blockSize)
   }
   // The COW merge operation is default to be COW_replace and not shown in
@@ -92,7 +103,9 @@ export function mergeOperationStatistics(partitions, blockSize) {
  * @param {Array<PartitionUpdate>} partitions
  * @return {Map}
  */
-export function operatedPayloadStatistics(partitions) {
+export function operatedPayloadStatistics(
+  partitions: Array<chromeos_update_engine.PartitionUpdate>
+) {
   let /** Map */ operatedBlocks = new Map()
   let /** OpType */ opType = new OpType()
   for (let partition of partitions) {
@@ -114,9 +127,9 @@ export function operatedPayloadStatistics(partitions) {
  * @return {Map}
  */
 export async function operatedExtensionStatistics(
-  partitions,
-  blockSize,
-  targetFile
+  partitions: Array<chromeos_update_engine.PartitionUpdate>,
+  blockSize: number,
+  targetFile: File | null
 ) {
   let /** Map */ operatedExtensions = new Map()
   if (!targetFile) {
@@ -127,20 +140,20 @@ export async function operatedExtensionStatistics(
   for (let partition of partitions) {
     await buildMap.add(
       partition.partitionName,
-      Math.ceil(partition.newPartitionInfo.size / blockSize)
+      Math.ceil(partition.newPartitionInfo!.size / blockSize)
     )
     for (let operation of partition.operations) {
       if (!operation.hasOwnProperty('dataLength')) continue
       let operatedFileNames = buildMap.query(
         partition.partitionName,
-        operation.dstExtents
+        operation.dstExtents!
       )
       let extentDataLength = distributeExtensions(
         operatedFileNames,
-        operation.dstExtents,
+        operation.dstExtents!,
         operation.dataLength
       )
-      extentDataLength.forEach((value, key) => {
+      extentDataLength!.forEach((value, key) => {
         addNumberToMap(operatedExtensions, key, value)
       })
     }
@@ -155,53 +168,53 @@ export async function operatedExtensionStatistics(
  * @return {EchartsData}
  */
 export async function analysePartitions(
-  metrics,
-  partitions,
+  metrics: String,
+  partitions: Array<chromeos_update_engine.PartitionUpdate>,
   blockSize = 4096,
   targetFile = null
 ) {
   let /** Map */ statisticsData
   let /** Echartsdata */ echartsData
   switch (metrics) {
-  case 'blocks':
-    statisticsData = operatedBlockStatistics(partitions)
-    echartsData = new EchartsData(
-      statisticsData,
-      'Operated blocks in target build',
-      'blocks'
-    )
-    break
-  case 'payload':
-    statisticsData = operatedPayloadStatistics(partitions)
-    echartsData = new EchartsData(
-      statisticsData,
-      'Payload disk usage',
-      'bytes'
-    )
-    break
-  case 'COWmerge':
-    statisticsData = mergeOperationStatistics(partitions, blockSize)
-    echartsData = new EchartsData(
-      statisticsData,
-      'COW merge operations',
-      'blocks'
-    )
-    break
-  case 'extensions':
-    try {
-      statisticsData = await operatedExtensionStatistics(
-        partitions,
-        blockSize,
-        targetFile
+    case 'blocks':
+      statisticsData = operatedBlockStatistics(partitions)
+      echartsData = new EchartsData(
+        statisticsData,
+        'Operated blocks in target build',
+        'blocks'
       )
-    } catch (err) {
-      throw err
-    }
-    echartsData = new EchartsData(
-      statisticsData,
-      'Size of operated filename extensions',
-      'bytes'
-    )
+      break
+    case 'payload':
+      statisticsData = operatedPayloadStatistics(partitions)
+      echartsData = new EchartsData(
+        statisticsData,
+        'Payload disk usage',
+        'bytes'
+      )
+      break
+    case 'COWmerge':
+      statisticsData = mergeOperationStatistics(partitions, blockSize)
+      echartsData = new EchartsData(
+        statisticsData,
+        'COW merge operations',
+        'blocks'
+      )
+      break
+    case 'extensions':
+      try {
+        statisticsData = await operatedExtensionStatistics(
+          partitions,
+          blockSize,
+          targetFile
+        )
+      } catch (err) {
+        throw err
+      }
+      echartsData = new EchartsData(
+        statisticsData,
+        'Size of operated filename extensions',
+        'bytes'
+      )
   }
   if (echartsData) {
     return echartsData
@@ -215,8 +228,14 @@ export async function analysePartitions(
  * @param {Array<InstallOperations>} exts
  * @return {number}
  */
-export function numBlocks(exts) {
-  const accumulator = (total, ext) => total + ext.numBlocks
+export function numBlocks(
+  exts: Array<chromeos_update_engine.IExtent> | null | undefined
+) {
+  if (!exts) {
+    return 0
+  }
+  const accumulator = (total: number, ext: chromeos_update_engine.IExtent) =>
+    total + ext.numBlocks
   return exts.reduce(accumulator, 0)
 }
 
@@ -226,8 +245,8 @@ export function numBlocks(exts) {
  * @param {Array<InstallOperations>} exts
  * @return {string}
  */
-export function displayBlocks(exts) {
-  const accumulator = (total, ext) =>
+export function displayBlocks(exts: Array<chromeos_update_engine.Extent>) {
+  const accumulator = (total: string, ext: chromeos_update_engine.Extent) =>
     total + '(' + ext.startBlock + ',' + ext.numBlocks + ')'
   return exts.reduce(accumulator, '')
 }
@@ -241,7 +260,11 @@ export function displayBlocks(exts) {
  * @param {Number} length
  * @return {Map}
  */
-export function distributeExtensions(filenames, exts, length) {
+export function distributeExtensions(
+  filenames: Array<string>,
+  exts: Array<chromeos_update_engine.IExtent>,
+  length: number
+) {
   let totalBlocks = numBlocks(exts)
   let distributedLengths = new Map()
   for (let i = 0; i < filenames.length; i++) {
@@ -260,7 +283,7 @@ export function distributeExtensions(filenames, exts, length) {
  * @param {String} filename
  * @return {String}
  */
-export function name2Extension(filename) {
+export function name2Extension(filename: string) {
   let elements = filename.split('.')
   if (elements.length > 1) {
     return elements[elements.length - 1]

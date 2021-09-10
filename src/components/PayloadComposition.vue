@@ -15,80 +15,41 @@
 -->
 
 <template>
-  <PartialCheckbox
-    v-model="partitionInclude"
-    :labels="updatePartitions"
-  />
+  <PartialCheckbox v-model="partitionInclude" :labels="updatePartitions" />
   <div v-if="echartsData">
     <PieChart :echartsData="echartsData" />
   </div>
   <v-divider />
   <v-row>
-    <v-col
-      cols="12"
-      md="6"
-    >
-      <v-btn
-        block
-        @click="updateChart('blocks')"
-      >
+    <v-col cols="12" md="6">
+      <v-btn block @click="updateChart('blocks')">
         Analyse Installed Blocks (in target build)
       </v-btn>
     </v-col>
-    <v-col
-      cols="12"
-      md="6"
-    >
-      <v-btn
-        block
-        @click="updateChart('payload')"
-      >
+    <v-col cols="12" md="6">
+      <v-btn block @click="updateChart('payload')">
         Analyse Payload Composition
       </v-btn>
     </v-col>
   </v-row>
   <v-row>
-    <v-col
-      cols="12"
-      md="6"
-      class="tooltip"
-    >
-      <v-btn
-        :disabled="manifest.nonAB"
-        block
-        @click="updateChart('COWmerge')"
-      >
+    <v-col cols="12" md="6" class="tooltip">
+      <v-btn :disabled="manifest.nonAB" block @click="updateChart('COWmerge')">
         Analyse COW Merge Operations
       </v-btn>
-      <span
-        v-if="manifest.nonAB"
-        class="tooltiptext"
-      >
+      <span v-if="manifest.nonAB" class="tooltiptext">
         This function is only supported in A/B OTA
       </span>
     </v-col>
-    <v-col
-      cols="12"
-      md="6"
-    >
-      <v-btn
-        block
-        :disabled="!targetFile"
-        @click="updateChart('extensions')"
-      >
+    <v-col cols="12" md="6">
+      <v-btn block :disabled="!targetFile" @click="updateChart('extensions')">
         Analyse File Extensions
       </v-btn>
     </v-col>
   </v-row>
   <v-row>
-    <v-col
-      cols="12"
-      md="6"
-    />
-    <v-col
-      cols="12"
-      md="6"
-    >
+    <v-col cols="12" md="6" />
+    <v-col cols="12" md="6">
       <BaseFile
         v-if="!demo"
         label="Drag and drop or Select The target Android build"
@@ -100,22 +61,22 @@
 
 <script>
 import axios from 'axios'
-import PartialCheckbox from '@/components/PartialCheckbox.vue'
-import PieChart from '@/components/PieChart.vue'
-import BaseFile from '@/components/BaseFile.vue'
-import { analysePartitions } from '../services/payload_composition.js'
-import { chromeos_update_engine as update_metadata_pb } from '../services/update_metadata_pb.js'
+import PartialCheckbox from './PartialCheckbox.vue'
+import PieChart from './PieChart.vue'
+import BaseFile from './BaseFile.vue'
+import { analysePartitions } from '../services/payload_composition'
+import { chromeos_update_engine as update_metadata_pb } from '../services/update_metadata_pb'
 
 export default {
   components: {
     PartialCheckbox,
     PieChart,
-    BaseFile,
+    BaseFile
   },
   props: {
     manifest: {
       type: update_metadata_pb.DeltaArchiveManifest,
-      default: () => [],
+      default: () => []
     },
     demo: {
       type: Boolean,
@@ -127,22 +88,22 @@ export default {
       partitionInclude: new Map(),
       echartsData: null,
       listData: '',
-      targetFile: null,
+      targetFile: null
     }
   },
   computed: {
     updatePartitions() {
-      return this.manifest.partitions.map((partition) => {
+      return this.manifest.partitions.map(partition => {
         return partition.partitionName
       })
-    },
+    }
   },
   async mounted() {
     if (this.demo) {
       try {
         const download = await axios.get(
           './files/cf_x86_target_file_demo.zip',
-          {responseType: 'blob'}
+          { responseType: 'blob' }
         )
         this.targetFile = new File([download.data], 'target_demo.zip')
       } catch (err) {
@@ -152,7 +113,7 @@ export default {
   },
   methods: {
     async updateChart(metrics) {
-      let partitionSelected = this.manifest.partitions.filter((partition) =>
+      let partitionSelected = this.manifest.partitions.filter(partition =>
         this.partitionInclude.get(partition.partitionName)
       )
       try {
@@ -169,8 +130,8 @@ export default {
     selectBuild(files) {
       //TODO(lishutong) check the version of target file is same to the OTA target
       this.targetFile = files[0]
-    },
-  },
+    }
+  }
 }
 </script>
 

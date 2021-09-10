@@ -15,30 +15,18 @@
 -->
 
 <template>
-  <BasicInfo
-    :zipFile="zipFile"
-    :payload="payload"
-    class="mb-5"
-  />
+  <BasicInfo :zipFile="zipFile" :payload="payload" class="mb-5" />
   <v-divider />
   <div v-if="payload">
     <h3>Partition List</h3>
-    <v-row
-      v-if="payload.manifest"
-      class="mb-5"
-    >
+    <v-row v-if="payload.manifest" class="mb-5">
       <v-col
         v-for="partition in payload.manifest.partitions"
         :key="partition.partitionName"
         cols="12"
         md="4"
       >
-        <v-card
-          elevation="5"
-          hover
-          shaped
-          class="partial-info"
-        >
+        <v-card elevation="5" hover shaped class="partial-info">
           <PartitionDetail :partition="partition" />
         </v-card>
       </v-col>
@@ -58,27 +46,27 @@
 
 <script>
 import PartitionDetail from './PartitionDetail.vue'
-import BasicInfo from '@/components/BasicInfo.vue'
-import { Payload, octToHex } from '@/services/payload.js'
+import BasicInfo from './BasicInfo.vue'
+import { Payload, octToHex } from '../services/payload'
 
 export default {
   components: {
     PartitionDetail,
-    BasicInfo,
+    BasicInfo
   },
   props: {
     zipFile: {
       type: File,
-      default: null,
+      default: null
     },
     payload: {
       type: Payload,
-      default: null,
-    },
+      default: null
+    }
   },
   methods: {
-    octToHex: octToHex,
-  },
+    octToHex: octToHex
+  }
 }
 </script>
 

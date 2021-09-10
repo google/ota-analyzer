@@ -300,7 +300,7 @@ export namespace chromeos_update_engine {
         size?: (number|Long|null);
 
         /** PartitionInfo hash */
-        hash?: (Uint8Array|null);
+        hash?: (Uint8Array|null|string);
     }
 
     /** Represents a PartitionInfo. */
@@ -847,6 +847,10 @@ export namespace chromeos_update_engine {
 
     /** Represents a PartitionUpdate. */
     class PartitionUpdate implements IPartitionUpdate {
+        rawText: any;
+      totalBlocks: number;
+      entryStashed: number;
+      maxStashed: number;
 
         /**
          * Constructs a new PartitionUpdate.
@@ -1453,6 +1457,7 @@ export namespace chromeos_update_engine {
 
     /** Represents a DeltaArchiveManifest. */
     class DeltaArchiveManifest implements IDeltaArchiveManifest {
+        nonAB: boolean;
 
         /**
          * Constructs a new DeltaArchiveManifest.

@@ -15,10 +15,7 @@
 -->
 
 <template>
-  <v-chart
-    class="chart"
-    :option="getEchartsOption"
-  />
+  <v-chart class="chart" :option="getEchartsOption" />
 </template>
 
 <script>
@@ -28,37 +25,37 @@ import { PieChart } from 'echarts/charts'
 import {
   TitleComponent,
   TooltipComponent,
-  LegendComponent,
+  LegendComponent
 } from 'echarts/components'
 import VChart, { THEME_KEY } from 'vue-echarts'
-import { EchartsData } from '@/services/echarts_data.js'
+import { EchartsData } from '../services/echarts_data'
 
 use([
   CanvasRenderer,
   PieChart,
   TitleComponent,
   TooltipComponent,
-  LegendComponent,
+  LegendComponent
 ])
 
 export default {
   components: {
-    VChart,
+    VChart
   },
   provide: {
-    [THEME_KEY]: 'light',
+    [THEME_KEY]: 'light'
   },
   props: {
     echartsData: {
       type: EchartsData,
-      required: true,
-    },
+      required: true
+    }
   },
   computed: {
     getEchartsOption() {
       return this.echartsData.getEchartsOption()
-    },
-  },
+    }
+  }
 }
 </script>
 

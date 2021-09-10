@@ -16,10 +16,7 @@
 
 <template>
   <v-row>
-    <v-col
-      cols="12"
-      md="6"
-    >
+    <v-col cols="12" md="6">
       <BaseFile
         label="Please drag and drop an OTA package or Select one"
         @file-select="unpackOTA"
@@ -30,13 +27,8 @@
         :payload="payload"
       />
     </v-col>
-    <v-divider
-      vertical
-    />
-    <v-col
-      cols="12"
-      md="6"
-    >
+    <v-divider vertical />
+    <v-col cols="12" md="6">
       <PayloadComposition
         v-if="zipFile && payload.manifest"
         :manifest="payload.manifest"
@@ -46,21 +38,21 @@
 </template>
 
 <script>
-import BaseFile from '@/components/BaseFile.vue'
-import PayloadDetail from '@/components/PayloadDetail.vue'
-import PayloadComposition from '@/components/PayloadComposition.vue'
-import { Payload } from '@/services/payload.js'
+import BaseFile from '../components/BaseFile.vue'
+import PayloadDetail from '../components/PayloadDetail.vue'
+import PayloadComposition from '../components/PayloadComposition.vue'
+import { Payload } from '../services/payload'
 
 export default {
   components: {
     BaseFile,
     PayloadDetail,
-    PayloadComposition,
+    PayloadComposition
   },
   data() {
     return {
       zipFile: null,
-      payload: null,
+      payload: null
     }
   },
   methods: {
@@ -73,7 +65,7 @@ export default {
         alert('Please check if this is a correct OTA package (.zip).')
         console.log(err)
       }
-    },
-  },
+    }
+  }
 }
 </script>

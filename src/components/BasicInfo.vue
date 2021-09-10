@@ -16,10 +16,7 @@
 
 <template>
   <h3>Basic infos</h3>
-  <div
-    v-if="zipFile"
-    v-bind="$attrs"
-  >
+  <div v-if="zipFile" v-bind="$attrs">
     <ul class="align">
       <li><strong> File name </strong> {{ zipFile.name }}</li>
       <li><strong> File size </strong> {{ zipFile.size }} Bytes</li>
@@ -29,15 +26,9 @@
       </li>
     </ul>
   </div>
-  <div
-    v-if="payload && payload.metadata"
-    v-bind="$attrs"
-  >
+  <div v-if="payload && payload.metadata" v-bind="$attrs">
     <ul class="align">
-      <li
-        v-for="formatter in MetadataFormat"
-        :key="formatter.name"
-      >
+      <li v-for="formatter in MetadataFormat" :key="formatter.name">
         <strong> {{ formatter.name }} </strong>
         <p class="wrap">
           {{ String(payload[formatter.key]) }}
@@ -86,18 +77,18 @@
 </template>
 
 <script>
-import { Payload, MetadataFormat } from '@/services/payload.js'
+import { Payload, MetadataFormat } from '../services/payload'
 
 export default {
   props: {
     zipFile: {
       type: File,
-      required: true,
+      required: true
     },
     payload: {
       type: Payload,
-      required: true,
-    },
+      required: true
+    }
   },
   data() {
     return {

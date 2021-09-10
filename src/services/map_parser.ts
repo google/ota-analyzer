@@ -22,14 +22,19 @@
  * MapParser.query(address, datalength).
  */
 
-import * as zip from '@zip.js/zip.js/dist/zip-full.min.js'
+import * as zip from '@zip.js/zip.js/dist/zip.js'
+
+import { chromeos_update_engine } from './update_metadata_pb'
 
 export class MapParser {
+  build: zip.ZipReader
+  mapFiles: Map<any, any>
+  maps: Map<any, any>
   /**
    * This class will take in a .zip Android build and construct a file type map
    * @param {File} targetFile
    */
-  constructor(targetFile) {
+  constructor(targetFile: File) {
     this.build = new zip.ZipReader(new zip.BlobReader(targetFile))
     this.mapFiles = new Map()
     this.maps = new Map()
@@ -41,13 +46,13 @@ export class MapParser {
    */
   async init() {
     let /** Array<Entry> */ entries = await this.build.getEntries()
-    const /** RegExp*/ regexPath = /IMAGES\/[a-z_]*\.map/g;
+    const /** RegExp*/ regexPath = /IMAGES\/[a-z_]*\.map/g
     const /** RegExp*/ regexName = /[\w_]+(?=\.map)/g
-    entries.forEach((entry) => {
+    entries.forEach(entry => {
       if (entry.filename.match(regexPath)) {
-        this.mapFiles.set(entry.filename.match(regexName)[0], entry)
+        this.mapFiles.set(entry.filename.match(regexName)![0], entry)
       }
-    });
+    })
   }
 
   /**
@@ -55,17 +60,16 @@ export class MapParser {
    * @param {String} partitionName
    * @param {Number} totalLength
    */
-  async add(partitionName, totalLength) {
+  async add(partitionName: string, totalLength: number) {
     let /** Array<String> */ map = []
     const /** RegExp */ regexNumber = /\d+/g
     const /** Reg */ regexRange = /\d+\-\d+/g
     for (let i = 0; i < totalLength; i++) map[i] = 'unknown'
     if (this.mapFiles.get(partitionName)) {
-      let /** String */mapText =
-        await this.mapFiles.get(partitionName).getData(
-          new zip.TextWriter()
-        )
-      let /** Array<String> */fileEntries = mapText.split('\n')
+      let /** String */ mapText = await this.mapFiles
+          .get(partitionName)
+          .getData(new zip.TextWriter())
+      let /** Array<String> */ fileEntries = mapText.split('\n')
       // Each line of the .map file in Android build starts with the filename
       // Followed by the block address, either a number or a range, for example:
       // //system/apex/com.android.adbd.apex 54-66 66 66-2663
@@ -85,8 +89,7 @@ export class MapParser {
         }
       }
       this.maps.set(partitionName, map)
-    }
-    else {
+    } else {
       this.maps.set(partitionName, map)
     }
   }
@@ -97,13 +100,11 @@ export class MapParser {
    * @param {Array<PartitionUpdate>} extents
    * @return {Array<String>}
    */
-  query(partitionName, extents) {
+  query(partitionName: string, extents: Array<chromeos_update_engine.IExtent>) {
     let /** Array<String> */ names = []
     let /** Array<String> */ map = this.maps.get(partitionName)
     for (let ext of extents) {
-      names.push(queryMap(map,
-        ext.startBlock,
-        ext.startBlock + ext.numBlocks))
+      names.push(queryMap(map, ext.startBlock, ext.startBlock + ext.numBlocks))
     }
     return names
   }
@@ -116,7 +117,12 @@ export class MapParser {
  * @param {Number} left
  * @param {Number} right
  */
-function InsertMap(map, name, left, right) {
+function InsertMap(
+  map: Array<string>,
+  name: string,
+  left: number,
+  right: number
+) {
   for (let i = left; i <= right; i++) {
     map[i] = name
   }
@@ -128,7 +134,7 @@ function InsertMap(map, name, left, right) {
  * @param {Number} left
  * @param {Number} right
  */
-function queryMap(map, left, right) {
+function queryMap(map: Array<string>, left: number, right: number) {
   // Assuming the consecutive blocks belong to the same file
   // Only the start block is queried here.
   if (!map[left]) {

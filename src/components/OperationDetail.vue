@@ -16,7 +16,7 @@
 
 <template>
   <ul>
-    <h5> {{ mapType.getWithDefault(operation.type) }} </h5>
+    <h5>{{ mapType.getWithDefault(operation.type) }}</h5>
     <li v-if="operation.hasOwnProperty('dataOffset')">
       <strong> Data offset: </strong> {{ operation.dataOffset }}
     </li>
@@ -24,15 +24,18 @@
       <strong> Data length: </strong> {{ operation.dataLength }}
     </li>
     <li v-if="operation.hasOwnProperty('srcExtents')">
-      <strong> Source: </strong> {{ operation.srcExtents.length }} extents ({{ srcTotalBlocks }}
+      <strong> Source: </strong> {{ operation.srcExtents.length }} extents ({{
+        srcTotalBlocks
+      }}
       blocks)
-      <br>
+      <br />
       {{ srcBlocks }}
     </li>
     <li v-if="operation.hasOwnProperty('dstExtents')">
-      <strong> Destination: </strong> {{ operation.dstExtents.length }} extents ({{ dstTotalBlocks }}
+      <strong> Destination: </strong> {{ operation.dstExtents.length }} extents
+      ({{ dstTotalBlocks }}
       blocks)
-      <br>
+      <br />
       {{ dstBlocks }}
     </li>
   </ul>
@@ -40,26 +43,26 @@
 </template>
 
 <script>
-import { numBlocks, displayBlocks } from '../services/payload_composition.js'
-import { DefaultMap } from '../services/payload.js'
+import { numBlocks, displayBlocks } from '../services/payload_composition'
+import { DefaultMap } from '../services/payload'
 
 export default {
   props: {
     operation: {
       type: Object,
-      required: true,
+      required: true
     },
     mapType: {
       type: DefaultMap,
-      required: true,
-    },
+      required: true
+    }
   },
   data() {
     return {
       srcTotalBlocks: null,
       srcBlocks: null,
       dstTotalBlocks: null,
-      dstBlocks: null,
+      dstBlocks: null
     }
   },
   mounted() {
@@ -71,7 +74,7 @@ export default {
       this.dstTotalBlocks = numBlocks(this.operation.dstExtents)
       this.dstBlocks = displayBlocks(this.operation.dstExtents)
     }
-  },
+  }
 }
 </script>
 
@@ -84,5 +87,4 @@ li {
   color: black;
   list-style-type: none;
 }
-
 </style>

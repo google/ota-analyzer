@@ -70,8 +70,8 @@
 </template>
 
 <script>
-import { OpType, octToHex } from '@/services/payload.js'
-import OperationDetail from '@/components/OperationDetail.vue'
+import { OpType, octToHex } from '../services/payload'
+import OperationDetail from './OperationDetail.vue'
 
 export default {
   components: {

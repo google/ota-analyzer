@@ -15,6 +15,10 @@
  */
 
 export class EchartsData {
+  statisticData: any
+  title: string
+  unit: string
+  maximumEntries: number
   /**
    * Given a set of [key, value] pairs and title, create an object for further
    * usage in Vue-Echarts.
@@ -23,7 +27,12 @@ export class EchartsData {
    * @param {String} unit
    * @param {Number} maximumEntries
    */
-  constructor(statisticData, title, unit, maximumEntries = 15) {
+  constructor(
+    statisticData: Map<string, string>,
+    title: string,
+    unit: string,
+    maximumEntries = 15
+  ) {
     this.statisticData = statisticData
     this.title = title
     this.unit = unit
@@ -53,35 +62,35 @@ export class EchartsData {
     if (this.statisticData.size > this.maximumEntries) {
       this.statisticData = trimMap(this.statisticData, this.maximumEntries)
     }
-    let /** Object */ option = new Object()
+    let /** Object */ option: any = {}
     option.title = {
       text: this.title,
-      left: "center"
+      left: 'center'
     }
     option.tooltip = {
-      trigger: "item",
-      formatter: "{a} <br/>{b} : {c} " + this.unit + " ({d}%)"
+      trigger: 'item',
+      formatter: '{a} <br/>{b} : {c} ' + this.unit + ' ({d}%)'
     }
     option.legend = {
-      orient: "horizontal",
-      left: "top",
-      top: "10%",
+      orient: 'horizontal',
+      left: 'top',
+      top: '10%',
       data: Array.from(this.statisticData.keys())
     }
     option.series = [
       {
         name: this.title,
-        type: "pie",
-        radius: "55%",
-        center: ["50%", "60%"],
-        data: Array.from(this.statisticData).map((pair) => {
+        type: 'pie',
+        radius: '55%',
+        center: ['50%', '60%'],
+        data: Array.from(this.statisticData).map((pair: any) => {
           return { value: pair[1], name: pair[0] }
         }),
         emphasis: {
           itemStyle: {
             shadowBlur: 10,
             shadowOffsetX: 0,
-            shadowColor: "rgba(0, 0, 0, 0.5)"
+            shadowColor: 'rgba(0, 0, 0, 0.5)'
           }
         }
       }
@@ -99,10 +108,10 @@ export class EchartsData {
  * @param {Number} maximumEntries
  * @return {Map}
  */
-function trimMap(map, maximumEntries) {
+function trimMap(map: Map<string, number>, maximumEntries: number) {
   if (map.size <= maximumEntries) return map
   let /** Map */ new_map = new Map()
-  for (let i=0; i<maximumEntries; i++) {
+  for (let i = 0; i < maximumEntries; i++) {
     let /** Number */ curr = 0
     let /** String */ currKey = ''
     for (let [key, value] of map) {

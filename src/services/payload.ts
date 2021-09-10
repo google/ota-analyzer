@@ -23,9 +23,18 @@
  * @package protobufjs
  */
 
-import * as zip from '@zip.js/zip.js/dist/zip-full.min.js'
-import { chromeos_update_engine as update_metadata_pb } from './update_metadata_pb.js'
-import { PayloadNonAB } from './payload_nonab.js'
+// const {
+//   ZipReader,
+//   Writer,
+//   TextWriter,
+//   BlobReader
+// } = require('@zip.js/zip.js/dist/zip')
+import * as zip from '@zip.js/zip.js/dist/zip.js'
+
+// import '@zip.js/zip.js'
+import { chromeos_update_engine as update_metadata_pb } from './update_metadata_pb'
+import { PayloadNonAB } from './payload_nonab'
+// import { Zip_js } from 'zip.js'
 
 const /** String */ _MAGIC = 'CrAU'
 const /** Number */ _VERSION_SIZE = 8
@@ -65,6 +74,11 @@ export const /** Array<Object> */ MetadataFormat = [
 class StopIteration extends Error {}
 
 class OTAPayloadBlobWriter extends zip.Writer {
+  offset: number
+  contentType: string
+  blob: Blob
+  prefixLength: number
+  payload: Payload
   /**
    * A zip.Writer that is tailored for OTA payload.bin read-in.
    * Instead of reading in all the contents in payload.bin, this writer will
@@ -73,7 +87,7 @@ class OTAPayloadBlobWriter extends zip.Writer {
    * @param {Payload} payload
    * @param {String} contentType
    */
-  constructor(payload, contentType = '') {
+  constructor(payload: Payload, contentType = '') {
     super()
     this.offset = 0
     this.contentType = contentType
@@ -82,7 +96,7 @@ class OTAPayloadBlobWriter extends zip.Writer {
     this.payload = payload
   }
 
-  async writeUint8Array(/**  @type {Uint8Array} */ array) {
+  async writeUint8Array(array: Uint8Array) {
     super.writeUint8Array(array)
     this.blob = new Blob([this.blob, array.buffer], { type: this.contentType })
     this.offset = this.blob.size
@@ -117,11 +131,22 @@ class OTAPayloadBlobWriter extends zip.Writer {
 }
 
 export class Payload {
+  packedFile: zip.ZipReader
+  cursor: number
+  payload: Blob | undefined
+  metadata: any
+  manifest: update_metadata_pb.DeltaArchiveManifest | undefined
+  buffer: any
+  magic: string | undefined
+  header_version: any
+  manifest_len: any
+  metadata_signature_len: any
+  metadata_signature: any
   /**
    * This class parses the metadata of a OTA package.
    * @param {File} file A OTA.zip file read from user's machine.
    */
-  constructor(file) {
+  constructor(file: File) {
     this.packedFile = new zip.ZipReader(new zip.BlobReader(file))
     this.cursor = 0
   }
@@ -131,12 +156,12 @@ export class Payload {
    */
   async unzip() {
     let /** Array<Entry> */ entries = await this.packedFile.getEntries()
-    this.payload = null
+    this.payload = undefined
     for (let entry of entries) {
       if (entry.filename == 'payload.bin') {
         let writer = new OTAPayloadBlobWriter(this, '')
         try {
-          await entry.getData(writer)
+          await entry.getData!(writer)
         } catch (e) {
           if (e instanceof StopIteration) {
             // Exception used as a hack to stop reading from zip. NO need to do anything
@@ -148,7 +173,7 @@ export class Payload {
         }
         this.payload = writer.getData()
       } else if (entry.filename == 'META-INF/com/android/metadata') {
-        this.metadata = await entry.getData(new zip.TextWriter())
+        this.metadata = await entry.getData!(new zip.TextWriter())
       }
     }
     if (!this.payload) {
@@ -171,7 +196,7 @@ export class Payload {
    * @param {Int} size the size of a integer being read in
    * @return {Int} an integer.
    */
-  readInt(size) {
+  readInt(size: number) {
     let /** DataView */ view = new DataView(
         this.buffer.slice(this.cursor, this.cursor + size)
       )
@@ -186,7 +211,7 @@ export class Payload {
     this.cursor += size
     switch (size) {
       case 2:
-        return view.getUInt16(0)
+        return view.getUint16(0)
       case 4:
         return view.getUint32(0)
       case 8:
@@ -200,7 +225,7 @@ export class Payload {
    * Read the header of payload.bin, including the magic, header_version,
    * manifest_len, metadata_signature_len.
    */
-  async readHeader(/** @type {Blob} */ buffer) {
+  async readHeader(buffer: Blob) {
     this.buffer = await buffer.slice(0, _PAYLOAD_HEADER_SIZE).arrayBuffer()
     let /** TextDecoder */ decoder = new TextDecoder()
     try {
@@ -229,24 +254,24 @@ export class Payload {
    * The structure of the manifest can be found in:
    * aosp/system/update_engine/update_metadata.proto
    */
-  async readManifest(/** @type {Blob} */ buffer) {
-    buffer = await buffer
+  async readManifest(buffer: Blob) {
+    let arrayBuffer = await buffer
       .slice(this.cursor, this.cursor + this.manifest_len)
       .arrayBuffer()
     this.cursor += this.manifest_len
     this.manifest = update_metadata_pb.DeltaArchiveManifest.decode(
-      new Uint8Array(buffer)
+      new Uint8Array(arrayBuffer)
     )
-    this.manifest.nonAB = false
+    this.manifest!.nonAB = false
   }
 
-  async readSignature(/** @type {Blob} */ buffer) {
-    buffer = await buffer
+  async readSignature(/** @type {Blob} */ buffer: Blob) {
+    let bufferSlice = await buffer
       .slice(this.cursor, this.cursor + this.metadata_signature_len)
       .arrayBuffer()
     this.cursor += this.metadata_signature_len
     this.metadata_signature = update_metadata_pb.Signatures.decode(
-      new Uint8Array(buffer)
+      new Uint8Array(bufferSlice)
     )
   }
 
@@ -254,11 +279,13 @@ export class Payload {
     for (let formatter of MetadataFormat) {
       let regex = new RegExp(formatter.prefix + '.+')
       if (this.metadata.match(regex)) {
-        this[formatter.key] = trimEntry(
+        ;(this as any)[formatter.key] = trimEntry(
           this.metadata.match(regex)[0],
           formatter.prefix
         )
-      } else this[formatter.key] = ''
+      } else {
+        ;(this as any)[formatter.key] = ''
+      }
     }
   }
 
@@ -273,29 +300,30 @@ export class DefaultMap extends Map {
    * the key does not exist.
    * @param {Any} key
    */
-  getWithDefault(key) {
+  getWithDefault(key: any) {
     if (!this.has(key)) return key
     return this.get(key)
   }
 }
 
 export class OpType {
+  mapType: DefaultMap
   /**
    * OpType.mapType create a map that could resolve the operation
    * types. The operation types are encoded as numbers in
    * update_metadata.proto and must be decoded before any usage.
    */
   constructor() {
-    let /** Array<{String: Number}>*/ types =
-        update_metadata_pb.InstallOperation.Type
+    let types = update_metadata_pb.InstallOperation.Type
     this.mapType = new DefaultMap()
     for (let key of Object.keys(types)) {
-      this.mapType.set(types[key], key)
+      this.mapType.set(types[key as any], key)
     }
   }
 }
 
 export class MergeOpType {
+  mapType: DefaultMap
   /**
    * MergeOpType create a map that could resolve the COW merge operation
    * types. This is very similar to OpType class except that one is for
@@ -306,12 +334,12 @@ export class MergeOpType {
         update_metadata_pb.CowMergeOperation.Type
     this.mapType = new DefaultMap()
     for (let key of Object.keys(types)) {
-      this.mapType.set(types[key], key)
+      this.mapType.set(types[key as any], key)
     }
   }
 }
 
-export function octToHex(bufferArray, space = true, maxLine = 16) {
+export function octToHex(bufferArray: Uint8Array, space = true, maxLine = 16) {
   let hex_table = ''
   for (let i = 0; i < bufferArray.length; i++) {
     const hex /** String **/ = bufferArray[i].toString(16).toUpperCase()
@@ -334,6 +362,6 @@ export function octToHex(bufferArray, space = true, maxLine = 16) {
  * @param {String} prefix
  * @return String
  */
-function trimEntry(entry, prefix) {
+function trimEntry(entry: string, prefix: string) {
   return entry.slice(prefix.length + 1, entry.length)
 }

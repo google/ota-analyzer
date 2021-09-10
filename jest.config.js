@@ -17,7 +17,7 @@
 const defaults = require('jest-config')
 
 module.exports = {
-  preset: '@vue/cli-plugin-unit-jest',
+  preset: '@vue/cli-plugin-unit-jest/presets/typescript-and-babel',
   transform: {
     '^.+\\.vue$': 'vue-jest'
   },
@@ -25,6 +25,6 @@ module.exports = {
     ...defaults.globals,
     crypto: require('crypto'),
     TextEncoder: require('util').TextEncoder,
-    TextDecoder: require('util').TextDecoder,
+    TextDecoder: require('util').TextDecoder
   }
 }
