@@ -102,7 +102,8 @@ class OTAPayloadBlobWriter extends Writer {
     // Once the prefixLength is non-zero, the address of manifest and signature
     // become known and can be read in. Otherwise the header needs to be read
     // in first to determine the prefixLength.
-    if (this.offset >= _PAYLOAD_HEADER_SIZE) {
+    if (this.offset >= _PAYLOAD_HEADER_SIZE && this.prefixLength == 0) {
+      console.log('Parsing header!')
       await this.payload.readHeader(this.blob)
       this.prefixLength =
         _PAYLOAD_HEADER_SIZE +
@@ -132,15 +133,13 @@ class OTAPayloadBlobWriter extends Writer {
 export class Payload {
   packedFile: ZipReader
   cursor: number
-  payload: Blob | undefined
+  buffer: Blob | undefined
   metadata: any
   manifest: update_metadata_pb.DeltaArchiveManifest | undefined
-  buffer: any
-  magic: string | undefined
-  header_version: any
-  manifest_len: any
-  metadata_signature_len: any
-  metadata_signature: any
+  header_version!: number
+  manifest_len!: number
+  metadata_signature_len!: number
+  metadata_signature!: update_metadata_pb.Signatures
   /**
    * This class parses the metadata of a OTA package.
    * @param {File} file A OTA.zip file read from user's machine.
@@ -155,7 +154,6 @@ export class Payload {
    */
   async unzip() {
     let /** Array<Entry> */ entries = await this.packedFile.getEntries()
-    this.payload = undefined
     for (let entry of entries) {
       if (entry.filename == 'payload.bin') {
         let writer = new OTAPayloadBlobWriter(this, '')
@@ -167,15 +165,16 @@ export class Payload {
             // Ideally zip.js would provide an API to partialll read a zip
             // entry, but they don't. So this is what we get
           } else {
+            console.log(e)
             throw e
           }
         }
-        this.payload = writer.getData()
+        writer.getData()
       } else if (entry.filename == 'META-INF/com/android/metadata') {
         this.metadata = await entry.getData!(new TextWriter())
       }
     }
-    if (!this.payload) {
+    if (!this.buffer) {
       try {
         // The temporary variable manifest has to be used here, to prevent the html page
         // being rendered before everything is read in properly
@@ -195,9 +194,9 @@ export class Payload {
    * @param {Int} size the size of a integer being read in
    * @return {Int} an integer.
    */
-  readInt(size: number) {
+  async readInt(size: number) {
     let /** DataView */ view = new DataView(
-        this.buffer.slice(this.cursor, this.cursor + size)
+        await this.buffer!.slice(this.cursor, this.cursor + size).arrayBuffer()
       )
     if (typeof view.getBigUint64 !== 'function') {
       view.getBigUint64 = function(offset) {
@@ -224,27 +223,26 @@ export class Payload {
    * Read the header of payload.bin, including the magic, header_version,
    * manifest_len, metadata_signature_len.
    */
-  async readHeader(buffer: Blob) {
-    this.buffer = await buffer.slice(0, _PAYLOAD_HEADER_SIZE).arrayBuffer()
+  async readHeader(blob: Blob) {
+    this.buffer = blob
+    let buffer = await this.buffer!.slice(0, _PAYLOAD_HEADER_SIZE).arrayBuffer()
     let /** TextDecoder */ decoder = new TextDecoder()
-    try {
-      this.magic = decoder.decode(this.buffer.slice(this.cursor, _MAGIC.length))
-      if (this.magic != _MAGIC) {
-        throw new Error('MAGIC is not correct, please double check.')
-      }
-      this.cursor += _MAGIC.length
-      this.header_version = this.readInt(_VERSION_SIZE)
-      this.manifest_len = this.readInt(_MANIFEST_LEN_SIZE)
-      if (this.header_version == _BRILLO_MAJOR_PAYLOAD_VERSION) {
-        this.metadata_signature_len = this.readInt(_METADATA_SIGNATURE_LEN_SIZE)
-      } else {
-        throw new Error(
-          `Unexpected major version number: ${this.header_version}`
-        )
-      }
-    } catch (err) {
-      console.log(err)
-      return
+    let magicBytes = buffer.slice(this.cursor, _MAGIC.length)
+    const magic = decoder.decode(magicBytes)
+    if (magic != _MAGIC) {
+      throw new Error(
+        `MAGIC is not correct, expected: ${_MAGIC} actual: ${magic}`
+      )
+    }
+    this.cursor += _MAGIC.length
+    this.header_version = await this.readInt(_VERSION_SIZE)
+    this.manifest_len = await this.readInt(_MANIFEST_LEN_SIZE)
+    if (this.header_version == _BRILLO_MAJOR_PAYLOAD_VERSION) {
+      this.metadata_signature_len = await this.readInt(
+        _METADATA_SIGNATURE_LEN_SIZE
+      )
+    } else {
+      throw new Error(`Unexpected major version number: ${this.header_version}`)
     }
   }
 

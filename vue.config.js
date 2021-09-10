@@ -15,11 +15,7 @@
  */
 
 module.exports = {
-  publicPath: process.env.NODE_ENV === 'production'
-    ? '/analyseOTA/'
-    : '/',
+  publicPath: process.env.NODE_ENV === 'production' ? '/analyseOTA/' : '/',
 
-  transpileDependencies: [
-    'vuetify'
-  ]
+  transpileDependencies: ['vuetify']
 }

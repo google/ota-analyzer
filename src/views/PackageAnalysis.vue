@@ -63,7 +63,7 @@ export default {
         await this.payload.init()
       } catch (err) {
         alert('Please check if this is a correct OTA package (.zip).')
-        console.log(err)
+        throw err
       }
     }
   }

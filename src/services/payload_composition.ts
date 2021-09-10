@@ -201,15 +201,11 @@ export async function analysePartitions(
       )
       break
     case 'extensions':
-      try {
-        statisticsData = await operatedExtensionStatistics(
-          partitions,
-          blockSize,
-          targetFile
-        )
-      } catch (err) {
-        throw err
-      }
+      statisticsData = await operatedExtensionStatistics(
+        partitions,
+        blockSize,
+        targetFile
+      )
       echartsData = new EchartsData(
         statisticsData,
         'Size of operated filename extensions',

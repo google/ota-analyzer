@@ -22,7 +22,7 @@
  * MapParser.query(address, datalength).
  */
 
-import {ZipReader, BlobReader, TextWriter} from '@zip.js/zip.js/dist/zip.js'
+import { ZipReader, BlobReader, TextWriter } from '@zip.js/zip.js/dist/zip.js'
 
 import { chromeos_update_engine } from './update_metadata_pb'
 
