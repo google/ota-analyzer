@@ -29,9 +29,9 @@
   <div v-if="payload && payload.metadata" v-bind="$attrs">
     <ul class="align">
       <li v-for="formatter in MetadataFormat" :key="formatter.name">
-        <strong> {{ formatter.name }} </strong>
+        <strong> {{ formatter.name.trim() + ' ' }} </strong>
         <p class="wrap">
-          {{ String(payload[formatter.key]) }}
+          {{ String(payload[formatter.key]).trim() }}
         </p>
       </li>
     </ul>
@@ -119,7 +119,7 @@ li {
   width: 50%;
   display: inline-block;
   white-space: pre-wrap;
-  word-wrap: break-word;
+  word-break: break-all;
   font-family: inherit;
 }
 </style>
