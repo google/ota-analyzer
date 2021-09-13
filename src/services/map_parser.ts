@@ -64,7 +64,7 @@ export class MapParser {
     let /** Array<String> */ map = []
     const /** RegExp */ regexNumber = /\d+/g
     const /** Reg */ regexRange = /\d+\-\d+/g
-    for (let i = 0; i < totalLength; i++) map[i] = 'unknown'
+    for (let i = 0; i < totalLength; i++) map[i] = `<${partitionName}>`
     if (this.mapFiles.get(partitionName)) {
       let /** String */ mapText = await this.mapFiles
           .get(partitionName)

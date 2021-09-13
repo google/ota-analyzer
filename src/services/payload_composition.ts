@@ -329,6 +329,8 @@ export function name2Extension(filename: string) {
     return elements[elements.length - 1]
   } else if (elements[0] === 'unknown') {
     return 'unknown'
+  } else if (filename[0] == '<' && filename.endsWith('>')) {
+    return filename
   } else {
     return 'no-extension'
   }
