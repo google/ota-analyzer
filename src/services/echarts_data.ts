@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
+import { EChartsOption } from 'echarts'
+
 export class EchartsData {
-  statisticData: any
+  statisticData: Map<string, number>
+  trimmedData: Map<string, string>
   title: string
   unit: string
   maximumEntries: number
@@ -28,12 +31,13 @@ export class EchartsData {
    * @param {Number} maximumEntries
    */
   constructor(
-    statisticData: Map<string, string>,
+    statisticData: Map<string, number>,
     title: string,
     unit: string,
     maximumEntries = 15
   ) {
     this.statisticData = statisticData
+    this.trimmedData = trimMap(statisticData, maximumEntries)
     this.title = title
     this.unit = unit
     this.maximumEntries = maximumEntries
@@ -58,11 +62,8 @@ export class EchartsData {
    * @param {String} unit
    * @return {Object} an ECharts option object.
    */
-  getEchartsOption() {
-    if (this.statisticData.size > this.maximumEntries) {
-      this.statisticData = trimMap(this.statisticData, this.maximumEntries)
-    }
-    let /** Object */ option: any = {}
+  getEchartsOption(): EChartsOption {
+    let /** Object */ option: EChartsOption = {}
     option.title = {
       text: this.title,
       left: 'center'
@@ -75,7 +76,7 @@ export class EchartsData {
       orient: 'horizontal',
       left: 'top',
       top: '10%',
-      data: Array.from(this.statisticData.keys())
+      data: Array.from(this.trimmedData.keys())
     }
     option.series = [
       {
@@ -83,7 +84,7 @@ export class EchartsData {
         type: 'pie',
         radius: '55%',
         center: ['50%', '60%'],
-        data: Array.from(this.statisticData).map((pair: any) => {
+        data: Array.from(this.trimmedData).map((pair: any) => {
           return { value: pair[1], name: pair[0] }
         }),
         emphasis: {
@@ -108,7 +109,7 @@ export class EchartsData {
  * @param {Number} maximumEntries
  * @return {Map}
  */
-function trimMap(map: Map<string, number>, maximumEntries: number) {
+function trimMap(map: Map<string, any>, maximumEntries: number) {
   if (map.size <= maximumEntries) return map
   let /** Map */ new_map = new Map()
   for (let i = 0; i < maximumEntries; i++) {

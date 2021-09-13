@@ -17,7 +17,7 @@
 <template>
   <PartialCheckbox v-model="partitionInclude" :labels="updatePartitions" />
   <div v-if="echartsData">
-    <PieChart :echartsData="echartsData" />
+    <PieChart :echartsData="echartsData" @click="piechartClick" />
   </div>
   <v-divider />
   <v-row>
@@ -42,6 +42,13 @@
       </span>
     </v-col>
     <v-col cols="12" md="6">
+      <v-btn block :disabled="!targetFile" @click="updateChart('filenames')">
+        Analyse Filenames
+      </v-btn>
+    </v-col>
+  </v-row>
+  <v-row>
+    <v-col cols="12" md="6">
       <v-btn block :disabled="!targetFile" @click="updateChart('extensions')">
         Analyse File Extensions
       </v-btn>
@@ -59,15 +66,18 @@
   </v-row>
 </template>
 
-<script>
+<script lang="ts">
 import axios from 'axios'
 import PartialCheckbox from './PartialCheckbox.vue'
 import PieChart from './PieChart.vue'
 import BaseFile from './BaseFile.vue'
 import { analysePartitions } from '../services/payload_composition'
 import { chromeos_update_engine as update_metadata_pb } from '../services/update_metadata_pb'
+import { TooltipComponentPositionCallbackParams } from 'echarts'
+import { EchartsData } from '@/services/echarts_data'
+import { defineComponent } from 'vue'
 
-export default {
+export default defineComponent({
   components: {
     PartialCheckbox,
     PieChart,
@@ -86,16 +96,18 @@ export default {
   data() {
     return {
       partitionInclude: new Map(),
-      echartsData: null,
+      echartsData: (null as unknown) as EchartsData,
       listData: '',
-      targetFile: null
+      targetFile: (null as unknown) as File
     }
   },
   computed: {
-    updatePartitions() {
-      return this.manifest.partitions.map(partition => {
-        return partition.partitionName
-      })
+    updatePartitions(): string[] {
+      return this.manifest.partitions.map(
+        (partition: update_metadata_pb.IPartitionUpdate) => {
+          return partition.partitionName
+        }
+      )
     }
   },
   async mounted() {
@@ -112,7 +124,10 @@ export default {
     }
   },
   methods: {
-    async updateChart(metrics) {
+    piechartClick(param: TooltipComponentPositionCallbackParams) {
+      console.log(param)
+    },
+    async updateChart(metrics: string) {
       let partitionSelected = this.manifest.partitions.filter(partition =>
         this.partitionInclude.get(partition.partitionName)
       )
@@ -124,15 +139,15 @@ export default {
           this.targetFile
         )
       } catch (err) {
-        alert('Cannot be processed for the following issue: ', err)
+        alert(`Cannot be processed for the following issue: ${err}`)
       }
     },
-    selectBuild(files) {
+    selectBuild(files: File[]) {
       //TODO(lishutong) check the version of target file is same to the OTA target
       this.targetFile = files[0]
     }
   }
-}
+})
 </script>
 
 <style scoped>

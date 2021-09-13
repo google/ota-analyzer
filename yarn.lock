@@ -1467,6 +1467,13 @@
   dependencies:
     "@types/node" "*"
 
+"@types/echarts@^4.9.10":
+  version "4.9.10"
+  resolved "https://registry.yarnpkg.com/@types/echarts/-/echarts-4.9.10.tgz#a3dd598fbb3b36e797f3ce771be3fa8dc18a7da6"
+  integrity sha512-8xNCE5d+hUU5hZJxmxvngkkODIh19jQXpZ4X9EgfXkyyejGitm7lYdAssJLtUUEtMDD6C08Z4QPmNoezg7Y97g==
+  dependencies:
+    "@types/zrender" "*"
+
 "@types/estree@^0.0.48":
   version "0.0.48"
   resolved "https://registry.npmjs.org/@types/estree/-/estree-0.0.48.tgz"
@@ -1717,6 +1724,11 @@
   integrity sha512-T8Yc9wt/5LbJyCaLiHPReJa0kApcIgJ7Bn735GjItUfh08Z1pJvu8QZqb9s+mMvKV6WUQRV7K2R46YbjMXTTJw==
   dependencies:
     "@types/yargs-parser" "*"
+
+"@types/zrender@*":
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/@types/zrender/-/zrender-4.0.1.tgz#6280c40207927ce086be24b4391d668cd330e956"
+  integrity sha512-IyTRf30jPOXK1+1RChI/78U6aV9hyWYf/vhL96Vt66oDz9es/BDjeKpvbNZSOHVA7zAReOwJcmdZS5AGAqhygw==
 
 "@vue/babel-helper-vue-jsx-merge-props@^1.2.1":
   version "1.2.1"

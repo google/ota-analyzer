@@ -15,7 +15,11 @@
 -->
 
 <template>
-  <v-chart class="chart" :option="getEchartsOption" />
+  <v-chart
+    class="chart"
+    :option="getEchartsOption"
+    @clic="$emit('click', ...arguments)"
+  />
 </template>
 
 <script>

@@ -47,12 +47,12 @@ function addNumberToMap(map: Map<String, number>, key: String, value: number) {
  * @return {Map}
  */
 export function operatedBlockStatistics(
-  partitions: Array<chromeos_update_engine.PartitionUpdate>
+  partitions: Array<chromeos_update_engine.IPartitionUpdate>
 ) {
   let /** Map */ operatedBlocks = new Map()
   let /** OpType */ opType = new OpType()
   for (let partition of partitions) {
-    for (let operation of partition.operations) {
+    for (let operation of partition.operations!) {
       let operationType = opType.mapType.getWithDefault(operation.type)
       addNumberToMap(
         operatedBlocks,
@@ -65,14 +65,14 @@ export function operatedBlockStatistics(
 }
 
 export function mergeOperationStatistics(
-  partitions: Array<chromeos_update_engine.PartitionUpdate>,
+  partitions: Array<chromeos_update_engine.IPartitionUpdate>,
   blockSize: number
 ) {
   let /** Map */ mergeOperations = new Map()
   let /** MergeOpType */ opType = new MergeOpType()
   let /** Number */ totalBlocks = 0
   for (let partition of partitions) {
-    for (let operation of partition.mergeOperations) {
+    for (let operation of partition.mergeOperations!) {
       let operationType = opType.mapType.getWithDefault(operation.type)
       addNumberToMap(
         mergeOperations,
@@ -104,19 +104,18 @@ export function mergeOperationStatistics(
  * @return {Map}
  */
 export function operatedPayloadStatistics(
-  partitions: Array<chromeos_update_engine.PartitionUpdate>
+  partitions: Array<chromeos_update_engine.IPartitionUpdate>
 ) {
   let /** Map */ operatedBlocks = new Map()
   let /** OpType */ opType = new OpType()
   for (let partition of partitions) {
-    for (let operation of partition.operations) {
+    for (let operation of partition.operations!) {
       let operationType = opType.mapType.getWithDefault(operation.type)
       addNumberToMap(operatedBlocks, operationType, operation.dataLength)
     }
   }
   return operatedBlocks
 }
-
 /**
  * Return a statistics over the disk usage of each file types in a OTA package.
  * A target file has to be provided and address-filename maps will be built.
@@ -126,14 +125,40 @@ export function operatedPayloadStatistics(
  * @param {File} targetFile
  * @return {Map}
  */
-export async function operatedExtensionStatistics(
-  partitions: Array<chromeos_update_engine.PartitionUpdate>,
+export async function operatedFileExtensionsStatistics(
+  partitions: Array<chromeos_update_engine.IPartitionUpdate>,
   blockSize: number,
-  targetFile: File | null
-) {
-  let /** Map */ operatedExtensions = new Map()
+  targetFile: File
+): Promise<Map<string, number>> {
+  let filenameStats = await operatedFilenamesStatistics(
+    partitions,
+    blockSize,
+    targetFile
+  )
+  const fileExtenstionStats = new Map<string, number>()
+  filenameStats.forEach((size, filename) => {
+    addNumberToMap(fileExtenstionStats, name2Extension(filename), size)
+  })
+  return fileExtenstionStats
+}
+
+/**
+ * Return a statistics over the disk usage of each file name in a OTA package.
+ * A target file has to be provided and address-filename maps will be built.
+ * Only partitions that are being passed in will be included.
+ * @param {Array<PartitionUpdate>} partitions
+ * @param {Number} blockSize
+ * @param {File} targetFile
+ * @return {Map}
+ */
+export async function operatedFilenamesStatistics(
+  partitions: Array<chromeos_update_engine.IPartitionUpdate>,
+  blockSize: number,
+  targetFile: File
+): Promise<Map<string, number>> {
+  let /** Map */ operatedFilenames = new Map()
   if (!targetFile) {
-    return operatedExtensions
+    return operatedFilenames
   }
   let buildMap = new MapParser(targetFile)
   await buildMap.init()
@@ -142,23 +167,23 @@ export async function operatedExtensionStatistics(
       partition.partitionName,
       Math.ceil(partition.newPartitionInfo!.size / blockSize)
     )
-    for (let operation of partition.operations) {
+    for (let operation of partition.operations!) {
       if (!operation.hasOwnProperty('dataLength')) continue
       let operatedFileNames = buildMap.query(
         partition.partitionName,
         operation.dstExtents!
       )
-      let extentDataLength = distributeExtensions(
+      let extentDataLength = distributeFilenames(
         operatedFileNames,
         operation.dstExtents!,
         operation.dataLength
       )
       extentDataLength!.forEach((value, key) => {
-        addNumberToMap(operatedExtensions, key, value)
+        addNumberToMap(operatedFilenames, key, value)
       })
     }
   }
-  return operatedExtensions
+  return operatedFilenames
 }
 
 /**
@@ -169,9 +194,9 @@ export async function operatedExtensionStatistics(
  */
 export async function analysePartitions(
   metrics: String,
-  partitions: Array<chromeos_update_engine.PartitionUpdate>,
+  partitions: Array<chromeos_update_engine.IPartitionUpdate>,
   blockSize = 4096,
-  targetFile = null
+  targetFile: File | null = null
 ) {
   let /** Map */ statisticsData
   let /** Echartsdata */ echartsData
@@ -200,17 +225,36 @@ export async function analysePartitions(
         'blocks'
       )
       break
-    case 'extensions':
-      statisticsData = await operatedExtensionStatistics(
+    case 'filenames':
+      if (targetFile == null) {
+        throw new Error('Target file is required for filenames analysis')
+      }
+      statisticsData = await operatedFilenamesStatistics(
         partitions,
         blockSize,
         targetFile
       )
       echartsData = new EchartsData(
         statisticsData,
-        'Size of operated filename extensions',
+        'Size of operated filenames',
         'bytes'
       )
+      break
+    case 'extensions':
+      if (targetFile == null) {
+        throw new Error('Target file is required for filenames analysis')
+      }
+      statisticsData = await operatedFileExtensionsStatistics(
+        partitions,
+        blockSize,
+        targetFile
+      )
+      echartsData = new EchartsData(
+        statisticsData,
+        'Size of operated extensions',
+        'bytes'
+      )
+      break
   }
   if (echartsData) {
     return echartsData
@@ -256,17 +300,17 @@ export function displayBlocks(exts: Array<chromeos_update_engine.Extent>) {
  * @param {Number} length
  * @return {Map}
  */
-export function distributeExtensions(
+export function distributeFilenames(
   filenames: Array<string>,
   exts: Array<chromeos_update_engine.IExtent>,
   length: number
-) {
+): Map<string, number> {
   let totalBlocks = numBlocks(exts)
   let distributedLengths = new Map()
   for (let i = 0; i < filenames.length; i++) {
     addNumberToMap(
       distributedLengths,
-      name2Extension(filenames[i]),
+      filenames[i],
       Math.round((length * exts[i].numBlocks) / totalBlocks)
     )
   }
