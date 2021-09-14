@@ -52,6 +52,18 @@
           {{ octToHex(partition.newPartitionInfo.hash, false, 16) }}
         </div>
       </li>
+      <li v-if="partition.version">
+        <strong>
+          Version:
+        </strong>
+        {{ partition.version }}
+      </li>
+      <li v-if="readableTimestamp">
+        <strong>
+          Version:
+        </strong>
+        {{ readableTimestamp }}
+      </li>
     </ul>
   </div>
   <div class="toggle" v-bind:class="{ active: showOPs }">
@@ -70,6 +82,7 @@
 </template>
 
 <script>
+import { chromeos_update_engine } from '@/services/update_metadata_pb'
 import { OpType, octToHex } from '../services/payload'
 import OperationDetail from './OperationDetail.vue'
 
@@ -79,7 +92,7 @@ export default {
   },
   props: {
     partition: {
-      type: Object,
+      type: chromeos_update_engine.PartitionUpdate,
       required: true
     }
   },
@@ -98,6 +111,16 @@ export default {
       this[key] = !this[key]
     },
     octToHex: octToHex
+  },
+  computed: {
+    readableTimestamp() {
+      const unixTimestamp = parseInt(this.partition.version)
+      if (isNaN(unixTimestamp)) {
+        return ''
+      }
+      // Unix timestamp is in seconds, but js want milliseconds. So *1000
+      return new Date(unixTimestamp * 1000).toString()
+    }
   }
 }
 </script>
