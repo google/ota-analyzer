@@ -15,7 +15,9 @@
 -->
 
 <template>
-  <h4>{{ partition.partitionName }}</h4>
+  <h4 :class="{ 'new-partition': !partition.oldPartitionInfo }">
+    {{ partition.partitionName }}
+  </h4>
   <p v-if="partition.estimateCowSize">
     <strong> Estimate COW Size: </strong> {{ partition.estimateCowSize }} Bytes
   </p>
@@ -141,5 +143,9 @@ li {
 
 .active {
   color: blue;
+}
+
+.new-partition {
+  color: forestgreen;
 }
 </style>
