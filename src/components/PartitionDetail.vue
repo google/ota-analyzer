@@ -22,7 +22,7 @@
     <strong> Estimate COW Size: </strong> {{ partition.estimateCowSize }} Bytes
   </p>
   <div class="toggle">
-    <h4 @click="toggle('showInfo')" v-bind:class="{ active: showInfo }">
+    <h4 @click="toggle('showInfo')" :class="{ active: showInfo }">
       Partition Infos
     </h4>
     <ul v-if="showInfo">
@@ -68,8 +68,8 @@
       </li>
     </ul>
   </div>
-  <div class="toggle" v-bind:class="{ active: showOPs }">
-    <h4 @click="toggle('showOPs')">
+  <div class="toggle">
+    <h4 @click="toggle('showOPs')" :class="{ active: showOPs }">
       Total Operations: {{ partition.operations.length }}
     </h4>
     <ul v-if="showOPs">
@@ -131,7 +131,6 @@ export default {
 .toggle {
   display: block;
   cursor: pointer;
-  color: #762ace;
 }
 
 li {
@@ -142,10 +141,10 @@ li {
 }
 
 .active {
-  color: blue;
+  color: rgb(var(--v-theme-secondary));
 }
 
 .new-partition {
-  color: forestgreen;
+  color: rgb(var(--v-theme-success));
 }
 </style>

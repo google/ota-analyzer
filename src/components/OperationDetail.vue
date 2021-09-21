@@ -84,7 +84,6 @@ ul {
 }
 
 li {
-  color: black;
   list-style-type: none;
 }
 </style>

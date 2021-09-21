@@ -47,7 +47,7 @@ export default {
     VChart
   },
   provide: {
-    [THEME_KEY]: 'light'
+    [THEME_KEY]: 'dark'
   },
   props: {
     echartsData: {
