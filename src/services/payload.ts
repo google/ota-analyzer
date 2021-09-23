@@ -197,6 +197,7 @@ class OTAPayloadBlobWriter extends Writer {
 }
 
 export class Payload {
+  file: File
   zipreader: ZipReader
   buffer: Blob | undefined
   private metadata: any
@@ -210,6 +211,7 @@ export class Payload {
    * @param {File} file A OTA.zip file read from user's machine.
    */
   constructor(file: File) {
+    this.file = file
     this.zipreader = new ZipReader(new BlobReader(file))
   }
 

@@ -21,6 +21,10 @@
         label="Please drag and drop an OTA package or Select one"
         @file-select="unpackOTA"
       />
+      <v-btn v-if="zipFile && payload" @click="exportOTAPackage"
+        >Export Metadata</v-btn
+      >
+      <a ref="download" />
       <PayloadDetail
         v-if="zipFile && payload"
         :zipFile="zipFile"
@@ -43,6 +47,7 @@ import PayloadDetail from '../components/PayloadDetail.vue'
 import PayloadComposition from '../components/PayloadComposition.vue'
 import { Payload } from '../services/payload'
 import { defineComponent } from 'vue'
+import { downloadFile, trimOTAPackage } from '../services/trim_zip'
 
 export default defineComponent({
   components: {
@@ -66,7 +71,22 @@ export default defineComponent({
         alert(`Please check if this is a correct OTA package (.zip). ${err}`)
         console.log(err)
       }
+    },
+    async exportOTAPackage() {
+      const blob = await trimOTAPackage(this.payload as Payload)
+      const downloadNode = this.$refs['download'] as HTMLAnchorElement
+      downloadFile(blob, downloadNode, 'trimmed_' + this.payload.file.name)
     }
   }
 })
 </script>
+
+<style scoped>
+.v-btn {
+  text-align: center;
+  justify-content: center;
+  display: flex;
+  align-content: center;
+  margin: 0 auto;
+}
+</style>

@@ -15,6 +15,10 @@
 -->
 
 <template>
+  <v-btn v-if="targetFile" block class="md-6" @click="exportTargetFileMetadata"
+    >Export Target File Metadata</v-btn
+  >
+  <a ref="download" />
   <PartialCheckbox v-model="partitionInclude" :labels="updatePartitions" />
   <div v-if="echartsData">
     <PieChart :echartsData="echartsData" @click="piechartClick" />
@@ -76,6 +80,7 @@ import { chromeos_update_engine as update_metadata_pb } from '../services/update
 import { TooltipComponentPositionCallbackParams } from 'echarts'
 import { EchartsData } from '@/services/echarts_data'
 import { defineComponent } from 'vue'
+import { downloadFile, trimTargetFiles } from '@/services/trim_zip'
 
 export default defineComponent({
   components: {
@@ -145,6 +150,11 @@ export default defineComponent({
     selectBuild(files: File[]) {
       //TODO(lishutong) check the version of target file is same to the OTA target
       this.targetFile = files[0]
+    },
+    async exportTargetFileMetadata() {
+      const blob = await trimTargetFiles(this.targetFile)
+      const downloadNode = this.$refs['download'] as HTMLAnchorElement
+      downloadFile(blob, downloadNode, 'trimmed_' + this.targetFile.name)
     }
   }
 })
