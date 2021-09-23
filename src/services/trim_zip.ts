@@ -6,7 +6,7 @@ export async function trimZip(
   p: (entry: zip.Entry) => boolean
 ): Promise<zip.ZipWriter> {
   const reader = new zip.ZipReader(new zip.BlobReader(file))
-  const writer = new zip.ZipWriter(new zip.BlobWriter())
+  const writer = new zip.ZipWriter(new zip.BlobWriter('application/zip'))
   const entries = await reader.getEntries()
   for (const entry of entries.filter(entry => !!entry && p(entry))) {
     const blobWriter = new zip.BlobWriter()
