@@ -15,6 +15,13 @@
 -->
 
 <template>
+  <v-btn
+    class="download-btn"
+    v-if="zipFile && payload"
+    @click="exportOTAPackage"
+    >Export Metadata</v-btn
+  >
+  <a ref="download" />
   <BasicInfo :zipFile="zipFile" :payload="payload" class="mb-5" />
   <v-divider />
   <div v-if="payload">
@@ -44,10 +51,11 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import PartitionDetail from './PartitionDetail.vue'
 import BasicInfo from './BasicInfo.vue'
 import { Payload, octToHex } from '../services/payload'
+import { downloadFile, trimOTAPackage } from '@/services/trim_zip'
 
 export default {
   components: {
@@ -65,7 +73,12 @@ export default {
     }
   },
   methods: {
-    octToHex: octToHex
+    octToHex: octToHex,
+    async exportOTAPackage() {
+      const blob = await trimOTAPackage(this.payload as Payload)
+      const downloadNode = this.$refs['download'] as HTMLAnchorElement
+      downloadFile(blob, downloadNode, 'trimmed_' + this.payload.file.name)
+    }
   }
 }
 </script>
@@ -81,5 +94,13 @@ export default {
 
 .partial-info {
   padding: 5px;
+}
+
+.download-btn {
+  text-align: center;
+  justify-content: center;
+  display: flex;
+  align-content: center;
+  margin: 0 auto;
 }
 </style>
