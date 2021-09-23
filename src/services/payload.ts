@@ -72,12 +72,82 @@ export const /** Array<Object> */ MetadataFormat = [
 
 class StopIteration extends Error {}
 
+class AbPayloadHeader {
+  constructor(
+    public magic: string,
+    public version: number,
+    public manifest_len: number,
+    public metadata_signature_len: number
+  ) {}
+}
+
+/**
+ * Read in an integer from binary bufferArray.
+ * @param {Int} size the size of a integer being read in
+ * @return {Int} an integer.
+ */
+async function readIntAt(buffer: Blob, position: number, size: number) {
+  let /** DataView */ view = new DataView(
+      await buffer!.slice(position, position + size).arrayBuffer()
+    )
+  if (typeof view.getBigUint64 !== 'function') {
+    view.getBigUint64 = function(offset) {
+      const a = BigInt(view.getUint32(offset))
+      const b = BigInt(view.getUint32(offset + 4))
+      const bigNumber = a * 4294967296n + b
+      return bigNumber
+    }
+  }
+  switch (size) {
+    case 2:
+      return view.getUint16(0)
+    case 4:
+      return view.getUint32(0)
+    case 8:
+      return Number(view.getBigUint64(0))
+    default:
+      throw 'Cannot read this integer with size ' + size
+  }
+}
+
 class OTAPayloadBlobWriter extends Writer {
   offset: number
   contentType: string
   blob: Blob
   prefixLength: number
-  payload: Payload
+
+  header?: AbPayloadHeader
+
+  async readHeader(blob: Blob) {
+    let cursor = 0
+    const readInt = (size: number) => {
+      const ret = readIntAt(blob, cursor, size)
+      cursor += size
+      return ret
+    }
+    let buffer = await blob.slice(0, _PAYLOAD_HEADER_SIZE).arrayBuffer()
+    let /** TextDecoder */ decoder = new TextDecoder()
+    let magicBytes = buffer.slice(0, _MAGIC.length)
+    const magic = decoder.decode(magicBytes)
+    if (magic != _MAGIC) {
+      throw new Error(
+        `MAGIC is not correct, expected: ${_MAGIC} actual: ${magic}`
+      )
+    }
+    cursor += _MAGIC.length
+    const header_version = await readInt(_VERSION_SIZE)
+    const manifest_len = await readInt(_MANIFEST_LEN_SIZE)
+    if (header_version != _BRILLO_MAJOR_PAYLOAD_VERSION) {
+      throw new Error(`Unexpected major version number: ${header_version}`)
+    }
+    const metadata_signature_len = await readInt(_METADATA_SIGNATURE_LEN_SIZE)
+    this.header = new AbPayloadHeader(
+      magic,
+      header_version,
+      manifest_len,
+      metadata_signature_len
+    )
+  }
   /**
    * A zip.Writer that is tailored for OTA payload.bin read-in.
    * Instead of reading in all the contents in payload.bin, this writer will
@@ -86,13 +156,12 @@ class OTAPayloadBlobWriter extends Writer {
    * @param {Payload} payload
    * @param {String} contentType
    */
-  constructor(payload: Payload, contentType = '') {
+  constructor(contentType = '') {
     super()
     this.offset = 0
     this.contentType = contentType
     this.blob = new Blob([], { type: contentType })
     this.prefixLength = 0
-    this.payload = payload
   }
 
   async writeUint8Array(array: Uint8Array) {
@@ -104,24 +173,21 @@ class OTAPayloadBlobWriter extends Writer {
     // in first to determine the prefixLength.
     if (this.offset >= _PAYLOAD_HEADER_SIZE && this.prefixLength == 0) {
       console.log('Parsing header!')
-      await this.payload.readHeader(this.blob)
+      await this.readHeader(this.blob)
       this.prefixLength =
         _PAYLOAD_HEADER_SIZE +
-        this.payload.manifest_len +
-        this.payload.metadata_signature_len
+        this.header!.manifest_len +
+        this.header!.metadata_signature_len
       console.log(`Computed metadata length: ${this.prefixLength}`)
     }
     if (this.prefixLength > 0) {
       console.log(`${this.offset}/${this.prefixLength}`)
       if (this.offset >= this.prefixLength) {
-        await this.payload.readManifest(this.blob)
-        await this.payload.readSignature(this.blob)
+        // The prefix has everything we need (header, manifest, signature). Once
+        // the offset is beyond the prefix, no need to move on.
+        this.blob = this.blob.slice(0, this.prefixLength)
+        throw new StopIteration()
       }
-    }
-    // The prefix has everything we need (header, manifest, signature). Once
-    // the offset is beyond the prefix, no need to move on.
-    if (this.offset >= this.prefixLength) {
-      throw new StopIteration()
     }
   }
 
@@ -131,32 +197,38 @@ class OTAPayloadBlobWriter extends Writer {
 }
 
 export class Payload {
-  packedFile: ZipReader
-  cursor: number
+  zipreader: ZipReader
   buffer: Blob | undefined
-  metadata: any
+  private metadata: any
   manifest: update_metadata_pb.DeltaArchiveManifest | undefined
-  header_version!: number
-  manifest_len!: number
-  metadata_signature_len!: number
   metadata_signature!: update_metadata_pb.Signatures
+
+  header?: AbPayloadHeader
+
   /**
    * This class parses the metadata of a OTA package.
    * @param {File} file A OTA.zip file read from user's machine.
    */
   constructor(file: File) {
-    this.packedFile = new ZipReader(new BlobReader(file))
-    this.cursor = 0
+    this.zipreader = new ZipReader(new BlobReader(file))
+  }
+
+  getMetadataLength(): number {
+    return (
+      _PAYLOAD_HEADER_SIZE +
+      this.header!.manifest_len +
+      this.header!.metadata_signature_len
+    )
   }
 
   /**
    * Unzip the OTA package, get payload.bin and metadata
    */
   async unzip() {
-    let /** Array<Entry> */ entries = await this.packedFile.getEntries()
+    let entries = await this.zipreader.getEntries()
     for (let entry of entries) {
       if (entry.filename == 'payload.bin') {
-        let writer = new OTAPayloadBlobWriter(this, '')
+        let writer = new OTAPayloadBlobWriter('')
         try {
           await entry.getData!(writer)
         } catch (e) {
@@ -169,16 +241,20 @@ export class Payload {
             throw e
           }
         }
-        writer.getData()
+        this.buffer = writer.getData()
+        await this.readManifest(this.buffer, writer.header!)
+        console.log('AB OTA manifest parsed')
       } else if (entry.filename == 'META-INF/com/android/metadata') {
         this.metadata = await entry.getData!(new TextWriter())
+        console.log('OTA Package metadata parsed')
       }
     }
-    if (!this.buffer) {
+    if (!this.manifest) {
+      console.log('Failed to parse AB OTA package, falling back to non-AB')
       try {
         // The temporary variable manifest has to be used here, to prevent the html page
         // being rendered before everything is read in properly
-        let manifest = new PayloadNonAB(this.packedFile)
+        let manifest = new PayloadNonAB(this.zipreader)
         await manifest.init()
         manifest.nonAB = true
         this.manifest = manifest
@@ -190,86 +266,32 @@ export class Payload {
   }
 
   /**
-   * Read in an integer from binary bufferArray.
-   * @param {Int} size the size of a integer being read in
-   * @return {Int} an integer.
-   */
-  async readInt(size: number) {
-    let /** DataView */ view = new DataView(
-        await this.buffer!.slice(this.cursor, this.cursor + size).arrayBuffer()
-      )
-    if (typeof view.getBigUint64 !== 'function') {
-      view.getBigUint64 = function(offset) {
-        const a = BigInt(view.getUint32(offset))
-        const b = BigInt(view.getUint32(offset + 4))
-        const bigNumber = a * 4294967296n + b
-        return bigNumber
-      }
-    }
-    this.cursor += size
-    switch (size) {
-      case 2:
-        return view.getUint16(0)
-      case 4:
-        return view.getUint32(0)
-      case 8:
-        return Number(view.getBigUint64(0))
-      default:
-        throw 'Cannot read this integer with size ' + size
-    }
-  }
-
-  /**
    * Read the header of payload.bin, including the magic, header_version,
    * manifest_len, metadata_signature_len.
    */
-  async readHeader(blob: Blob) {
-    this.buffer = blob
-    let buffer = await this.buffer!.slice(0, _PAYLOAD_HEADER_SIZE).arrayBuffer()
-    let /** TextDecoder */ decoder = new TextDecoder()
-    let magicBytes = buffer.slice(this.cursor, _MAGIC.length)
-    const magic = decoder.decode(magicBytes)
-    if (magic != _MAGIC) {
-      throw new Error(
-        `MAGIC is not correct, expected: ${_MAGIC} actual: ${magic}`
-      )
-    }
-    this.cursor += _MAGIC.length
-    this.header_version = await this.readInt(_VERSION_SIZE)
-    this.manifest_len = await this.readInt(_MANIFEST_LEN_SIZE)
-    if (this.header_version == _BRILLO_MAJOR_PAYLOAD_VERSION) {
-      this.metadata_signature_len = await this.readInt(
-        _METADATA_SIGNATURE_LEN_SIZE
-      )
-    } else {
-      throw new Error(`Unexpected major version number: ${this.header_version}`)
-    }
-  }
-
   /**
    * Read in the manifest in an OTA.zip file.
    * The structure of the manifest can be found in:
    * aosp/system/update_engine/update_metadata.proto
    */
-  async readManifest(buffer: Blob) {
-    let arrayBuffer = await buffer
-      .slice(this.cursor, this.cursor + this.manifest_len)
+  async readManifest(buffer: Blob, header: AbPayloadHeader) {
+    this.header = header
+    let cursor = _PAYLOAD_HEADER_SIZE
+    let manifestBlob = await buffer
+      .slice(cursor, cursor + header.manifest_len)
       .arrayBuffer()
-    this.cursor += this.manifest_len
+    cursor += header.manifest_len
     this.manifest = update_metadata_pb.DeltaArchiveManifest.decode(
-      new Uint8Array(arrayBuffer)
+      new Uint8Array(manifestBlob)
+    )
+    let signatureBlob = await buffer
+      .slice(cursor, cursor + header.metadata_signature_len)
+      .arrayBuffer()
+    cursor += header.metadata_signature_len
+    this.metadata_signature = update_metadata_pb.Signatures.decode(
+      new Uint8Array(signatureBlob)
     )
     this.manifest!.nonAB = false
-  }
-
-  async readSignature(/** @type {Blob} */ buffer: Blob) {
-    let bufferSlice = await buffer
-      .slice(this.cursor, this.cursor + this.metadata_signature_len)
-      .arrayBuffer()
-    this.cursor += this.metadata_signature_len
-    this.metadata_signature = update_metadata_pb.Signatures.decode(
-      new Uint8Array(bufferSlice)
-    )
   }
 
   parseMetadata() {
