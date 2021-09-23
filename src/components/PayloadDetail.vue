@@ -56,8 +56,9 @@ import PartitionDetail from './PartitionDetail.vue'
 import BasicInfo from './BasicInfo.vue'
 import { Payload, octToHex } from '../services/payload'
 import { downloadFile, trimOTAPackage } from '@/services/trim_zip'
+import { defineComponent } from '@vue/runtime-core'
 
-export default {
+export default defineComponent({
   components: {
     PartitionDetail,
     BasicInfo
@@ -80,7 +81,7 @@ export default {
       downloadFile(blob, downloadNode, 'trimmed_' + this.payload.file.name)
     }
   }
-}
+})
 </script>
 
 <style scoped>
