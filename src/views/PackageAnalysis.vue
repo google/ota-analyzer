@@ -37,13 +37,14 @@
   </v-row>
 </template>
 
-<script>
+<script lang="ts">
 import BaseFile from '../components/BaseFile.vue'
 import PayloadDetail from '../components/PayloadDetail.vue'
 import PayloadComposition from '../components/PayloadComposition.vue'
 import { Payload } from '../services/payload'
+import { defineComponent } from 'vue'
 
-export default {
+export default defineComponent({
   components: {
     BaseFile,
     PayloadDetail,
@@ -51,21 +52,21 @@ export default {
   },
   data() {
     return {
-      zipFile: null,
-      payload: null
+      zipFile: (null as unknown) as File,
+      payload: (null as unknown) as Payload
     }
   },
   methods: {
-    async unpackOTA(files) {
+    async unpackOTA(files: File[]) {
       this.zipFile = files[0]
       try {
         this.payload = new Payload(this.zipFile)
         await this.payload.init()
       } catch (err) {
-        alert('Please check if this is a correct OTA package (.zip).')
-        throw err
+        alert(`Please check if this is a correct OTA package (.zip). ${err}`)
+        console.log(err)
       }
     }
   }
-}
+})
 </script>
