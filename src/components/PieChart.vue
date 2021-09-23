@@ -18,7 +18,7 @@
   <v-chart
     class="chart"
     :option="getEchartsOption"
-    @clic="$emit('click', ...arguments)"
+    @click="$emit('click', ...arguments)"
   />
 </template>
 
