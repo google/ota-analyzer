@@ -33,6 +33,6 @@ jobs:
       with:
         branch: 'master'
         folder: 'build'
-        repositoryName: 'android/android.github.io'
-        targetFolder: 'analyseOTA'
+        repository-name: 'android/android.github.io'
+        target-folder: 'analyseOTA'
 
