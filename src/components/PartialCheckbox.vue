@@ -15,48 +15,40 @@
 -->
 
 <template>
-  <v-btn
-    block
-    type="button"
-    class="my-5"
-    @click="revertAllSelection"
-  >
+  <v-btn block type="button" class="my-5" @click="revertAllSelection">
     {{ selectAllText[selectAll] }}
   </v-btn>
   <v-row class="mb-5">
-    <v-col
-      v-for="label in labels"
-      :key="label"
-      cols="12"
-      md="4"
-    >
+    <v-col v-for="label in labels" :key="label" cols="12" md="4">
       <input
         type="checkbox"
         :value="label"
         :checked="modelValue.get(label)"
         @change="updateSelected($event.target.value)"
-      >
+      />
       <label v-if="label"> {{ label }} </label>
     </v-col>
   </v-row>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { defineComponent } from 'vue'
+
+export default defineComponent({
   props: {
     labels: {
       type: Array,
-      default: new Array(),
+      default: new Array()
     },
     modelValue: {
       type: Map,
-      default: new Map(),
-    },
+      default: new Map()
+    }
   },
   data() {
     return {
       selectAll: 1,
-      selectAllText: ['Select All', 'Unselect All'],
+      selectAllText: ['Select All', 'Unselect All']
     }
   },
   mounted() {
@@ -66,7 +58,7 @@ export default {
     }
   },
   methods: {
-    updateSelected(newSelect) {
+    updateSelected(newSelect: string) {
       this.modelValue.set(newSelect, !this.modelValue.get(newSelect))
       this.$emit('update:modelValue', this.modelValue)
     },
@@ -75,9 +67,9 @@ export default {
       for (let key of this.modelValue.keys()) {
         this.modelValue.set(key, Boolean(this.selectAll))
       }
-    },
-  },
-}
+    }
+  }
+})
 </script>
 
 <style scoped>

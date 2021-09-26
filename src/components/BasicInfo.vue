@@ -76,7 +76,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { Payload, MetadataFormat } from '../services/payload'
 
 export default {

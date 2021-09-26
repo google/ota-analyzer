@@ -56,7 +56,7 @@ import PartitionDetail from './PartitionDetail.vue'
 import BasicInfo from './BasicInfo.vue'
 import { Payload, octToHex } from '../services/payload'
 import { downloadFile, trimOTAPackage } from '@/services/trim_zip'
-import { defineComponent } from '@vue/runtime-core'
+import { defineComponent } from 'vue'
 
 export default defineComponent({
   components: {

@@ -42,11 +42,12 @@
   <v-divider />
 </template>
 
-<script>
+<script lang="ts">
 import { numBlocks, displayBlocks } from '../services/payload_composition'
 import { DefaultMap } from '../services/payload'
+import { defineComponent } from 'vue'
 
-export default {
+export default defineComponent({
   props: {
     operation: {
       type: Object,
@@ -59,10 +60,10 @@ export default {
   },
   data() {
     return {
-      srcTotalBlocks: null,
-      srcBlocks: null,
-      dstTotalBlocks: null,
-      dstBlocks: null
+      srcTotalBlocks: 0,
+      srcBlocks: '',
+      dstTotalBlocks: 0,
+      dstBlocks: ''
     }
   },
   mounted() {
@@ -75,7 +76,7 @@ export default {
       this.dstBlocks = displayBlocks(this.operation.dstExtents)
     }
   }
-}
+})
 </script>
 
 <style scoped>

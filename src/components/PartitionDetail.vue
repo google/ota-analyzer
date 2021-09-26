@@ -83,12 +83,13 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { chromeos_update_engine } from '@/services/update_metadata_pb'
+import { defineComponent } from 'vue'
 import { OpType, octToHex } from '../services/payload'
 import OperationDetail from './OperationDetail.vue'
 
-export default {
+export default defineComponent({
   components: {
     OperationDetail
   },
@@ -102,15 +103,12 @@ export default {
     return {
       showOPs: false,
       showInfo: false,
-      opType: null
+      opType: new OpType()
     }
   },
-  created() {
-    this.opType = new OpType()
-  },
   methods: {
-    toggle(key) {
-      this[key] = !this[key]
+    toggle(key: string) {
+      ;(this as any)[key] = !(this as any)[key]
     },
     octToHex: octToHex
   },
@@ -124,7 +122,7 @@ export default {
       return new Date(unixTimestamp * 1000).toString()
     }
   }
-}
+})
 </script>
 
 <style scoped>

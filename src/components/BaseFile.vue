@@ -24,52 +24,69 @@
     >
       <span v-if="label">{{ !fileName ? label : '' }}</span>
       <span v-else>Select File</span>
-      <div v-if="fileName"> File selected: {{ fileName }}</div>
+      <div v-if="fileName">File selected: {{ fileName }}</div>
     </div>
-    <input
-      ref="file"
-      type="file"
-      accept=".zip"
-      @change="handleFileChange"
-    >
+    <input ref="file" type="file" accept=".zip" @change="handleFileChange" />
   </label>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { defineComponent } from 'vue'
+
+export default defineComponent({
   props: {
     label: {
       type: String,
-      default: '',
-    },
+      default: ''
+    }
   },
   data() {
     return {
-      fileName: '',
+      fileName: ''
     }
   },
+
   methods: {
-    handleFileChange(event) {
-      this.$emit('file-select', this.$refs.file.files)
-      this.fileName = this.$refs.file.files[0].name
+    handleFileChange(event: any) {
+      if (!event.currentTarget) {
+        return
+      }
+      let target = event.currentTarget! as HTMLInputElement
+      this.$emit('file-select', target.files)
+      this.fileName = target.files![0].name
     },
-    dragover(event) {
+    dragover(event: DragEvent) {
       event.preventDefault()
-      if (!event.currentTarget.classList.contains('file-hover')) {
-        event.currentTarget.classList.add('file-hover')
+      if (!event.currentTarget) {
+        return
+      }
+      let target = event.currentTarget! as HTMLInputElement
+      if (!target.classList.contains('file-hover')) {
+        target.classList.add('file-hover')
       }
     },
-    dragleave(event) {
-      event.currentTarget.classList.remove('file-hover')
+    dragleave(event: DragEvent) {
+      if (!event.currentTarget) {
+        return
+      }
+      let target = event.currentTarget! as HTMLInputElement
+      target.classList.remove('file-hover')
     },
-    drop(event) {
+    drop(event: DragEvent) {
       event.preventDefault()
-      this.$refs.file.files = event.dataTransfer.files
+      if (!event.currentTarget) {
+        return
+      }
+      let target = event.currentTarget! as HTMLInputElement
+      if (!event.dataTransfer || event.dataTransfer.files.length == 0) {
+        return
+      }
+      target.files = event.dataTransfer.files
       this.handleFileChange(event)
-      event.currentTarget.classList.remove('file-hover')
-    },
-  },
-}
+      target.classList.remove('file-hover')
+    }
+  }
+})
 </script>
 
 <style scoped>
