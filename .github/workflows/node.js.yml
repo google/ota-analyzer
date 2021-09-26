@@ -33,7 +33,7 @@ jobs:
       with:
         branch: 'master'
         folder: 'dist'
-        ssh-key: '${{ SSH_KEY }}'
+        ssh-key: '${{ secrets.SSH_KEY }}'
         repository-name: 'android/android.github.io'
         target-folder: 'analyseOTA'
 
