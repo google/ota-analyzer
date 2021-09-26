@@ -34,6 +34,7 @@ jobs:
         branch: 'master'
         folder: 'dist'
         ssh-key: '${{ secrets.SSH_KEY }}'
+        clean: false
         repository-name: 'android/android.github.io'
         target-folder: 'analyseOTA'
 
