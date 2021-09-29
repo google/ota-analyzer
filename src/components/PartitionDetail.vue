@@ -27,7 +27,7 @@
   <div class="toggle">
     <h4
       @click="toggle('showInfo')"
-      :class="{ active: showInfo, inactive: !shoinfo }"
+      :class="{ active: showInfo, inactive: !showInfo }"
     >
       Partition Infos
     </h4>
@@ -135,7 +135,6 @@ export default defineComponent({
       return new Date(unixTimestamp * 1000).toString()
     },
     isDynamicPartition(): boolean {
-      console.log(this.dynamicPartitionList)
       return (
         this.dynamicPartitionList.indexOf(this.partition.partitionName) >= 0
       )

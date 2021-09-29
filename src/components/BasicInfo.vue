@@ -107,7 +107,16 @@ export default defineComponent({
       if (!groups) {
         return 0
       }
-      return groups.map(g => g.size || 0).reduce((acc, cur) => acc + cur)
+      const dynamicPartitionNamess = new Set(
+        groups.flatMap(g => g.partitionNames)
+      )
+      const dynamicPartitions =
+        this.payload.manifest?.partitions.filter(p =>
+          dynamicPartitionNamess.has(p.partitionName)
+        ) || []
+      return dynamicPartitions
+        .map(p => p.newPartitionInfo?.size || 0)
+        .reduce((acc, cur) => acc + cur)
     }
   }
 })
