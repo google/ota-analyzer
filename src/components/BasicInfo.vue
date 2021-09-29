@@ -72,6 +72,10 @@
         </span>
         <span v-else> &#10060; </span>
       </li>
+      <li v-if="totalDynamicPartitionSize">
+        <strong> Total Dynamic Partition Size </strong>
+        {{ totalDynamicPartitionSize }}
+      </li>
     </ul>
   </div>
 </template>
@@ -79,7 +83,9 @@
 <script lang="ts">
 import { Payload, MetadataFormat } from '../services/payload'
 
-export default {
+import { defineComponent } from 'vue'
+
+export default defineComponent({
   props: {
     zipFile: {
       type: File,
@@ -94,8 +100,17 @@ export default {
     return {
       MetadataFormat
     }
+  },
+  computed: {
+    totalDynamicPartitionSize(): number {
+      const groups = this.payload?.manifest?.dynamicPartitionMetadata?.groups
+      if (!groups) {
+        return 0
+      }
+      return groups.map(g => g.size || 0).reduce((acc, cur) => acc + cur)
+    }
   }
-}
+})
 </script>
 
 <style scoped>
