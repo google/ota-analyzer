@@ -34,7 +34,10 @@
         md="4"
       >
         <v-card elevation="5" hover shaped class="partial-info">
-          <PartitionDetail :partition="partition" />
+          <PartitionDetail
+            :partition="partition"
+            :dynamicPartitionList="dynamicPartitions"
+          />
         </v-card>
       </v-col>
     </v-row>
@@ -79,6 +82,15 @@ export default defineComponent({
       const blob = await trimOTAPackage(this.payload as Payload)
       const downloadNode = this.$refs['download'] as HTMLAnchorElement
       downloadFile(blob, downloadNode, 'trimmed_' + this.payload.file.name)
+    }
+  },
+  computed: {
+    dynamicPartitions(): string[] {
+      return (
+        this.payload.manifest?.dynamicPartitionMetadata?.groups?.flatMap(
+          g => g.partitionNames || []
+        ) || []
+      )
     }
   }
 })

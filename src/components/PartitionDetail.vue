@@ -18,11 +18,17 @@
   <h4 :class="{ 'new-partition': !partition.oldPartitionInfo }">
     {{ partition.partitionName }}
   </h4>
+  <p v-if="isDynamicPartition">
+    Dynamic: ✅
+  </p>
   <p v-if="partition.estimateCowSize">
     <strong> Estimate COW Size: </strong> {{ partition.estimateCowSize }} Bytes
   </p>
   <div class="toggle">
-    <h4 @click="toggle('showInfo')" :class="{ active: showInfo }">
+    <h4
+      @click="toggle('showInfo')"
+      :class="{ active: showInfo, inactive: !shoinfo }"
+    >
       Partition Infos
     </h4>
     <ul v-if="showInfo">
@@ -69,7 +75,10 @@
     </ul>
   </div>
   <div class="toggle">
-    <h4 @click="toggle('showOPs')" :class="{ active: showOPs }">
+    <h4
+      @click="toggle('showOPs')"
+      :class="{ active: showOPs, inactive: !showOPs }"
+    >
       Total Operations: {{ partition.operations.length }}
     </h4>
     <ul v-if="showOPs">
@@ -97,6 +106,10 @@ export default defineComponent({
     partition: {
       type: chromeos_update_engine.PartitionUpdate,
       required: true
+    },
+    dynamicPartitionList: {
+      type: Array,
+      required: true
     }
   },
   data() {
@@ -120,6 +133,12 @@ export default defineComponent({
       }
       // Unix timestamp is in seconds, but js want milliseconds. So *1000
       return new Date(unixTimestamp * 1000).toString()
+    },
+    isDynamicPartition(): boolean {
+      console.log(this.dynamicPartitionList)
+      return (
+        this.dynamicPartitionList.indexOf(this.partition.partitionName) >= 0
+      )
     }
   }
 })
@@ -134,12 +153,21 @@ export default defineComponent({
 li {
   list-style-type: none;
 }
+
 .hex {
   word-break: break-all;
 }
 
+.inactive::after {
+  content: ' ▶️';
+}
+
 .active {
-  color: rgb(var(--v-theme-secondary));
+  color: rgb(var(--v-theme-secondary-darken-1));
+}
+
+.active::after {
+  content: ' 🔽';
 }
 
 .new-partition {
