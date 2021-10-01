@@ -24,6 +24,9 @@
   <p v-if="partition.estimateCowSize">
     <strong> Estimate COW Size: </strong> {{ partition.estimateCowSize }} Bytes
   </p>
+  <p v-if="partition.postinstallPath">
+    <strong> Postinstall Script: </strong> {{ partition.postinstallPath }}
+  </p>
   <div class="toggle">
     <h4
       @click="toggle('showInfo')"
