@@ -43,6 +43,7 @@ import PayloadDetail from '../components/PayloadDetail.vue'
 import PayloadComposition from '../components/PayloadComposition.vue'
 import { Payload } from '../services/payload'
 import { defineComponent } from 'vue'
+import { ZipFile } from '@/services/trim_zip'
 
 export default defineComponent({
   components: {
@@ -51,16 +52,19 @@ export default defineComponent({
     PayloadComposition
   },
   data() {
-    return {
-      zipFile: (null as unknown) as File,
-      payload: (null as unknown) as Payload
+    return ({
+      zipFile: null,
+      payload: null
+    } as unknown) as {
+      zipFile: ZipFile
+      payload: Payload
     }
   },
   methods: {
-    async unpackOTA(files: File[]) {
-      this.zipFile = files[0]
+    async unpackOTA(file: File | URL) {
+      this.zipFile = new ZipFile(file)
       try {
-        this.payload = new Payload(this.zipFile)
+        this.payload = new Payload(this.zipFile as ZipFile)
         await this.payload.init()
       } catch (err) {
         alert(`Please check if this is a correct OTA package (.zip). ${err}`)

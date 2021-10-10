@@ -22,7 +22,12 @@
  * MapParser.query(address, datalength).
  */
 
-import { ZipReader, BlobReader, TextWriter } from '@zip.js/zip.js/dist/zip.js'
+import {
+  ZipReader,
+  BlobReader,
+  TextWriter,
+  HttpReader
+} from '@zip.js/zip.js/dist/zip.js'
 
 import { chromeos_update_engine } from './update_metadata_pb'
 
@@ -34,8 +39,12 @@ export class MapParser {
    * This class will take in a .zip Android build and construct a file type map
    * @param {File} targetFile
    */
-  constructor(targetFile: File) {
-    this.build = new ZipReader(new BlobReader(targetFile))
+  constructor(targetFile: File | URL) {
+    if (targetFile instanceof File) {
+      this.build = new ZipReader(new BlobReader(targetFile))
+    } else {
+      this.build = new ZipReader(new HttpReader(targetFile.href))
+    }
     this.mapFiles = new Map()
     this.maps = new Map()
   }

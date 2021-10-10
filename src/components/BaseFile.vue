@@ -52,7 +52,10 @@ export default defineComponent({
         return
       }
       let target = event.currentTarget! as HTMLInputElement
-      this.$emit('file-select', target.files)
+      if (target.files == null || target.files.length < 1) {
+        return
+      }
+      this.$emit('file-select', target.files![0])
       this.fileName = target.files![0].name
     },
     dragover(event: DragEvent) {

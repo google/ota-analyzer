@@ -58,7 +58,12 @@
 import PartitionDetail from './PartitionDetail.vue'
 import BasicInfo from './BasicInfo.vue'
 import { Payload, octToHex } from '../services/payload'
-import { downloadFile, trimOTAPackage } from '@/services/trim_zip'
+import {
+  downloadFile,
+  ensureSuffix,
+  trimOTAPackage,
+  ZipFile
+} from '@/services/trim_zip'
 import { defineComponent } from 'vue'
 
 export default defineComponent({
@@ -68,7 +73,7 @@ export default defineComponent({
   },
   props: {
     zipFile: {
-      type: File,
+      type: ZipFile,
       default: null
     },
     payload: {
@@ -81,7 +86,11 @@ export default defineComponent({
     async exportOTAPackage() {
       const blob = await trimOTAPackage(this.payload as Payload)
       const downloadNode = this.$refs['download'] as HTMLAnchorElement
-      downloadFile(blob, downloadNode, 'trimmed_' + this.payload.file.name)
+      downloadFile(
+        blob,
+        downloadNode,
+        'trimmed_' + ensureSuffix(this.zipFile.getFileName(), '.zip')
+      )
     }
   },
   computed: {

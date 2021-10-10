@@ -27,12 +27,14 @@ import {
   BlobReader,
   TextWriter,
   Writer,
-  ZipReader
+  ZipReader,
+  HttpReader
 } from '@zip.js/zip.js/dist/zip.js'
 
 // import '@zip.js/zip.js'
 import { chromeos_update_engine as update_metadata_pb } from './update_metadata_pb'
 import { PayloadNonAB } from './payload_nonab'
+import { ZipFile } from './trim_zip'
 // import { Zip_js } from 'zip.js'
 
 const /** String */ _MAGIC = 'CrAU'
@@ -197,7 +199,6 @@ class OTAPayloadBlobWriter extends Writer {
 }
 
 export class Payload {
-  file: File
   zipreader: ZipReader
   buffer: Blob | undefined
   private metadata: any
@@ -210,9 +211,14 @@ export class Payload {
    * This class parses the metadata of a OTA package.
    * @param {File} file A OTA.zip file read from user's machine.
    */
-  constructor(file: File) {
-    this.file = file
-    this.zipreader = new ZipReader(new BlobReader(file))
+  constructor(file: File | URL | ZipFile) {
+    if (file instanceof File) {
+      this.zipreader = new ZipReader(new BlobReader(file))
+    } else if (file instanceof URL) {
+      this.zipreader = new ZipReader(new HttpReader(file.href))
+    } else {
+      this.zipreader = file.reader
+    }
   }
 
   getMetadataLength(): number {

@@ -80,7 +80,19 @@ import { chromeos_update_engine as update_metadata_pb } from '../services/update
 import { TooltipComponentPositionCallbackParams } from 'echarts'
 import { EchartsData } from '@/services/echarts_data'
 import { defineComponent } from 'vue'
-import { downloadFile, trimTargetFiles } from '@/services/trim_zip'
+import {
+  downloadFile,
+  ensureSuffix,
+  getFileName,
+  trimTargetFiles
+} from '@/services/trim_zip'
+
+interface ComponentState {
+  partitionInclude: Map<string, boolean>
+  echartsData: EchartsData | null
+  listData: string
+  targetFile: File | URL | null
+}
 
 export default defineComponent({
   components: {
@@ -101,10 +113,10 @@ export default defineComponent({
   data() {
     return {
       partitionInclude: new Map(),
-      echartsData: (null as unknown) as EchartsData,
+      echartsData: null,
       listData: '',
-      targetFile: (null as unknown) as File
-    }
+      targetFile: null
+    } as ComponentState
   },
   computed: {
     updatePartitions(): string[] {
@@ -147,14 +159,18 @@ export default defineComponent({
         alert(`Cannot be processed for the following issue: ${err}`)
       }
     },
-    selectBuild(files: File[]) {
+    selectBuild(file: File | URL) {
       //TODO(lishutong) check the version of target file is same to the OTA target
-      this.targetFile = files[0]
+      this.targetFile = file
     },
     async exportTargetFileMetadata() {
-      const blob = await trimTargetFiles(this.targetFile)
+      const blob = await trimTargetFiles(this.targetFile!)
       const downloadNode = this.$refs['download'] as HTMLAnchorElement
-      downloadFile(blob, downloadNode, 'trimmed_' + this.targetFile.name)
+      downloadFile(
+        blob,
+        downloadNode,
+        'trimmed_' + ensureSuffix(getFileName(this.targetFile!), '.zip')
+      )
     }
   }
 })

@@ -1,11 +1,31 @@
 import * as zip from '@zip.js/zip.js/dist/zip.js'
+import { ZipReader } from '@zip.js/zip.js/dist/zip.js'
 import { Payload } from './payload'
 
+export class ZipFile {
+  public reader: ZipReader
+
+  constructor(private file: File | URL) {
+    this.reader = getZipReader(file)
+  }
+  getFileName() {
+    return getFileName(this.file)
+  }
+  getFileSize() {
+    if (this.file instanceof File) {
+      return this.file.size
+    } else {
+      // TODO(zhangkelvin) Support getting file size from URL
+      return 0
+    }
+  }
+}
+
 export async function trimZip(
-  file: File,
+  file: ZipReader,
   p: (entry: zip.Entry) => boolean
 ): Promise<zip.ZipWriter> {
-  const reader = new zip.ZipReader(new zip.BlobReader(file))
+  const reader = file
   const writer = new zip.ZipWriter(new zip.BlobWriter('application/zip'))
   const entries = await reader.getEntries()
   for (const entry of entries.filter(entry => !!entry && p(entry))) {
@@ -19,15 +39,31 @@ export async function trimZip(
   return writer
 }
 
-export async function trimTargetFiles(file: File): Promise<Blob> {
-  const writer = await trimZip(file, entry => {
+function getZipReader(file: File | URL) {
+  if (file instanceof File) {
+    return new zip.ZipReader(new zip.BlobReader(file))
+  } else {
+    return new zip.ZipReader(new zip.HttpReader(file.href))
+  }
+}
+
+export function getFileName(file: File | URL) {
+  if (file instanceof File) {
+    return file.name
+  } else {
+    return file.pathname
+  }
+}
+
+export async function trimTargetFiles(file: File | URL): Promise<Blob> {
+  const writer = await trimZip(getZipReader(file), entry => {
     return entry.filename.startsWith('META/') || entry.filename.endsWith('.map')
   })
   return await writer.close()
 }
 
 export async function trimOTAPackage(payload: Payload): Promise<Blob> {
-  const writer = await trimZip(payload.file, entry => {
+  const writer = await trimZip(payload.zipreader, entry => {
     return entry.filename != 'payload.bin'
   })
   await writer.add(
@@ -48,4 +84,12 @@ export function downloadFile(
   downloadNode.download = filename
   downloadNode.click()
   window.URL.revokeObjectURL(url)
+}
+
+export function ensureSuffix(str: string, suffix: string) {
+  if (str.endsWith(suffix)) {
+    return str
+  } else {
+    return str + suffix
+  }
 }

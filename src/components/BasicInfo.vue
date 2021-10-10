@@ -18,12 +18,8 @@
   <h3>Basic infos</h3>
   <div v-if="zipFile" v-bind="$attrs">
     <ul class="align">
-      <li><strong> File name </strong> {{ zipFile.name }}</li>
-      <li><strong> File size </strong> {{ zipFile.size }} Bytes</li>
-      <li>
-        <strong> File last modified date </strong>
-        {{ zipFile.lastModifiedDate }}
-      </li>
+      <li><strong> File name </strong> {{ zipFile.getFileName() }}</li>
+      <li><strong> File size </strong> {{ zipFile.getFileSize() }} Bytes</li>
     </ul>
   </div>
   <div v-if="payload && payload.metadata" v-bind="$attrs">
@@ -82,13 +78,14 @@
 
 <script lang="ts">
 import { Payload, MetadataFormat } from '../services/payload'
+import { ZipFile } from '@/services/trim_zip'
 
 import { defineComponent } from 'vue'
 
 export default defineComponent({
   props: {
     zipFile: {
-      type: File,
+      type: ZipFile,
       required: true
     },
     payload: {

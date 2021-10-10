@@ -128,7 +128,7 @@ export function operatedPayloadStatistics(
 export async function operatedFileExtensionsStatistics(
   partitions: Array<chromeos_update_engine.IPartitionUpdate>,
   blockSize: number,
-  targetFile: File
+  targetFile: File | URL
 ): Promise<Map<string, number>> {
   let filenameStats = await operatedFilenamesStatistics(
     partitions,
@@ -154,7 +154,7 @@ export async function operatedFileExtensionsStatistics(
 export async function operatedFilenamesStatistics(
   partitions: Array<chromeos_update_engine.IPartitionUpdate>,
   blockSize: number,
-  targetFile: File
+  targetFile: File | URL
 ): Promise<Map<string, number>> {
   let /** Map */ operatedFilenames = new Map()
   if (!targetFile) {
@@ -196,7 +196,7 @@ export async function analysePartitions(
   metrics: String,
   partitions: Array<chromeos_update_engine.IPartitionUpdate>,
   blockSize = 4096,
-  targetFile: File | null = null
+  targetFile: File | null | URL = null
 ) {
   let /** Map */ statisticsData
   let /** Echartsdata */ echartsData
