@@ -34,13 +34,15 @@
   </v-row>
 </template>
 
-<script>
+<script lang="ts">
 import axios from 'axios'
 import PayloadDetail from '../components/PayloadDetail.vue'
 import PayloadComposition from '../components/PayloadComposition.vue'
 import { Payload } from '../services/payload'
+import { defineComponent } from 'vue'
+import { ZipFile } from '@/services/trim_zip'
 
-export default {
+export default defineComponent({
   components: {
     PayloadDetail,
     PayloadComposition
@@ -49,6 +51,9 @@ export default {
     return {
       zipFile: null,
       payload: null
+    } as {
+      zipFile: ZipFile | null
+      payload: Payload | null
     }
   },
   async created() {
@@ -58,24 +63,12 @@ export default {
       const download = await axios.get('./files/cf_x86_demo.zip', {
         responseType: 'blob'
       })
-      this.zipFile = new File([download.data], 'ota_demo.zip')
-      this.payload = new Payload(this.zipFile)
+      this.zipFile = new ZipFile(new File([download.data], 'ota_demo.zip'))
+      this.payload = new Payload(this.zipFile as ZipFile)
       await this.payload.init()
     } catch (err) {
       console.log('Please put a proper example OTA in /public/files/')
     }
-  },
-  methods: {
-    async unpackOTA(files) {
-      this.zipFile = files[0]
-      try {
-        this.payload = new Payload(this.zipFile)
-        await this.payload.init()
-      } catch (err) {
-        alert('Please check if this is a correct OTA package (.zip).')
-        console.log(err)
-      }
-    }
   }
-}
+})
 </script>
