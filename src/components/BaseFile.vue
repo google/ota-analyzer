@@ -28,6 +28,18 @@
     </div>
     <input ref="file" type="file" accept=".zip" @change="handleFileChange" />
   </label>
+  <input
+    class="url-input"
+    :class="{
+      'url-invalid': !parsedURL && url != '',
+      'url-valid': parsedURL || url == ''
+    }"
+    ref="url_input"
+    type="url"
+    placeholder="type a URL"
+    v-model="url"
+    @keyup="urlKeyup"
+  />
 </template>
 
 <script lang="ts">
@@ -40,9 +52,22 @@ export default defineComponent({
       default: ''
     }
   },
+  emits: {
+    'file-select': null
+  },
   data() {
     return {
-      fileName: ''
+      fileName: '',
+      url: ''
+    }
+  },
+  computed: {
+    parsedURL(): URL | null {
+      try {
+        return new URL(this.url)
+      } catch {
+        return null
+      }
     }
   },
 
@@ -55,7 +80,10 @@ export default defineComponent({
       if (target.files == null || target.files.length < 1) {
         return
       }
-      this.$emit('file-select', target.files![0])
+      const selectedFile = target.files![0]
+      this.$emit('file-select', selectedFile)
+      // If user selects a file, clear the URL component
+      this.url = ''
       this.fileName = target.files![0].name
     },
     dragover(event: DragEvent) {
@@ -87,6 +115,17 @@ export default defineComponent({
       target.files = event.dataTransfer.files
       this.handleFileChange(event)
       target.classList.remove('file-hover')
+    },
+    urlKeyup(event: KeyboardEvent) {
+      console.log(this.url)
+      if (event.key == 'Enter') {
+        const target = event.target as HTMLInputElement
+        if (this.parsedURL == null) {
+          console.error(`${target.value} is an invalid URL`)
+          return
+        }
+        this.$emit('file-select', this.parsedURL)
+      }
     }
   }
 })
@@ -108,5 +147,23 @@ export default defineComponent({
 
 .file-hover {
   background-color: #95e995;
+}
+
+.url-input {
+  border-radius: 0.3rem;
+  margin-top: 0.5rem;
+  width: 100%;
+}
+
+.url-invalid {
+  border: 3px solid red;
+}
+
+.url-valid {
+  border: 3px dashed #6a9dd0;
+}
+
+.url-valid:focus {
+  border: 3px solid #6a9dd0;
 }
 </style>
