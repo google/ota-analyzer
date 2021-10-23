@@ -16,6 +16,6 @@
 
 <template>
   <div class="about">
-    <p>A GUI for the Android OTA generating.</p>
+    <p>A web based tool to inspect Android OTA packages.</p>
   </div>
 </template>
