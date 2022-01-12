@@ -300,7 +300,7 @@ export namespace chromeos_update_engine {
         size?: (number|Long|null);
 
         /** PartitionInfo hash */
-        hash?: (Uint8Array|null|string);
+        hash?: (Uint8Array|null);
     }
 
     /** Represents a PartitionInfo. */
@@ -662,7 +662,9 @@ export namespace chromeos_update_engine {
             DISCARD = 7,
             BROTLI_BSDIFF = 10,
             PUFFDIFF = 9,
-            ZUCCHINI = 11
+            ZUCCHINI = 11,
+            LZ4DIFF_BSDIFF = 12,
+            LZ4DIFF_PUFFDIFF = 13
         }
     }
 
@@ -848,9 +850,9 @@ export namespace chromeos_update_engine {
     /** Represents a PartitionUpdate. */
     class PartitionUpdate implements IPartitionUpdate {
         rawText: any;
-      totalBlocks: number;
-      entryStashed: number;
-      maxStashed: number;
+        totalBlocks: number;
+        entryStashed: number;
+        maxStashed: number;
 
         /**
          * Constructs a new PartitionUpdate.

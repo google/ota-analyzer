@@ -1,5 +1,4 @@
 /*eslint-disable block-scoped-var, id-length, no-control-regex, no-magic-numbers, no-prototype-builtins, no-redeclare, no-shadow, no-var, sort-vars*/
-/*tslint-disable*/
 import * as $protobuf from "protobufjs/minimal";
 
 // Common aliases
@@ -1501,6 +1500,8 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
             case 10:
             case 9:
             case 11:
+            case 12:
+            case 13:
                 break;
             }
             if (message.dataOffset != null && message.hasOwnProperty("dataOffset"))
@@ -1602,6 +1603,14 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
             case "ZUCCHINI":
             case 11:
                 message.type = 11;
+                break;
+            case "LZ4DIFF_BSDIFF":
+            case 12:
+                message.type = 12;
+                break;
+            case "LZ4DIFF_PUFFDIFF":
+            case 13:
+                message.type = 13;
                 break;
             }
             if (object.dataOffset != null)
@@ -1793,6 +1802,8 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
          * @property {number} BROTLI_BSDIFF=10 BROTLI_BSDIFF value
          * @property {number} PUFFDIFF=9 PUFFDIFF value
          * @property {number} ZUCCHINI=11 ZUCCHINI value
+         * @property {number} LZ4DIFF_BSDIFF=12 LZ4DIFF_BSDIFF value
+         * @property {number} LZ4DIFF_PUFFDIFF=13 LZ4DIFF_PUFFDIFF value
          */
         InstallOperation.Type = (function() {
             const valuesById = {}, values = Object.create(valuesById);
@@ -1808,6 +1819,8 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
             values[valuesById[10] = "BROTLI_BSDIFF"] = 10;
             values[valuesById[9] = "PUFFDIFF"] = 9;
             values[valuesById[11] = "ZUCCHINI"] = 11;
+            values[valuesById[12] = "LZ4DIFF_BSDIFF"] = 12;
+            values[valuesById[13] = "LZ4DIFF_PUFFDIFF"] = 13;
             return values;
         })();
 

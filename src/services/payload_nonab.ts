@@ -65,7 +65,7 @@ export class PayloadNonAB extends chromeos_update_engine.DeltaArchiveManifest {
     partition.entryStashed = parseInt(lines[2])
     partition.maxStashed = parseInt(lines[3])
     partition.newPartitionInfo = new chromeos_update_engine.PartitionInfo()
-    partition.newPartitionInfo.hash = ''
+    partition.newPartitionInfo.hash = new Uint8Array()
     partition.newPartitionInfo.size = 'unknown'
     /**
      * The main body have 8 different ops:

@@ -190,6 +190,10 @@ message InstallOperation {
 
     // On minor version 8 or newer, these operations are supported:
     ZUCCHINI = 11;
+
+    // On minor version 9 or newer, these operations are supported:
+    LZ4DIFF_BSDIFF = 12;
+    LZ4DIFF_PUFFDIFF = 13;
   }
   required Type type = 1;
 
