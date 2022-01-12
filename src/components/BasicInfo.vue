@@ -111,6 +111,9 @@ export default defineComponent({
         this.payload.manifest?.partitions.filter(p =>
           dynamicPartitionNamess.has(p.partitionName)
         ) || []
+      if (dynamicPartitions.length <= 0) {
+        return 0;
+      }
       return dynamicPartitions
         .map(p => p.newPartitionInfo?.size || 0)
         .reduce((acc, cur) => acc + cur)
