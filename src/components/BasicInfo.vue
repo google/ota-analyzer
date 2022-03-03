@@ -24,7 +24,7 @@
   </div>
   <div v-if="payload && payload.metadata" v-bind="$attrs">
     <ul class="align">
-      <li v-for="formatter in MetadataFormat" :key="formatter.name">
+      <li v-for="formatter in otaMetadata" :key="formatter.name">
         <strong> {{ formatter.name.trim() + ' ' }} </strong>
         <p class="wrap">
           {{ String(payload[formatter.key]).trim() }}
@@ -99,6 +99,15 @@ export default defineComponent({
     }
   },
   computed: {
+    otaMetadata(): {
+      prefix: string
+      key: string
+      name: string
+    }[] {
+      return MetadataFormat.filter(formatter =>
+        String((this.payload as any)[formatter.key]).length > 0
+      );
+    },
     totalDynamicPartitionSize(): number {
       const groups = this.payload?.manifest?.dynamicPartitionMetadata?.groups
       if (!groups) {
@@ -112,7 +121,7 @@ export default defineComponent({
           dynamicPartitionNamess.has(p.partitionName)
         ) || []
       if (dynamicPartitions.length <= 0) {
-        return 0;
+        return 0
       }
       return dynamicPartitions
         .map(p => p.newPartitionInfo?.size || 0)
