@@ -72,6 +72,10 @@
         <strong> Total Dynamic Partition Size </strong>
         {{ totalDynamicPartitionSize }}
       </li>
+      <li v-if="totalCOWSize">
+        <strong> Total VABC COW Size </strong>
+        {{ totalCOWSize }}
+      </li>
     </ul>
   </div>
 </template>
@@ -107,6 +111,13 @@ export default defineComponent({
       return MetadataFormat.filter(formatter =>
         String((this.payload as any)[formatter.key]).length > 0
       );
+    },
+    totalCOWSize(): number {
+      const cowSizes = this.payload?.manifest?.partitions.map(p => p.estimateCowSize || 0);
+      if (!cowSizes) {
+        return 0;
+      }
+      return cowSizes.reduce((a, b) => a + b);
     },
     totalDynamicPartitionSize(): number {
       const groups = this.payload?.manifest?.dynamicPartitionMetadata?.groups
