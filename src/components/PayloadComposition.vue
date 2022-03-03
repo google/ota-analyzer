@@ -38,7 +38,14 @@
   </v-row>
   <v-row>
     <v-col cols="12" md="6" class="tooltip">
-      <v-btn :disabled="manifest.nonAB" block @click="updateChart('COWmerge')">
+      <v-btn
+        :disabled="
+          manifest.nonAB || !manifest.dynamicPartitionMetadata.vabcEnabled
+        "
+        title="Only available for VABC update"
+        block
+        @click="updateChart('COWmerge')"
+      >
         Analyse COW Merge Operations
       </v-btn>
       <span v-if="manifest.nonAB" class="tooltiptext">
