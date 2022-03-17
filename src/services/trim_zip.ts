@@ -68,7 +68,12 @@ export async function trimOTAPackage(payload: Payload): Promise<Blob> {
   })
   await writer.add(
     'payload.bin',
-    new zip.BlobReader(payload.buffer!.slice(0, payload.getMetadataLength()))
+    new zip.BlobReader(payload.buffer!.slice(0, payload.getMetadataLength())),
+    // Most toolings assume that payload.bin and other entries are not
+    // compressed, so use level 0
+    {
+      level: 0
+    }
   )
   const blob: Blob = await writer.close()
   return blob
