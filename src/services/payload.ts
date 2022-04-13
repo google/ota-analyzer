@@ -69,7 +69,17 @@ export const /** Array<Object> */ MetadataFormat = [
       prefix: 'post-build-incremental',
       key: 'postBuildVersion',
       name: 'Post-build version'
-    }
+    },
+    {
+      prefix: 'post-security-patch-level',
+      key: 'postSecurityPatchLevel',
+      name: 'Post-build SPL'
+    },
+    {
+      prefix: 'post-timestamp',
+      key: 'postTimestamp',
+      name: 'Post-build timestamp'
+    },
   ]
 
 class StopIteration extends Error {}
