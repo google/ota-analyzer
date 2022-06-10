@@ -16,6 +16,11 @@
 
 <template>
   <v-row>
+    <v-alert style="color: yellow;">
+      Your files will not be uploaded anywhere. All analysis are done in the frontend using Javascript.
+    </v-alert>
+  </v-row>
+  <v-row>
     <v-col cols="12" md="6">
       <BaseFile
         label="Please drag and drop an OTA package or Select one"
