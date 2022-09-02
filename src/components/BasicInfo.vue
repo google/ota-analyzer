@@ -76,6 +76,10 @@
         <strong> Total VABC COW Size </strong>
         {{ totalCOWSize }}
       </li>
+      <li v-if="securityPatchLevel">
+        <strong> Security Patch Level </strong>
+        {{ securityPatchLevel }}
+      </li>
     </ul>
   </div>
 </template>
@@ -118,6 +122,13 @@ export default defineComponent({
         return 0;
       }
       return cowSizes.reduce((a, b) => a + b);
+    },
+    securityPatchLevel(): string {
+      const spl = this.payload?.manifest?.securityPatchLevel;
+      if (!spl) {
+        return "";
+      }
+      return spl;
     },
     totalDynamicPartitionSize(): number {
       const groups = this.payload?.manifest?.dynamicPartitionMetadata?.groups

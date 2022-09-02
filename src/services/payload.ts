@@ -308,8 +308,8 @@ export class Payload {
     cursor += header.metadata_signature_len
     this.metadata_signature = update_metadata_pb.Signatures.decode(
       new Uint8Array(signatureBlob)
-    )
-    this.manifest!.nonAB = false
+    );
+    (this.manifest! as any).nonAB = false
   }
 
   parseMetadata() {

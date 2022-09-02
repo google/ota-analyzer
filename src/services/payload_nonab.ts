@@ -43,7 +43,7 @@ export class PayloadNonAB extends chromeos_update_engine.DeltaArchiveManifest {
     for (const entry of entries) {
       if (entry.filename.match(regexName)) {
         const match = entry.filename.match(regexName)![0]
-        let newPartition = new chromeos_update_engine.PartitionUpdate({
+        let newPartition: any = new chromeos_update_engine.PartitionUpdate({
           partitionName: match
         })
         newPartition.rawText = await entry.getData!(new TextWriter())
@@ -53,8 +53,8 @@ export class PayloadNonAB extends chromeos_update_engine.DeltaArchiveManifest {
     }
   }
 
-  async parseTransferList(partition: chromeos_update_engine.PartitionUpdate) {
-    let /** Array<String> */ lines = partition.rawText.split('\n')
+  async parseTransferList(partition: chromeos_update_engine.PartitionUpdate | any) {
+    let lines = (partition as any).rawText.split('\n')
     // First four line in header: version, total blocks,
     // number of stashed entries, maximum used memory for stash
     if (lines.length < 4) {

@@ -389,126 +389,6 @@ export namespace chromeos_update_engine {
         public toJSON(): { [k: string]: any };
     }
 
-    /** Properties of an ImageInfo. */
-    interface IImageInfo {
-
-        /** ImageInfo board */
-        board?: (string|null);
-
-        /** ImageInfo key */
-        key?: (string|null);
-
-        /** ImageInfo channel */
-        channel?: (string|null);
-
-        /** ImageInfo version */
-        version?: (string|null);
-
-        /** ImageInfo buildChannel */
-        buildChannel?: (string|null);
-
-        /** ImageInfo buildVersion */
-        buildVersion?: (string|null);
-    }
-
-    /** Represents an ImageInfo. */
-    class ImageInfo implements IImageInfo {
-
-        /**
-         * Constructs a new ImageInfo.
-         * @param [properties] Properties to set
-         */
-        constructor(properties?: chromeos_update_engine.IImageInfo);
-
-        /** ImageInfo board. */
-        public board: string;
-
-        /** ImageInfo key. */
-        public key: string;
-
-        /** ImageInfo channel. */
-        public channel: string;
-
-        /** ImageInfo version. */
-        public version: string;
-
-        /** ImageInfo buildChannel. */
-        public buildChannel: string;
-
-        /** ImageInfo buildVersion. */
-        public buildVersion: string;
-
-        /**
-         * Creates a new ImageInfo instance using the specified properties.
-         * @param [properties] Properties to set
-         * @returns ImageInfo instance
-         */
-        public static create(properties?: chromeos_update_engine.IImageInfo): chromeos_update_engine.ImageInfo;
-
-        /**
-         * Encodes the specified ImageInfo message. Does not implicitly {@link chromeos_update_engine.ImageInfo.verify|verify} messages.
-         * @param message ImageInfo message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encode(message: chromeos_update_engine.IImageInfo, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Encodes the specified ImageInfo message, length delimited. Does not implicitly {@link chromeos_update_engine.ImageInfo.verify|verify} messages.
-         * @param message ImageInfo message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encodeDelimited(message: chromeos_update_engine.IImageInfo, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Decodes an ImageInfo message from the specified reader or buffer.
-         * @param reader Reader or buffer to decode from
-         * @param [length] Message length if known beforehand
-         * @returns ImageInfo
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): chromeos_update_engine.ImageInfo;
-
-        /**
-         * Decodes an ImageInfo message from the specified reader or buffer, length delimited.
-         * @param reader Reader or buffer to decode from
-         * @returns ImageInfo
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): chromeos_update_engine.ImageInfo;
-
-        /**
-         * Verifies an ImageInfo message.
-         * @param message Plain object to verify
-         * @returns `null` if valid, otherwise the reason why it is not
-         */
-        public static verify(message: { [k: string]: any }): (string|null);
-
-        /**
-         * Creates an ImageInfo message from a plain object. Also converts values to their respective internal types.
-         * @param object Plain object
-         * @returns ImageInfo
-         */
-        public static fromObject(object: { [k: string]: any }): chromeos_update_engine.ImageInfo;
-
-        /**
-         * Creates a plain object from an ImageInfo message. Also converts values to other types if specified.
-         * @param message ImageInfo
-         * @param [options] Conversion options
-         * @returns Plain object
-         */
-        public static toObject(message: chromeos_update_engine.ImageInfo, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-        /**
-         * Converts this ImageInfo to JSON.
-         * @returns JSON object
-         */
-        public toJSON(): { [k: string]: any };
-    }
-
     /** Properties of an InstallOperation. */
     interface IInstallOperation {
 
@@ -849,10 +729,6 @@ export namespace chromeos_update_engine {
 
     /** Represents a PartitionUpdate. */
     class PartitionUpdate implements IPartitionUpdate {
-        rawText: any;
-        totalBlocks: number;
-        entryStashed: number;
-        maxStashed: number;
 
         /**
          * Constructs a new PartitionUpdate.
@@ -1405,12 +1281,6 @@ export namespace chromeos_update_engine {
     /** Properties of a DeltaArchiveManifest. */
     interface IDeltaArchiveManifest {
 
-        /** DeltaArchiveManifest installOperations */
-        installOperations?: (chromeos_update_engine.IInstallOperation[]|null);
-
-        /** DeltaArchiveManifest kernelInstallOperations */
-        kernelInstallOperations?: (chromeos_update_engine.IInstallOperation[]|null);
-
         /** DeltaArchiveManifest blockSize */
         blockSize?: (number|null);
 
@@ -1419,24 +1289,6 @@ export namespace chromeos_update_engine {
 
         /** DeltaArchiveManifest signaturesSize */
         signaturesSize?: (number|Long|null);
-
-        /** DeltaArchiveManifest oldKernelInfo */
-        oldKernelInfo?: (chromeos_update_engine.IPartitionInfo|null);
-
-        /** DeltaArchiveManifest newKernelInfo */
-        newKernelInfo?: (chromeos_update_engine.IPartitionInfo|null);
-
-        /** DeltaArchiveManifest oldRootfsInfo */
-        oldRootfsInfo?: (chromeos_update_engine.IPartitionInfo|null);
-
-        /** DeltaArchiveManifest newRootfsInfo */
-        newRootfsInfo?: (chromeos_update_engine.IPartitionInfo|null);
-
-        /** DeltaArchiveManifest oldImageInfo */
-        oldImageInfo?: (chromeos_update_engine.IImageInfo|null);
-
-        /** DeltaArchiveManifest newImageInfo */
-        newImageInfo?: (chromeos_update_engine.IImageInfo|null);
 
         /** DeltaArchiveManifest minorVersion */
         minorVersion?: (number|null);
@@ -1455,23 +1307,19 @@ export namespace chromeos_update_engine {
 
         /** DeltaArchiveManifest apexInfo */
         apexInfo?: (chromeos_update_engine.IApexInfo[]|null);
+
+        /** DeltaArchiveManifest securityPatchLevel */
+        securityPatchLevel?: (string|null);
     }
 
     /** Represents a DeltaArchiveManifest. */
     class DeltaArchiveManifest implements IDeltaArchiveManifest {
-        nonAB: boolean;
 
         /**
          * Constructs a new DeltaArchiveManifest.
          * @param [properties] Properties to set
          */
         constructor(properties?: chromeos_update_engine.IDeltaArchiveManifest);
-
-        /** DeltaArchiveManifest installOperations. */
-        public installOperations: chromeos_update_engine.IInstallOperation[];
-
-        /** DeltaArchiveManifest kernelInstallOperations. */
-        public kernelInstallOperations: chromeos_update_engine.IInstallOperation[];
 
         /** DeltaArchiveManifest blockSize. */
         public blockSize: number;
@@ -1481,24 +1329,6 @@ export namespace chromeos_update_engine {
 
         /** DeltaArchiveManifest signaturesSize. */
         public signaturesSize: (number|Long);
-
-        /** DeltaArchiveManifest oldKernelInfo. */
-        public oldKernelInfo?: (chromeos_update_engine.IPartitionInfo|null);
-
-        /** DeltaArchiveManifest newKernelInfo. */
-        public newKernelInfo?: (chromeos_update_engine.IPartitionInfo|null);
-
-        /** DeltaArchiveManifest oldRootfsInfo. */
-        public oldRootfsInfo?: (chromeos_update_engine.IPartitionInfo|null);
-
-        /** DeltaArchiveManifest newRootfsInfo. */
-        public newRootfsInfo?: (chromeos_update_engine.IPartitionInfo|null);
-
-        /** DeltaArchiveManifest oldImageInfo. */
-        public oldImageInfo?: (chromeos_update_engine.IImageInfo|null);
-
-        /** DeltaArchiveManifest newImageInfo. */
-        public newImageInfo?: (chromeos_update_engine.IImageInfo|null);
 
         /** DeltaArchiveManifest minorVersion. */
         public minorVersion: number;
@@ -1517,6 +1347,9 @@ export namespace chromeos_update_engine {
 
         /** DeltaArchiveManifest apexInfo. */
         public apexInfo: chromeos_update_engine.IApexInfo[];
+
+        /** DeltaArchiveManifest securityPatchLevel. */
+        public securityPatchLevel: string;
 
         /**
          * Creates a new DeltaArchiveManifest instance using the specified properties.

@@ -936,304 +936,6 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
         return PartitionInfo;
     })();
 
-    chromeos_update_engine.ImageInfo = (function() {
-
-        /**
-         * Properties of an ImageInfo.
-         * @memberof chromeos_update_engine
-         * @interface IImageInfo
-         * @property {string|null} [board] ImageInfo board
-         * @property {string|null} [key] ImageInfo key
-         * @property {string|null} [channel] ImageInfo channel
-         * @property {string|null} [version] ImageInfo version
-         * @property {string|null} [buildChannel] ImageInfo buildChannel
-         * @property {string|null} [buildVersion] ImageInfo buildVersion
-         */
-
-        /**
-         * Constructs a new ImageInfo.
-         * @memberof chromeos_update_engine
-         * @classdesc Represents an ImageInfo.
-         * @implements IImageInfo
-         * @constructor
-         * @param {chromeos_update_engine.IImageInfo=} [properties] Properties to set
-         */
-        function ImageInfo(properties) {
-            if (properties)
-                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                    if (properties[keys[i]] != null)
-                        this[keys[i]] = properties[keys[i]];
-        }
-
-        /**
-         * ImageInfo board.
-         * @member {string} board
-         * @memberof chromeos_update_engine.ImageInfo
-         * @instance
-         */
-        ImageInfo.prototype.board = "";
-
-        /**
-         * ImageInfo key.
-         * @member {string} key
-         * @memberof chromeos_update_engine.ImageInfo
-         * @instance
-         */
-        ImageInfo.prototype.key = "";
-
-        /**
-         * ImageInfo channel.
-         * @member {string} channel
-         * @memberof chromeos_update_engine.ImageInfo
-         * @instance
-         */
-        ImageInfo.prototype.channel = "";
-
-        /**
-         * ImageInfo version.
-         * @member {string} version
-         * @memberof chromeos_update_engine.ImageInfo
-         * @instance
-         */
-        ImageInfo.prototype.version = "";
-
-        /**
-         * ImageInfo buildChannel.
-         * @member {string} buildChannel
-         * @memberof chromeos_update_engine.ImageInfo
-         * @instance
-         */
-        ImageInfo.prototype.buildChannel = "";
-
-        /**
-         * ImageInfo buildVersion.
-         * @member {string} buildVersion
-         * @memberof chromeos_update_engine.ImageInfo
-         * @instance
-         */
-        ImageInfo.prototype.buildVersion = "";
-
-        /**
-         * Creates a new ImageInfo instance using the specified properties.
-         * @function create
-         * @memberof chromeos_update_engine.ImageInfo
-         * @static
-         * @param {chromeos_update_engine.IImageInfo=} [properties] Properties to set
-         * @returns {chromeos_update_engine.ImageInfo} ImageInfo instance
-         */
-        ImageInfo.create = function create(properties) {
-            return new ImageInfo(properties);
-        };
-
-        /**
-         * Encodes the specified ImageInfo message. Does not implicitly {@link chromeos_update_engine.ImageInfo.verify|verify} messages.
-         * @function encode
-         * @memberof chromeos_update_engine.ImageInfo
-         * @static
-         * @param {chromeos_update_engine.IImageInfo} message ImageInfo message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        ImageInfo.encode = function encode(message, writer) {
-            if (!writer)
-                writer = $Writer.create();
-            if (message.board != null && Object.hasOwnProperty.call(message, "board"))
-                writer.uint32(/* id 1, wireType 2 =*/10).string(message.board);
-            if (message.key != null && Object.hasOwnProperty.call(message, "key"))
-                writer.uint32(/* id 2, wireType 2 =*/18).string(message.key);
-            if (message.channel != null && Object.hasOwnProperty.call(message, "channel"))
-                writer.uint32(/* id 3, wireType 2 =*/26).string(message.channel);
-            if (message.version != null && Object.hasOwnProperty.call(message, "version"))
-                writer.uint32(/* id 4, wireType 2 =*/34).string(message.version);
-            if (message.buildChannel != null && Object.hasOwnProperty.call(message, "buildChannel"))
-                writer.uint32(/* id 5, wireType 2 =*/42).string(message.buildChannel);
-            if (message.buildVersion != null && Object.hasOwnProperty.call(message, "buildVersion"))
-                writer.uint32(/* id 6, wireType 2 =*/50).string(message.buildVersion);
-            return writer;
-        };
-
-        /**
-         * Encodes the specified ImageInfo message, length delimited. Does not implicitly {@link chromeos_update_engine.ImageInfo.verify|verify} messages.
-         * @function encodeDelimited
-         * @memberof chromeos_update_engine.ImageInfo
-         * @static
-         * @param {chromeos_update_engine.IImageInfo} message ImageInfo message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        ImageInfo.encodeDelimited = function encodeDelimited(message, writer) {
-            return this.encode(message, writer).ldelim();
-        };
-
-        /**
-         * Decodes an ImageInfo message from the specified reader or buffer.
-         * @function decode
-         * @memberof chromeos_update_engine.ImageInfo
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @param {number} [length] Message length if known beforehand
-         * @returns {chromeos_update_engine.ImageInfo} ImageInfo
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        ImageInfo.decode = function decode(reader, length) {
-            if (!(reader instanceof $Reader))
-                reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.chromeos_update_engine.ImageInfo();
-            while (reader.pos < end) {
-                let tag = reader.uint32();
-                switch (tag >>> 3) {
-                case 1:
-                    message.board = reader.string();
-                    break;
-                case 2:
-                    message.key = reader.string();
-                    break;
-                case 3:
-                    message.channel = reader.string();
-                    break;
-                case 4:
-                    message.version = reader.string();
-                    break;
-                case 5:
-                    message.buildChannel = reader.string();
-                    break;
-                case 6:
-                    message.buildVersion = reader.string();
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
-                }
-            }
-            return message;
-        };
-
-        /**
-         * Decodes an ImageInfo message from the specified reader or buffer, length delimited.
-         * @function decodeDelimited
-         * @memberof chromeos_update_engine.ImageInfo
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {chromeos_update_engine.ImageInfo} ImageInfo
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        ImageInfo.decodeDelimited = function decodeDelimited(reader) {
-            if (!(reader instanceof $Reader))
-                reader = new $Reader(reader);
-            return this.decode(reader, reader.uint32());
-        };
-
-        /**
-         * Verifies an ImageInfo message.
-         * @function verify
-         * @memberof chromeos_update_engine.ImageInfo
-         * @static
-         * @param {Object.<string,*>} message Plain object to verify
-         * @returns {string|null} `null` if valid, otherwise the reason why it is not
-         */
-        ImageInfo.verify = function verify(message) {
-            if (typeof message !== "object" || message === null)
-                return "object expected";
-            if (message.board != null && message.hasOwnProperty("board"))
-                if (!$util.isString(message.board))
-                    return "board: string expected";
-            if (message.key != null && message.hasOwnProperty("key"))
-                if (!$util.isString(message.key))
-                    return "key: string expected";
-            if (message.channel != null && message.hasOwnProperty("channel"))
-                if (!$util.isString(message.channel))
-                    return "channel: string expected";
-            if (message.version != null && message.hasOwnProperty("version"))
-                if (!$util.isString(message.version))
-                    return "version: string expected";
-            if (message.buildChannel != null && message.hasOwnProperty("buildChannel"))
-                if (!$util.isString(message.buildChannel))
-                    return "buildChannel: string expected";
-            if (message.buildVersion != null && message.hasOwnProperty("buildVersion"))
-                if (!$util.isString(message.buildVersion))
-                    return "buildVersion: string expected";
-            return null;
-        };
-
-        /**
-         * Creates an ImageInfo message from a plain object. Also converts values to their respective internal types.
-         * @function fromObject
-         * @memberof chromeos_update_engine.ImageInfo
-         * @static
-         * @param {Object.<string,*>} object Plain object
-         * @returns {chromeos_update_engine.ImageInfo} ImageInfo
-         */
-        ImageInfo.fromObject = function fromObject(object) {
-            if (object instanceof $root.chromeos_update_engine.ImageInfo)
-                return object;
-            let message = new $root.chromeos_update_engine.ImageInfo();
-            if (object.board != null)
-                message.board = String(object.board);
-            if (object.key != null)
-                message.key = String(object.key);
-            if (object.channel != null)
-                message.channel = String(object.channel);
-            if (object.version != null)
-                message.version = String(object.version);
-            if (object.buildChannel != null)
-                message.buildChannel = String(object.buildChannel);
-            if (object.buildVersion != null)
-                message.buildVersion = String(object.buildVersion);
-            return message;
-        };
-
-        /**
-         * Creates a plain object from an ImageInfo message. Also converts values to other types if specified.
-         * @function toObject
-         * @memberof chromeos_update_engine.ImageInfo
-         * @static
-         * @param {chromeos_update_engine.ImageInfo} message ImageInfo
-         * @param {$protobuf.IConversionOptions} [options] Conversion options
-         * @returns {Object.<string,*>} Plain object
-         */
-        ImageInfo.toObject = function toObject(message, options) {
-            if (!options)
-                options = {};
-            let object = {};
-            if (options.defaults) {
-                object.board = "";
-                object.key = "";
-                object.channel = "";
-                object.version = "";
-                object.buildChannel = "";
-                object.buildVersion = "";
-            }
-            if (message.board != null && message.hasOwnProperty("board"))
-                object.board = message.board;
-            if (message.key != null && message.hasOwnProperty("key"))
-                object.key = message.key;
-            if (message.channel != null && message.hasOwnProperty("channel"))
-                object.channel = message.channel;
-            if (message.version != null && message.hasOwnProperty("version"))
-                object.version = message.version;
-            if (message.buildChannel != null && message.hasOwnProperty("buildChannel"))
-                object.buildChannel = message.buildChannel;
-            if (message.buildVersion != null && message.hasOwnProperty("buildVersion"))
-                object.buildVersion = message.buildVersion;
-            return object;
-        };
-
-        /**
-         * Converts this ImageInfo to JSON.
-         * @function toJSON
-         * @memberof chromeos_update_engine.ImageInfo
-         * @instance
-         * @returns {Object.<string,*>} JSON object
-         */
-        ImageInfo.prototype.toJSON = function toJSON() {
-            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-        };
-
-        return ImageInfo;
-    })();
-
     chromeos_update_engine.InstallOperation = (function() {
 
         /**
@@ -3884,23 +3586,16 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
          * Properties of a DeltaArchiveManifest.
          * @memberof chromeos_update_engine
          * @interface IDeltaArchiveManifest
-         * @property {Array.<chromeos_update_engine.IInstallOperation>|null} [installOperations] DeltaArchiveManifest installOperations
-         * @property {Array.<chromeos_update_engine.IInstallOperation>|null} [kernelInstallOperations] DeltaArchiveManifest kernelInstallOperations
          * @property {number|null} [blockSize] DeltaArchiveManifest blockSize
          * @property {number|Long|null} [signaturesOffset] DeltaArchiveManifest signaturesOffset
          * @property {number|Long|null} [signaturesSize] DeltaArchiveManifest signaturesSize
-         * @property {chromeos_update_engine.IPartitionInfo|null} [oldKernelInfo] DeltaArchiveManifest oldKernelInfo
-         * @property {chromeos_update_engine.IPartitionInfo|null} [newKernelInfo] DeltaArchiveManifest newKernelInfo
-         * @property {chromeos_update_engine.IPartitionInfo|null} [oldRootfsInfo] DeltaArchiveManifest oldRootfsInfo
-         * @property {chromeos_update_engine.IPartitionInfo|null} [newRootfsInfo] DeltaArchiveManifest newRootfsInfo
-         * @property {chromeos_update_engine.IImageInfo|null} [oldImageInfo] DeltaArchiveManifest oldImageInfo
-         * @property {chromeos_update_engine.IImageInfo|null} [newImageInfo] DeltaArchiveManifest newImageInfo
          * @property {number|null} [minorVersion] DeltaArchiveManifest minorVersion
          * @property {Array.<chromeos_update_engine.IPartitionUpdate>|null} [partitions] DeltaArchiveManifest partitions
          * @property {number|Long|null} [maxTimestamp] DeltaArchiveManifest maxTimestamp
          * @property {chromeos_update_engine.IDynamicPartitionMetadata|null} [dynamicPartitionMetadata] DeltaArchiveManifest dynamicPartitionMetadata
          * @property {boolean|null} [partialUpdate] DeltaArchiveManifest partialUpdate
          * @property {Array.<chromeos_update_engine.IApexInfo>|null} [apexInfo] DeltaArchiveManifest apexInfo
+         * @property {string|null} [securityPatchLevel] DeltaArchiveManifest securityPatchLevel
          */
 
         /**
@@ -3912,8 +3607,6 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
          * @param {chromeos_update_engine.IDeltaArchiveManifest=} [properties] Properties to set
          */
         function DeltaArchiveManifest(properties) {
-            this.installOperations = [];
-            this.kernelInstallOperations = [];
             this.partitions = [];
             this.apexInfo = [];
             if (properties)
@@ -3921,22 +3614,6 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
                     if (properties[keys[i]] != null)
                         this[keys[i]] = properties[keys[i]];
         }
-
-        /**
-         * DeltaArchiveManifest installOperations.
-         * @member {Array.<chromeos_update_engine.IInstallOperation>} installOperations
-         * @memberof chromeos_update_engine.DeltaArchiveManifest
-         * @instance
-         */
-        DeltaArchiveManifest.prototype.installOperations = $util.emptyArray;
-
-        /**
-         * DeltaArchiveManifest kernelInstallOperations.
-         * @member {Array.<chromeos_update_engine.IInstallOperation>} kernelInstallOperations
-         * @memberof chromeos_update_engine.DeltaArchiveManifest
-         * @instance
-         */
-        DeltaArchiveManifest.prototype.kernelInstallOperations = $util.emptyArray;
 
         /**
          * DeltaArchiveManifest blockSize.
@@ -3961,54 +3638,6 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
          * @instance
          */
         DeltaArchiveManifest.prototype.signaturesSize = $util.Long ? $util.Long.fromBits(0,0,true) : 0;
-
-        /**
-         * DeltaArchiveManifest oldKernelInfo.
-         * @member {chromeos_update_engine.IPartitionInfo|null|undefined} oldKernelInfo
-         * @memberof chromeos_update_engine.DeltaArchiveManifest
-         * @instance
-         */
-        DeltaArchiveManifest.prototype.oldKernelInfo = null;
-
-        /**
-         * DeltaArchiveManifest newKernelInfo.
-         * @member {chromeos_update_engine.IPartitionInfo|null|undefined} newKernelInfo
-         * @memberof chromeos_update_engine.DeltaArchiveManifest
-         * @instance
-         */
-        DeltaArchiveManifest.prototype.newKernelInfo = null;
-
-        /**
-         * DeltaArchiveManifest oldRootfsInfo.
-         * @member {chromeos_update_engine.IPartitionInfo|null|undefined} oldRootfsInfo
-         * @memberof chromeos_update_engine.DeltaArchiveManifest
-         * @instance
-         */
-        DeltaArchiveManifest.prototype.oldRootfsInfo = null;
-
-        /**
-         * DeltaArchiveManifest newRootfsInfo.
-         * @member {chromeos_update_engine.IPartitionInfo|null|undefined} newRootfsInfo
-         * @memberof chromeos_update_engine.DeltaArchiveManifest
-         * @instance
-         */
-        DeltaArchiveManifest.prototype.newRootfsInfo = null;
-
-        /**
-         * DeltaArchiveManifest oldImageInfo.
-         * @member {chromeos_update_engine.IImageInfo|null|undefined} oldImageInfo
-         * @memberof chromeos_update_engine.DeltaArchiveManifest
-         * @instance
-         */
-        DeltaArchiveManifest.prototype.oldImageInfo = null;
-
-        /**
-         * DeltaArchiveManifest newImageInfo.
-         * @member {chromeos_update_engine.IImageInfo|null|undefined} newImageInfo
-         * @memberof chromeos_update_engine.DeltaArchiveManifest
-         * @instance
-         */
-        DeltaArchiveManifest.prototype.newImageInfo = null;
 
         /**
          * DeltaArchiveManifest minorVersion.
@@ -4059,6 +3688,14 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
         DeltaArchiveManifest.prototype.apexInfo = $util.emptyArray;
 
         /**
+         * DeltaArchiveManifest securityPatchLevel.
+         * @member {string} securityPatchLevel
+         * @memberof chromeos_update_engine.DeltaArchiveManifest
+         * @instance
+         */
+        DeltaArchiveManifest.prototype.securityPatchLevel = "";
+
+        /**
          * Creates a new DeltaArchiveManifest instance using the specified properties.
          * @function create
          * @memberof chromeos_update_engine.DeltaArchiveManifest
@@ -4082,30 +3719,12 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
         DeltaArchiveManifest.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.installOperations != null && message.installOperations.length)
-                for (let i = 0; i < message.installOperations.length; ++i)
-                    $root.chromeos_update_engine.InstallOperation.encode(message.installOperations[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
-            if (message.kernelInstallOperations != null && message.kernelInstallOperations.length)
-                for (let i = 0; i < message.kernelInstallOperations.length; ++i)
-                    $root.chromeos_update_engine.InstallOperation.encode(message.kernelInstallOperations[i], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
             if (message.blockSize != null && Object.hasOwnProperty.call(message, "blockSize"))
                 writer.uint32(/* id 3, wireType 0 =*/24).uint32(message.blockSize);
             if (message.signaturesOffset != null && Object.hasOwnProperty.call(message, "signaturesOffset"))
                 writer.uint32(/* id 4, wireType 0 =*/32).uint64(message.signaturesOffset);
             if (message.signaturesSize != null && Object.hasOwnProperty.call(message, "signaturesSize"))
                 writer.uint32(/* id 5, wireType 0 =*/40).uint64(message.signaturesSize);
-            if (message.oldKernelInfo != null && Object.hasOwnProperty.call(message, "oldKernelInfo"))
-                $root.chromeos_update_engine.PartitionInfo.encode(message.oldKernelInfo, writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
-            if (message.newKernelInfo != null && Object.hasOwnProperty.call(message, "newKernelInfo"))
-                $root.chromeos_update_engine.PartitionInfo.encode(message.newKernelInfo, writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
-            if (message.oldRootfsInfo != null && Object.hasOwnProperty.call(message, "oldRootfsInfo"))
-                $root.chromeos_update_engine.PartitionInfo.encode(message.oldRootfsInfo, writer.uint32(/* id 8, wireType 2 =*/66).fork()).ldelim();
-            if (message.newRootfsInfo != null && Object.hasOwnProperty.call(message, "newRootfsInfo"))
-                $root.chromeos_update_engine.PartitionInfo.encode(message.newRootfsInfo, writer.uint32(/* id 9, wireType 2 =*/74).fork()).ldelim();
-            if (message.oldImageInfo != null && Object.hasOwnProperty.call(message, "oldImageInfo"))
-                $root.chromeos_update_engine.ImageInfo.encode(message.oldImageInfo, writer.uint32(/* id 10, wireType 2 =*/82).fork()).ldelim();
-            if (message.newImageInfo != null && Object.hasOwnProperty.call(message, "newImageInfo"))
-                $root.chromeos_update_engine.ImageInfo.encode(message.newImageInfo, writer.uint32(/* id 11, wireType 2 =*/90).fork()).ldelim();
             if (message.minorVersion != null && Object.hasOwnProperty.call(message, "minorVersion"))
                 writer.uint32(/* id 12, wireType 0 =*/96).uint32(message.minorVersion);
             if (message.partitions != null && message.partitions.length)
@@ -4120,6 +3739,8 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
             if (message.apexInfo != null && message.apexInfo.length)
                 for (let i = 0; i < message.apexInfo.length; ++i)
                     $root.chromeos_update_engine.ApexInfo.encode(message.apexInfo[i], writer.uint32(/* id 17, wireType 2 =*/138).fork()).ldelim();
+            if (message.securityPatchLevel != null && Object.hasOwnProperty.call(message, "securityPatchLevel"))
+                writer.uint32(/* id 18, wireType 2 =*/146).string(message.securityPatchLevel);
             return writer;
         };
 
@@ -4154,16 +3775,6 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
-                case 1:
-                    if (!(message.installOperations && message.installOperations.length))
-                        message.installOperations = [];
-                    message.installOperations.push($root.chromeos_update_engine.InstallOperation.decode(reader, reader.uint32()));
-                    break;
-                case 2:
-                    if (!(message.kernelInstallOperations && message.kernelInstallOperations.length))
-                        message.kernelInstallOperations = [];
-                    message.kernelInstallOperations.push($root.chromeos_update_engine.InstallOperation.decode(reader, reader.uint32()));
-                    break;
                 case 3:
                     message.blockSize = reader.uint32();
                     break;
@@ -4172,24 +3783,6 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
                     break;
                 case 5:
                     message.signaturesSize = reader.uint64();
-                    break;
-                case 6:
-                    message.oldKernelInfo = $root.chromeos_update_engine.PartitionInfo.decode(reader, reader.uint32());
-                    break;
-                case 7:
-                    message.newKernelInfo = $root.chromeos_update_engine.PartitionInfo.decode(reader, reader.uint32());
-                    break;
-                case 8:
-                    message.oldRootfsInfo = $root.chromeos_update_engine.PartitionInfo.decode(reader, reader.uint32());
-                    break;
-                case 9:
-                    message.newRootfsInfo = $root.chromeos_update_engine.PartitionInfo.decode(reader, reader.uint32());
-                    break;
-                case 10:
-                    message.oldImageInfo = $root.chromeos_update_engine.ImageInfo.decode(reader, reader.uint32());
-                    break;
-                case 11:
-                    message.newImageInfo = $root.chromeos_update_engine.ImageInfo.decode(reader, reader.uint32());
                     break;
                 case 12:
                     message.minorVersion = reader.uint32();
@@ -4212,6 +3805,9 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
                     if (!(message.apexInfo && message.apexInfo.length))
                         message.apexInfo = [];
                     message.apexInfo.push($root.chromeos_update_engine.ApexInfo.decode(reader, reader.uint32()));
+                    break;
+                case 18:
+                    message.securityPatchLevel = reader.string();
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -4248,24 +3844,6 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
         DeltaArchiveManifest.verify = function verify(message) {
             if (typeof message !== "object" || message === null)
                 return "object expected";
-            if (message.installOperations != null && message.hasOwnProperty("installOperations")) {
-                if (!Array.isArray(message.installOperations))
-                    return "installOperations: array expected";
-                for (let i = 0; i < message.installOperations.length; ++i) {
-                    let error = $root.chromeos_update_engine.InstallOperation.verify(message.installOperations[i]);
-                    if (error)
-                        return "installOperations." + error;
-                }
-            }
-            if (message.kernelInstallOperations != null && message.hasOwnProperty("kernelInstallOperations")) {
-                if (!Array.isArray(message.kernelInstallOperations))
-                    return "kernelInstallOperations: array expected";
-                for (let i = 0; i < message.kernelInstallOperations.length; ++i) {
-                    let error = $root.chromeos_update_engine.InstallOperation.verify(message.kernelInstallOperations[i]);
-                    if (error)
-                        return "kernelInstallOperations." + error;
-                }
-            }
             if (message.blockSize != null && message.hasOwnProperty("blockSize"))
                 if (!$util.isInteger(message.blockSize))
                     return "blockSize: integer expected";
@@ -4275,36 +3853,6 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
             if (message.signaturesSize != null && message.hasOwnProperty("signaturesSize"))
                 if (!$util.isInteger(message.signaturesSize) && !(message.signaturesSize && $util.isInteger(message.signaturesSize.low) && $util.isInteger(message.signaturesSize.high)))
                     return "signaturesSize: integer|Long expected";
-            if (message.oldKernelInfo != null && message.hasOwnProperty("oldKernelInfo")) {
-                let error = $root.chromeos_update_engine.PartitionInfo.verify(message.oldKernelInfo);
-                if (error)
-                    return "oldKernelInfo." + error;
-            }
-            if (message.newKernelInfo != null && message.hasOwnProperty("newKernelInfo")) {
-                let error = $root.chromeos_update_engine.PartitionInfo.verify(message.newKernelInfo);
-                if (error)
-                    return "newKernelInfo." + error;
-            }
-            if (message.oldRootfsInfo != null && message.hasOwnProperty("oldRootfsInfo")) {
-                let error = $root.chromeos_update_engine.PartitionInfo.verify(message.oldRootfsInfo);
-                if (error)
-                    return "oldRootfsInfo." + error;
-            }
-            if (message.newRootfsInfo != null && message.hasOwnProperty("newRootfsInfo")) {
-                let error = $root.chromeos_update_engine.PartitionInfo.verify(message.newRootfsInfo);
-                if (error)
-                    return "newRootfsInfo." + error;
-            }
-            if (message.oldImageInfo != null && message.hasOwnProperty("oldImageInfo")) {
-                let error = $root.chromeos_update_engine.ImageInfo.verify(message.oldImageInfo);
-                if (error)
-                    return "oldImageInfo." + error;
-            }
-            if (message.newImageInfo != null && message.hasOwnProperty("newImageInfo")) {
-                let error = $root.chromeos_update_engine.ImageInfo.verify(message.newImageInfo);
-                if (error)
-                    return "newImageInfo." + error;
-            }
             if (message.minorVersion != null && message.hasOwnProperty("minorVersion"))
                 if (!$util.isInteger(message.minorVersion))
                     return "minorVersion: integer expected";
@@ -4337,6 +3885,9 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
                         return "apexInfo." + error;
                 }
             }
+            if (message.securityPatchLevel != null && message.hasOwnProperty("securityPatchLevel"))
+                if (!$util.isString(message.securityPatchLevel))
+                    return "securityPatchLevel: string expected";
             return null;
         };
 
@@ -4352,26 +3903,6 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
             if (object instanceof $root.chromeos_update_engine.DeltaArchiveManifest)
                 return object;
             let message = new $root.chromeos_update_engine.DeltaArchiveManifest();
-            if (object.installOperations) {
-                if (!Array.isArray(object.installOperations))
-                    throw TypeError(".chromeos_update_engine.DeltaArchiveManifest.installOperations: array expected");
-                message.installOperations = [];
-                for (let i = 0; i < object.installOperations.length; ++i) {
-                    if (typeof object.installOperations[i] !== "object")
-                        throw TypeError(".chromeos_update_engine.DeltaArchiveManifest.installOperations: object expected");
-                    message.installOperations[i] = $root.chromeos_update_engine.InstallOperation.fromObject(object.installOperations[i]);
-                }
-            }
-            if (object.kernelInstallOperations) {
-                if (!Array.isArray(object.kernelInstallOperations))
-                    throw TypeError(".chromeos_update_engine.DeltaArchiveManifest.kernelInstallOperations: array expected");
-                message.kernelInstallOperations = [];
-                for (let i = 0; i < object.kernelInstallOperations.length; ++i) {
-                    if (typeof object.kernelInstallOperations[i] !== "object")
-                        throw TypeError(".chromeos_update_engine.DeltaArchiveManifest.kernelInstallOperations: object expected");
-                    message.kernelInstallOperations[i] = $root.chromeos_update_engine.InstallOperation.fromObject(object.kernelInstallOperations[i]);
-                }
-            }
             if (object.blockSize != null)
                 message.blockSize = object.blockSize >>> 0;
             if (object.signaturesOffset != null)
@@ -4392,36 +3923,6 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
                     message.signaturesSize = object.signaturesSize;
                 else if (typeof object.signaturesSize === "object")
                     message.signaturesSize = new $util.LongBits(object.signaturesSize.low >>> 0, object.signaturesSize.high >>> 0).toNumber(true);
-            if (object.oldKernelInfo != null) {
-                if (typeof object.oldKernelInfo !== "object")
-                    throw TypeError(".chromeos_update_engine.DeltaArchiveManifest.oldKernelInfo: object expected");
-                message.oldKernelInfo = $root.chromeos_update_engine.PartitionInfo.fromObject(object.oldKernelInfo);
-            }
-            if (object.newKernelInfo != null) {
-                if (typeof object.newKernelInfo !== "object")
-                    throw TypeError(".chromeos_update_engine.DeltaArchiveManifest.newKernelInfo: object expected");
-                message.newKernelInfo = $root.chromeos_update_engine.PartitionInfo.fromObject(object.newKernelInfo);
-            }
-            if (object.oldRootfsInfo != null) {
-                if (typeof object.oldRootfsInfo !== "object")
-                    throw TypeError(".chromeos_update_engine.DeltaArchiveManifest.oldRootfsInfo: object expected");
-                message.oldRootfsInfo = $root.chromeos_update_engine.PartitionInfo.fromObject(object.oldRootfsInfo);
-            }
-            if (object.newRootfsInfo != null) {
-                if (typeof object.newRootfsInfo !== "object")
-                    throw TypeError(".chromeos_update_engine.DeltaArchiveManifest.newRootfsInfo: object expected");
-                message.newRootfsInfo = $root.chromeos_update_engine.PartitionInfo.fromObject(object.newRootfsInfo);
-            }
-            if (object.oldImageInfo != null) {
-                if (typeof object.oldImageInfo !== "object")
-                    throw TypeError(".chromeos_update_engine.DeltaArchiveManifest.oldImageInfo: object expected");
-                message.oldImageInfo = $root.chromeos_update_engine.ImageInfo.fromObject(object.oldImageInfo);
-            }
-            if (object.newImageInfo != null) {
-                if (typeof object.newImageInfo !== "object")
-                    throw TypeError(".chromeos_update_engine.DeltaArchiveManifest.newImageInfo: object expected");
-                message.newImageInfo = $root.chromeos_update_engine.ImageInfo.fromObject(object.newImageInfo);
-            }
             if (object.minorVersion != null)
                 message.minorVersion = object.minorVersion >>> 0;
             if (object.partitions) {
@@ -4460,6 +3961,8 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
                     message.apexInfo[i] = $root.chromeos_update_engine.ApexInfo.fromObject(object.apexInfo[i]);
                 }
             }
+            if (object.securityPatchLevel != null)
+                message.securityPatchLevel = String(object.securityPatchLevel);
             return message;
         };
 
@@ -4477,8 +3980,6 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
                 options = {};
             let object = {};
             if (options.arrays || options.defaults) {
-                object.installOperations = [];
-                object.kernelInstallOperations = [];
                 object.partitions = [];
                 object.apexInfo = [];
             }
@@ -4494,12 +3995,6 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
                     object.signaturesSize = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
                 } else
                     object.signaturesSize = options.longs === String ? "0" : 0;
-                object.oldKernelInfo = null;
-                object.newKernelInfo = null;
-                object.oldRootfsInfo = null;
-                object.newRootfsInfo = null;
-                object.oldImageInfo = null;
-                object.newImageInfo = null;
                 object.minorVersion = 0;
                 if ($util.Long) {
                     let long = new $util.Long(0, 0, false);
@@ -4508,16 +4003,7 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
                     object.maxTimestamp = options.longs === String ? "0" : 0;
                 object.dynamicPartitionMetadata = null;
                 object.partialUpdate = false;
-            }
-            if (message.installOperations && message.installOperations.length) {
-                object.installOperations = [];
-                for (let j = 0; j < message.installOperations.length; ++j)
-                    object.installOperations[j] = $root.chromeos_update_engine.InstallOperation.toObject(message.installOperations[j], options);
-            }
-            if (message.kernelInstallOperations && message.kernelInstallOperations.length) {
-                object.kernelInstallOperations = [];
-                for (let j = 0; j < message.kernelInstallOperations.length; ++j)
-                    object.kernelInstallOperations[j] = $root.chromeos_update_engine.InstallOperation.toObject(message.kernelInstallOperations[j], options);
+                object.securityPatchLevel = "";
             }
             if (message.blockSize != null && message.hasOwnProperty("blockSize"))
                 object.blockSize = message.blockSize;
@@ -4531,18 +4017,6 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
                     object.signaturesSize = options.longs === String ? String(message.signaturesSize) : message.signaturesSize;
                 else
                     object.signaturesSize = options.longs === String ? $util.Long.prototype.toString.call(message.signaturesSize) : options.longs === Number ? new $util.LongBits(message.signaturesSize.low >>> 0, message.signaturesSize.high >>> 0).toNumber(true) : message.signaturesSize;
-            if (message.oldKernelInfo != null && message.hasOwnProperty("oldKernelInfo"))
-                object.oldKernelInfo = $root.chromeos_update_engine.PartitionInfo.toObject(message.oldKernelInfo, options);
-            if (message.newKernelInfo != null && message.hasOwnProperty("newKernelInfo"))
-                object.newKernelInfo = $root.chromeos_update_engine.PartitionInfo.toObject(message.newKernelInfo, options);
-            if (message.oldRootfsInfo != null && message.hasOwnProperty("oldRootfsInfo"))
-                object.oldRootfsInfo = $root.chromeos_update_engine.PartitionInfo.toObject(message.oldRootfsInfo, options);
-            if (message.newRootfsInfo != null && message.hasOwnProperty("newRootfsInfo"))
-                object.newRootfsInfo = $root.chromeos_update_engine.PartitionInfo.toObject(message.newRootfsInfo, options);
-            if (message.oldImageInfo != null && message.hasOwnProperty("oldImageInfo"))
-                object.oldImageInfo = $root.chromeos_update_engine.ImageInfo.toObject(message.oldImageInfo, options);
-            if (message.newImageInfo != null && message.hasOwnProperty("newImageInfo"))
-                object.newImageInfo = $root.chromeos_update_engine.ImageInfo.toObject(message.newImageInfo, options);
             if (message.minorVersion != null && message.hasOwnProperty("minorVersion"))
                 object.minorVersion = message.minorVersion;
             if (message.partitions && message.partitions.length) {
@@ -4564,6 +4038,8 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
                 for (let j = 0; j < message.apexInfo.length; ++j)
                     object.apexInfo[j] = $root.chromeos_update_engine.ApexInfo.toObject(message.apexInfo[j], options);
             }
+            if (message.securityPatchLevel != null && message.hasOwnProperty("securityPatchLevel"))
+                object.securityPatchLevel = message.securityPatchLevel;
             return object;
         };
 
