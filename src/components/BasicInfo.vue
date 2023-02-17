@@ -76,6 +76,10 @@
         <strong> Total VABC COW Size </strong>
         {{ totalCOWSize }}
       </li>
+      <li v-if="vabcCompressionParam">
+        <strong> VABC Compression Param </strong>
+        {{ vabcCompressionParam }}
+      </li>
       <li v-if="securityPatchLevel">
         <strong> Security Patch Level </strong>
         {{ securityPatchLevel }}
@@ -122,6 +126,9 @@ export default defineComponent({
         return 0;
       }
       return cowSizes.reduce((a, b) => a + b);
+    },
+    vabcCompressionParam(): string {
+      return this.payload?.manifest?.dynamicPartitionMetadata?.vabcCompressionParam || "";
     },
     securityPatchLevel(): string {
       const spl = this.payload?.manifest?.securityPatchLevel;
