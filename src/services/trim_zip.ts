@@ -57,7 +57,7 @@ export function getFileName(file: File | URL) {
 
 export async function trimTargetFiles(file: File | URL): Promise<Blob> {
   const writer = await trimZip(getZipReader(file), entry => {
-    return entry.filename.startsWith('META/') || entry.filename.endsWith('.map')
+    return entry.filename.startsWith('META/') || entry.filename.endsWith('.map') || entry.filename.endsWith(".prop") || entry.filename == "prop.default"
   })
   return await writer.close()
 }
