@@ -64,6 +64,33 @@ export function operatedBlockStatistics(
   return operatedBlocks
 }
 
+function partitionPayloadSize(
+  partition: chromeos_update_engine.IPartitionUpdate
+) {
+  if (!partition.operations) {
+    return 0
+  }
+  let size = 0
+  for (let op of partition.operations!) {
+    size += op.dataLength
+  }
+  return size
+}
+
+export function partitionPayloadSizeStatistics(
+  partitions: Array<chromeos_update_engine.IPartitionUpdate>
+) {
+  let partitionStats = new Map()
+  for (let partition of partitions) {
+    addNumberToMap(
+      partitionStats,
+      partition.partitionName,
+      partitionPayloadSize(partition)
+    )
+  }
+  return partitionStats
+}
+
 export function mergeOperationStatistics(
   partitions: Array<chromeos_update_engine.IPartitionUpdate>,
   blockSize: number
@@ -252,6 +279,14 @@ export async function analysePartitions(
       echartsData = new EchartsData(
         statisticsData,
         'Size of operated extensions',
+        'bytes'
+      )
+      break
+    case 'partitions':
+      statisticsData = partitionPayloadSizeStatistics(partitions)
+      echartsData = new EchartsData(
+        statisticsData,
+        'Partition payload size',
         'bytes'
       )
       break

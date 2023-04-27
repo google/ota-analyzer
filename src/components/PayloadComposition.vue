@@ -25,19 +25,24 @@
   </div>
   <v-divider />
   <v-row>
-    <v-col cols="12" md="6">
+    <v-col cols="12" md="4">
       <v-btn block @click="updateChart('blocks')">
         Analyse Installed Blocks (in target build)
       </v-btn>
     </v-col>
-    <v-col cols="12" md="6">
+    <v-col cols="12" md="4">
       <v-btn block @click="updateChart('payload')">
         Analyse Payload Composition
       </v-btn>
     </v-col>
+    <v-col cols="12" md="4">
+      <v-btn block @click="updateChart('partitions')">
+        Analyse Partition Payload Composition
+      </v-btn>
+    </v-col>
   </v-row>
   <v-row>
-    <v-col cols="12" md="6" class="tooltip">
+    <v-col cols="12" md="4" class="tooltip">
       <v-btn
         :disabled="
           manifest.nonAB || !manifest.dynamicPartitionMetadata.vabcEnabled
@@ -52,14 +57,12 @@
         This function is only supported in A/B OTA
       </span>
     </v-col>
-    <v-col cols="12" md="6">
+    <v-col cols="12" md="4">
       <v-btn block :disabled="!targetFile" @click="updateChart('filenames')">
         Analyse Filenames
       </v-btn>
     </v-col>
-  </v-row>
-  <v-row>
-    <v-col cols="12" md="6">
+    <v-col cols="12" md="4">
       <v-btn block :disabled="!targetFile" @click="updateChart('extensions')">
         Analyse File Extensions
       </v-btn>
