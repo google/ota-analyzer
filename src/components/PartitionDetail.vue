@@ -19,7 +19,13 @@
     {{ partition.partitionName }}
   </h4>
   <p v-if="isDynamicPartition">
-    Dynamic: ✅
+    <pre>Dynamic:  ✅</pre>
+  </p>
+  <p v-if="isFECEnabled">
+    <pre>FEC:      ✅</pre>
+  </p>
+  <p v-if="isHashtreeEnabled">
+    <pre>Hashtree: ✅</pre>
   </p>
   <p v-if="partition.estimateCowSize">
     <strong> Estimate COW Size: </strong> {{ partition.estimateCowSize }} Bytes
@@ -140,6 +146,16 @@ export default defineComponent({
     isDynamicPartition(): boolean {
       return (
         this.dynamicPartitionList.indexOf(this.partition.partitionName) >= 0
+      )
+    },
+    isFECEnabled(): boolean {
+      return (
+        this.partition.fecExtent?.numBlocks > 0
+      )
+    },
+    isHashtreeEnabled(): boolean {
+      return (
+        this.partition.hashTreeExtent?.numBlocks > 0
       )
     }
   }
