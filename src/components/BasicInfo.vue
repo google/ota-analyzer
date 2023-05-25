@@ -68,6 +68,13 @@
         </span>
         <span v-else> &#10060; </span>
       </li>
+      <li>
+        <strong> Wipes Data </strong>
+        <span v-if="isDataWipePackage">
+          &#9989;
+        </span>
+        <span v-else> &#10060; </span>
+      </li>
       <li v-if="totalDynamicPartitionSize">
         <strong> Total Dynamic Partition Size </strong>
         {{ totalDynamicPartitionSize }}
@@ -111,6 +118,9 @@ export default defineComponent({
     }
   },
   computed: {
+    isDataWipePackage(): boolean {
+      return this.payload.payload_properties.includes("POWERWASH=1");
+    },
     otaMetadata(): {
       prefix: string
       key: string

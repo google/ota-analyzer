@@ -212,6 +212,7 @@ export class Payload {
   zipreader: ZipReader
   buffer: Blob | undefined
   private metadata: any
+  payload_properties!: string
   manifest: update_metadata_pb.DeltaArchiveManifest | undefined
   metadata_signature!: update_metadata_pb.Signatures
 
@@ -265,6 +266,9 @@ export class Payload {
       } else if (entry.filename == 'META-INF/com/android/metadata') {
         this.metadata = await entry.getData!(new TextWriter())
         console.log('OTA Package metadata parsed')
+      } else if (entry.filename == "payload_properties.txt") {
+        this.payload_properties = await entry.getData!(new TextWriter());
+        console.log('OTA payload_properties.txt parsed');
       }
     }
     if (!this.manifest) {

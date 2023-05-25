@@ -69,8 +69,9 @@ export default defineComponent({
     async unpackOTA(file: File | URL) {
       this.zipFile = new ZipFile(file)
       try {
-        this.payload = new Payload(this.zipFile as ZipFile)
-        await this.payload.init()
+        const payload = new Payload(this.zipFile as ZipFile);
+        await payload.init();
+        this.payload = payload;
       } catch (err) {
         alert(`Please check if this is a correct OTA package (.zip). ${err}`)
         console.log(err)
