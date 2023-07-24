@@ -212,7 +212,7 @@ export class Payload {
   zipreader: ZipReader
   buffer: Blob | undefined
   private metadata: any
-  payload_properties!: string
+  payload_properties!: string[]
   manifest: update_metadata_pb.DeltaArchiveManifest | undefined
   metadata_signature!: update_metadata_pb.Signatures
 
@@ -267,8 +267,10 @@ export class Payload {
         this.metadata = await entry.getData!(new TextWriter())
         console.log('OTA Package metadata parsed')
       } else if (entry.filename == "payload_properties.txt") {
-        this.payload_properties = await entry.getData!(new TextWriter());
+        let payload_properties: string = await entry.getData!(new TextWriter());
+        this.payload_properties = payload_properties.split("\n");
         console.log('OTA payload_properties.txt parsed');
+        console.log(this.getPayloadHash());
       }
     }
     if (!this.manifest) {
@@ -283,6 +285,15 @@ export class Payload {
       } catch (error) {
         alert('Please select a legit OTA package')
         return
+      }
+    }
+  }
+
+  getPayloadHash() {
+    const file_hash_prefix = "FILE_HASH=";
+    for(let line of this.payload_properties) {
+      if (line.startsWith(file_hash_prefix)) {
+        return base64ToBytes(line.substring(file_hash_prefix.length));
       }
     }
   }
@@ -405,4 +416,9 @@ export function octToHex(bufferArray: Uint8Array, space = true, maxLine = 16) {
  */
 function trimEntry(entry: string, prefix: string) {
   return entry.slice(prefix.length + 1, entry.length)
+}
+
+function base64ToBytes(base64: string) {
+  const binString = atob(base64);
+  return Uint8Array.from(binString, (m) => m.codePointAt(0)!);
 }

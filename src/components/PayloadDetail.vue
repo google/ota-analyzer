@@ -43,6 +43,15 @@
     </v-row>
     <v-divider />
     <div
+      v-if="!payload.manifest.nonAB && payloadHash"
+    >
+      <h3>Payload SHA256 Hash</h3>
+      <span style="text-align: center; display: block;">
+        {{ payloadHash }}
+      </span>
+    </div>
+    <v-divider />
+    <div
       v-if="payload.metadata_signature && !payload.manifest.nonAB"
       class="signature"
     >
@@ -100,7 +109,14 @@ export default defineComponent({
           g => g.partitionNames || []
         ) || []
       )
-    }
+    },
+    payloadHash(): string {
+      const hash = this.payload?.getPayloadHash();
+      if (!hash) {
+        return "";
+      }
+      return octToHex(hash, false);
+    },
   }
 })
 </script>
