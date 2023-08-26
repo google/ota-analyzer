@@ -330,13 +330,13 @@ export class Payload {
   parseMetadata() {
     for (let formatter of MetadataFormat) {
       let regex = new RegExp(formatter.prefix + '.+')
-      if (this.metadata.match(regex)) {
-        ;(this as any)[formatter.key] = trimEntry(
+      if (this.metadata && this.metadata.match(regex)) {
+        (this as any)[formatter.key] = trimEntry(
           this.metadata.match(regex)[0],
           formatter.prefix
         )
       } else {
-        ;(this as any)[formatter.key] = ''
+        (this as any)[formatter.key] = ''
       }
     }
   }

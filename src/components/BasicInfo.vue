@@ -54,14 +54,14 @@
         </span>
         <span v-else> &#10060; </span>
       </li>
-      <li>
+      <li v-if="payload.manifest.dynamicPartitionMetadata">
         <strong> VAB </strong>
         <span v-if="payload.manifest.dynamicPartitionMetadata.snapshotEnabled">
           &#9989;
         </span>
         <span v-else> &#10060; </span>
       </li>
-      <li>
+      <li v-if="payload.manifest.dynamicPartitionMetadata">
         <strong> VABC </strong>
         <span v-if="payload.manifest.dynamicPartitionMetadata.vabcEnabled">
           &#9989;

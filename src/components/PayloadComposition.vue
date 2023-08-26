@@ -45,7 +45,7 @@
     <v-col cols="12" md="4" class="tooltip">
       <v-btn
         :disabled="
-          manifest.nonAB || !manifest.dynamicPartitionMetadata.vabcEnabled
+          manifest.nonAB || !manifest.dynamicPartitionMetadata || !manifest.dynamicPartitionMetadata.vabcEnabled
         "
         title="Only available for VABC update"
         block

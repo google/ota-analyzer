@@ -35,7 +35,7 @@
     <v-divider vertical />
     <v-col cols="12" md="6">
       <PayloadComposition
-        v-if="zipFile && payload.manifest"
+        v-if="zipFile && payload && payload.manifest"
         :manifest="payload.manifest"
       />
     </v-col>
