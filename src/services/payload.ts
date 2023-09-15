@@ -230,6 +230,7 @@ export class Payload {
     } else {
       this.zipreader = file.reader
     }
+    this.payload_properties = []
   }
 
   getMetadataLength(): number {
@@ -296,6 +297,7 @@ export class Payload {
         return base64ToBytes(line.substring(file_hash_prefix.length));
       }
     }
+    return ""
   }
 
   /**
