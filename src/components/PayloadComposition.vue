@@ -163,7 +163,7 @@ export default defineComponent({
           metrics,
           partitionSelected,
           this.manifest.blockSize,
-          this.targetFile
+          this.targetFile as File
         )
       } catch (err) {
         alert(`Cannot be processed for the following issue: ${err}`)
@@ -174,12 +174,12 @@ export default defineComponent({
       this.targetFile = file
     },
     async exportTargetFileMetadata() {
-      const blob = await trimTargetFiles(this.targetFile!)
+      const blob = await trimTargetFiles(this.targetFile! as File)
       const downloadNode = this.$refs['download'] as HTMLAnchorElement
       downloadFile(
         blob,
         downloadNode,
-        'trimmed_' + ensureSuffix(getFileName(this.targetFile!), '.zip')
+        'trimmed_' + ensureSuffix(getFileName(this.targetFile! as File), '.zip')
       )
     }
   }
