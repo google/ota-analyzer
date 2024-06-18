@@ -1852,6 +1852,7 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
          * @property {string|null} [version] PartitionUpdate version
          * @property {Array.<chromeos_update_engine.ICowMergeOperation>|null} [mergeOperations] PartitionUpdate mergeOperations
          * @property {number|Long|null} [estimateCowSize] PartitionUpdate estimateCowSize
+         * @property {number|Long|null} [estimateOpCountMax] PartitionUpdate estimateOpCountMax
          */
 
         /**
@@ -2025,6 +2026,14 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
         PartitionUpdate.prototype.estimateCowSize = $util.Long ? $util.Long.fromBits(0,0,true) : 0;
 
         /**
+         * PartitionUpdate estimateOpCountMax.
+         * @member {number|Long} estimateOpCountMax
+         * @memberof chromeos_update_engine.PartitionUpdate
+         * @instance
+         */
+        PartitionUpdate.prototype.estimateOpCountMax = $util.Long ? $util.Long.fromBits(0,0,true) : 0;
+
+        /**
          * Creates a new PartitionUpdate instance using the specified properties.
          * @function create
          * @memberof chromeos_update_engine.PartitionUpdate
@@ -2088,6 +2097,8 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
                     $root.chromeos_update_engine.CowMergeOperation.encode(message.mergeOperations[i], writer.uint32(/* id 18, wireType 2 =*/146).fork()).ldelim();
             if (message.estimateCowSize != null && Object.hasOwnProperty.call(message, "estimateCowSize"))
                 writer.uint32(/* id 19, wireType 0 =*/152).uint64(message.estimateCowSize);
+            if (message.estimateOpCountMax != null && Object.hasOwnProperty.call(message, "estimateOpCountMax"))
+                writer.uint32(/* id 20, wireType 0 =*/160).uint64(message.estimateOpCountMax);
             return writer;
         };
 
@@ -2184,6 +2195,9 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
                     break;
                 case 19:
                     message.estimateCowSize = reader.uint64();
+                    break;
+                case 20:
+                    message.estimateOpCountMax = reader.uint64();
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -2308,6 +2322,9 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
             if (message.estimateCowSize != null && message.hasOwnProperty("estimateCowSize"))
                 if (!$util.isInteger(message.estimateCowSize) && !(message.estimateCowSize && $util.isInteger(message.estimateCowSize.low) && $util.isInteger(message.estimateCowSize.high)))
                     return "estimateCowSize: integer|Long expected";
+            if (message.estimateOpCountMax != null && message.hasOwnProperty("estimateOpCountMax"))
+                if (!$util.isInteger(message.estimateOpCountMax) && !(message.estimateOpCountMax && $util.isInteger(message.estimateOpCountMax.low) && $util.isInteger(message.estimateOpCountMax.high)))
+                    return "estimateOpCountMax: integer|Long expected";
             return null;
         };
 
@@ -2413,6 +2430,15 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
                     message.estimateCowSize = object.estimateCowSize;
                 else if (typeof object.estimateCowSize === "object")
                     message.estimateCowSize = new $util.LongBits(object.estimateCowSize.low >>> 0, object.estimateCowSize.high >>> 0).toNumber(true);
+            if (object.estimateOpCountMax != null)
+                if ($util.Long)
+                    (message.estimateOpCountMax = $util.Long.fromValue(object.estimateOpCountMax)).unsigned = true;
+                else if (typeof object.estimateOpCountMax === "string")
+                    message.estimateOpCountMax = parseInt(object.estimateOpCountMax, 10);
+                else if (typeof object.estimateOpCountMax === "number")
+                    message.estimateOpCountMax = object.estimateOpCountMax;
+                else if (typeof object.estimateOpCountMax === "object")
+                    message.estimateOpCountMax = new $util.LongBits(object.estimateOpCountMax.low >>> 0, object.estimateOpCountMax.high >>> 0).toNumber(true);
             return message;
         };
 
@@ -2461,6 +2487,11 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
                     object.estimateCowSize = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
                 } else
                     object.estimateCowSize = options.longs === String ? "0" : 0;
+                if ($util.Long) {
+                    let long = new $util.Long(0, 0, true);
+                    object.estimateOpCountMax = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
+                } else
+                    object.estimateOpCountMax = options.longs === String ? "0" : 0;
             }
             if (message.partitionName != null && message.hasOwnProperty("partitionName"))
                 object.partitionName = message.partitionName;
@@ -2512,6 +2543,11 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
                     object.estimateCowSize = options.longs === String ? String(message.estimateCowSize) : message.estimateCowSize;
                 else
                     object.estimateCowSize = options.longs === String ? $util.Long.prototype.toString.call(message.estimateCowSize) : options.longs === Number ? new $util.LongBits(message.estimateCowSize.low >>> 0, message.estimateCowSize.high >>> 0).toNumber(true) : message.estimateCowSize;
+            if (message.estimateOpCountMax != null && message.hasOwnProperty("estimateOpCountMax"))
+                if (typeof message.estimateOpCountMax === "number")
+                    object.estimateOpCountMax = options.longs === String ? String(message.estimateOpCountMax) : message.estimateOpCountMax;
+                else
+                    object.estimateOpCountMax = options.longs === String ? $util.Long.prototype.toString.call(message.estimateOpCountMax) : options.longs === Number ? new $util.LongBits(message.estimateOpCountMax.low >>> 0, message.estimateOpCountMax.high >>> 0).toNumber(true) : message.estimateOpCountMax;
             return object;
         };
 
@@ -2792,6 +2828,216 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
         return DynamicPartitionGroup;
     })();
 
+    chromeos_update_engine.VABCFeatureSet = (function() {
+
+        /**
+         * Properties of a VABCFeatureSet.
+         * @memberof chromeos_update_engine
+         * @interface IVABCFeatureSet
+         * @property {boolean|null} [threaded] VABCFeatureSet threaded
+         * @property {boolean|null} [batchWrites] VABCFeatureSet batchWrites
+         */
+
+        /**
+         * Constructs a new VABCFeatureSet.
+         * @memberof chromeos_update_engine
+         * @classdesc Represents a VABCFeatureSet.
+         * @implements IVABCFeatureSet
+         * @constructor
+         * @param {chromeos_update_engine.IVABCFeatureSet=} [properties] Properties to set
+         */
+        function VABCFeatureSet(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * VABCFeatureSet threaded.
+         * @member {boolean} threaded
+         * @memberof chromeos_update_engine.VABCFeatureSet
+         * @instance
+         */
+        VABCFeatureSet.prototype.threaded = false;
+
+        /**
+         * VABCFeatureSet batchWrites.
+         * @member {boolean} batchWrites
+         * @memberof chromeos_update_engine.VABCFeatureSet
+         * @instance
+         */
+        VABCFeatureSet.prototype.batchWrites = false;
+
+        /**
+         * Creates a new VABCFeatureSet instance using the specified properties.
+         * @function create
+         * @memberof chromeos_update_engine.VABCFeatureSet
+         * @static
+         * @param {chromeos_update_engine.IVABCFeatureSet=} [properties] Properties to set
+         * @returns {chromeos_update_engine.VABCFeatureSet} VABCFeatureSet instance
+         */
+        VABCFeatureSet.create = function create(properties) {
+            return new VABCFeatureSet(properties);
+        };
+
+        /**
+         * Encodes the specified VABCFeatureSet message. Does not implicitly {@link chromeos_update_engine.VABCFeatureSet.verify|verify} messages.
+         * @function encode
+         * @memberof chromeos_update_engine.VABCFeatureSet
+         * @static
+         * @param {chromeos_update_engine.IVABCFeatureSet} message VABCFeatureSet message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        VABCFeatureSet.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.threaded != null && Object.hasOwnProperty.call(message, "threaded"))
+                writer.uint32(/* id 1, wireType 0 =*/8).bool(message.threaded);
+            if (message.batchWrites != null && Object.hasOwnProperty.call(message, "batchWrites"))
+                writer.uint32(/* id 2, wireType 0 =*/16).bool(message.batchWrites);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified VABCFeatureSet message, length delimited. Does not implicitly {@link chromeos_update_engine.VABCFeatureSet.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof chromeos_update_engine.VABCFeatureSet
+         * @static
+         * @param {chromeos_update_engine.IVABCFeatureSet} message VABCFeatureSet message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        VABCFeatureSet.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a VABCFeatureSet message from the specified reader or buffer.
+         * @function decode
+         * @memberof chromeos_update_engine.VABCFeatureSet
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {chromeos_update_engine.VABCFeatureSet} VABCFeatureSet
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        VABCFeatureSet.decode = function decode(reader, length) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.chromeos_update_engine.VABCFeatureSet();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                switch (tag >>> 3) {
+                case 1:
+                    message.threaded = reader.bool();
+                    break;
+                case 2:
+                    message.batchWrites = reader.bool();
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a VABCFeatureSet message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof chromeos_update_engine.VABCFeatureSet
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {chromeos_update_engine.VABCFeatureSet} VABCFeatureSet
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        VABCFeatureSet.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a VABCFeatureSet message.
+         * @function verify
+         * @memberof chromeos_update_engine.VABCFeatureSet
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        VABCFeatureSet.verify = function verify(message) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.threaded != null && message.hasOwnProperty("threaded"))
+                if (typeof message.threaded !== "boolean")
+                    return "threaded: boolean expected";
+            if (message.batchWrites != null && message.hasOwnProperty("batchWrites"))
+                if (typeof message.batchWrites !== "boolean")
+                    return "batchWrites: boolean expected";
+            return null;
+        };
+
+        /**
+         * Creates a VABCFeatureSet message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof chromeos_update_engine.VABCFeatureSet
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {chromeos_update_engine.VABCFeatureSet} VABCFeatureSet
+         */
+        VABCFeatureSet.fromObject = function fromObject(object) {
+            if (object instanceof $root.chromeos_update_engine.VABCFeatureSet)
+                return object;
+            let message = new $root.chromeos_update_engine.VABCFeatureSet();
+            if (object.threaded != null)
+                message.threaded = Boolean(object.threaded);
+            if (object.batchWrites != null)
+                message.batchWrites = Boolean(object.batchWrites);
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a VABCFeatureSet message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof chromeos_update_engine.VABCFeatureSet
+         * @static
+         * @param {chromeos_update_engine.VABCFeatureSet} message VABCFeatureSet
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        VABCFeatureSet.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults) {
+                object.threaded = false;
+                object.batchWrites = false;
+            }
+            if (message.threaded != null && message.hasOwnProperty("threaded"))
+                object.threaded = message.threaded;
+            if (message.batchWrites != null && message.hasOwnProperty("batchWrites"))
+                object.batchWrites = message.batchWrites;
+            return object;
+        };
+
+        /**
+         * Converts this VABCFeatureSet to JSON.
+         * @function toJSON
+         * @memberof chromeos_update_engine.VABCFeatureSet
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        VABCFeatureSet.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        return VABCFeatureSet;
+    })();
+
     chromeos_update_engine.DynamicPartitionMetadata = (function() {
 
         /**
@@ -2803,6 +3049,8 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
          * @property {boolean|null} [vabcEnabled] DynamicPartitionMetadata vabcEnabled
          * @property {string|null} [vabcCompressionParam] DynamicPartitionMetadata vabcCompressionParam
          * @property {number|null} [cowVersion] DynamicPartitionMetadata cowVersion
+         * @property {chromeos_update_engine.IVABCFeatureSet|null} [vabcFeatureSet] DynamicPartitionMetadata vabcFeatureSet
+         * @property {number|Long|null} [compressionFactor] DynamicPartitionMetadata compressionFactor
          */
 
         /**
@@ -2862,6 +3110,22 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
         DynamicPartitionMetadata.prototype.cowVersion = 0;
 
         /**
+         * DynamicPartitionMetadata vabcFeatureSet.
+         * @member {chromeos_update_engine.IVABCFeatureSet|null|undefined} vabcFeatureSet
+         * @memberof chromeos_update_engine.DynamicPartitionMetadata
+         * @instance
+         */
+        DynamicPartitionMetadata.prototype.vabcFeatureSet = null;
+
+        /**
+         * DynamicPartitionMetadata compressionFactor.
+         * @member {number|Long} compressionFactor
+         * @memberof chromeos_update_engine.DynamicPartitionMetadata
+         * @instance
+         */
+        DynamicPartitionMetadata.prototype.compressionFactor = $util.Long ? $util.Long.fromBits(0,0,true) : 0;
+
+        /**
          * Creates a new DynamicPartitionMetadata instance using the specified properties.
          * @function create
          * @memberof chromeos_update_engine.DynamicPartitionMetadata
@@ -2896,6 +3160,10 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
                 writer.uint32(/* id 4, wireType 2 =*/34).string(message.vabcCompressionParam);
             if (message.cowVersion != null && Object.hasOwnProperty.call(message, "cowVersion"))
                 writer.uint32(/* id 5, wireType 0 =*/40).uint32(message.cowVersion);
+            if (message.vabcFeatureSet != null && Object.hasOwnProperty.call(message, "vabcFeatureSet"))
+                $root.chromeos_update_engine.VABCFeatureSet.encode(message.vabcFeatureSet, writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
+            if (message.compressionFactor != null && Object.hasOwnProperty.call(message, "compressionFactor"))
+                writer.uint32(/* id 7, wireType 0 =*/56).uint64(message.compressionFactor);
             return writer;
         };
 
@@ -2946,6 +3214,12 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
                     break;
                 case 5:
                     message.cowVersion = reader.uint32();
+                    break;
+                case 6:
+                    message.vabcFeatureSet = $root.chromeos_update_engine.VABCFeatureSet.decode(reader, reader.uint32());
+                    break;
+                case 7:
+                    message.compressionFactor = reader.uint64();
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -3003,6 +3277,14 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
             if (message.cowVersion != null && message.hasOwnProperty("cowVersion"))
                 if (!$util.isInteger(message.cowVersion))
                     return "cowVersion: integer expected";
+            if (message.vabcFeatureSet != null && message.hasOwnProperty("vabcFeatureSet")) {
+                let error = $root.chromeos_update_engine.VABCFeatureSet.verify(message.vabcFeatureSet);
+                if (error)
+                    return "vabcFeatureSet." + error;
+            }
+            if (message.compressionFactor != null && message.hasOwnProperty("compressionFactor"))
+                if (!$util.isInteger(message.compressionFactor) && !(message.compressionFactor && $util.isInteger(message.compressionFactor.low) && $util.isInteger(message.compressionFactor.high)))
+                    return "compressionFactor: integer|Long expected";
             return null;
         };
 
@@ -3036,6 +3318,20 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
                 message.vabcCompressionParam = String(object.vabcCompressionParam);
             if (object.cowVersion != null)
                 message.cowVersion = object.cowVersion >>> 0;
+            if (object.vabcFeatureSet != null) {
+                if (typeof object.vabcFeatureSet !== "object")
+                    throw TypeError(".chromeos_update_engine.DynamicPartitionMetadata.vabcFeatureSet: object expected");
+                message.vabcFeatureSet = $root.chromeos_update_engine.VABCFeatureSet.fromObject(object.vabcFeatureSet);
+            }
+            if (object.compressionFactor != null)
+                if ($util.Long)
+                    (message.compressionFactor = $util.Long.fromValue(object.compressionFactor)).unsigned = true;
+                else if (typeof object.compressionFactor === "string")
+                    message.compressionFactor = parseInt(object.compressionFactor, 10);
+                else if (typeof object.compressionFactor === "number")
+                    message.compressionFactor = object.compressionFactor;
+                else if (typeof object.compressionFactor === "object")
+                    message.compressionFactor = new $util.LongBits(object.compressionFactor.low >>> 0, object.compressionFactor.high >>> 0).toNumber(true);
             return message;
         };
 
@@ -3059,6 +3355,12 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
                 object.vabcEnabled = false;
                 object.vabcCompressionParam = "";
                 object.cowVersion = 0;
+                object.vabcFeatureSet = null;
+                if ($util.Long) {
+                    let long = new $util.Long(0, 0, true);
+                    object.compressionFactor = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
+                } else
+                    object.compressionFactor = options.longs === String ? "0" : 0;
             }
             if (message.groups && message.groups.length) {
                 object.groups = [];
@@ -3073,6 +3375,13 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
                 object.vabcCompressionParam = message.vabcCompressionParam;
             if (message.cowVersion != null && message.hasOwnProperty("cowVersion"))
                 object.cowVersion = message.cowVersion;
+            if (message.vabcFeatureSet != null && message.hasOwnProperty("vabcFeatureSet"))
+                object.vabcFeatureSet = $root.chromeos_update_engine.VABCFeatureSet.toObject(message.vabcFeatureSet, options);
+            if (message.compressionFactor != null && message.hasOwnProperty("compressionFactor"))
+                if (typeof message.compressionFactor === "number")
+                    object.compressionFactor = options.longs === String ? String(message.compressionFactor) : message.compressionFactor;
+                else
+                    object.compressionFactor = options.longs === String ? $util.Long.prototype.toString.call(message.compressionFactor) : options.longs === Number ? new $util.LongBits(message.compressionFactor.low >>> 0, message.compressionFactor.high >>> 0).toNumber(true) : message.compressionFactor;
             return object;
         };
 

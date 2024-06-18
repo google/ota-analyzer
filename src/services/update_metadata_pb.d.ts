@@ -725,6 +725,9 @@ export namespace chromeos_update_engine {
 
         /** PartitionUpdate estimateCowSize */
         estimateCowSize?: (number|Long|null);
+
+        /** PartitionUpdate estimateOpCountMax */
+        estimateOpCountMax?: (number|Long|null);
     }
 
     /** Represents a PartitionUpdate. */
@@ -792,6 +795,9 @@ export namespace chromeos_update_engine {
 
         /** PartitionUpdate estimateCowSize. */
         public estimateCowSize: (number|Long);
+
+        /** PartitionUpdate estimateOpCountMax. */
+        public estimateOpCountMax: (number|Long);
 
         /**
          * Creates a new PartitionUpdate instance using the specified properties.
@@ -966,6 +972,102 @@ export namespace chromeos_update_engine {
         public toJSON(): { [k: string]: any };
     }
 
+    /** Properties of a VABCFeatureSet. */
+    interface IVABCFeatureSet {
+
+        /** VABCFeatureSet threaded */
+        threaded?: (boolean|null);
+
+        /** VABCFeatureSet batchWrites */
+        batchWrites?: (boolean|null);
+    }
+
+    /** Represents a VABCFeatureSet. */
+    class VABCFeatureSet implements IVABCFeatureSet {
+
+        /**
+         * Constructs a new VABCFeatureSet.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: chromeos_update_engine.IVABCFeatureSet);
+
+        /** VABCFeatureSet threaded. */
+        public threaded: boolean;
+
+        /** VABCFeatureSet batchWrites. */
+        public batchWrites: boolean;
+
+        /**
+         * Creates a new VABCFeatureSet instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns VABCFeatureSet instance
+         */
+        public static create(properties?: chromeos_update_engine.IVABCFeatureSet): chromeos_update_engine.VABCFeatureSet;
+
+        /**
+         * Encodes the specified VABCFeatureSet message. Does not implicitly {@link chromeos_update_engine.VABCFeatureSet.verify|verify} messages.
+         * @param message VABCFeatureSet message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: chromeos_update_engine.IVABCFeatureSet, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified VABCFeatureSet message, length delimited. Does not implicitly {@link chromeos_update_engine.VABCFeatureSet.verify|verify} messages.
+         * @param message VABCFeatureSet message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: chromeos_update_engine.IVABCFeatureSet, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a VABCFeatureSet message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns VABCFeatureSet
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): chromeos_update_engine.VABCFeatureSet;
+
+        /**
+         * Decodes a VABCFeatureSet message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns VABCFeatureSet
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): chromeos_update_engine.VABCFeatureSet;
+
+        /**
+         * Verifies a VABCFeatureSet message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a VABCFeatureSet message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns VABCFeatureSet
+         */
+        public static fromObject(object: { [k: string]: any }): chromeos_update_engine.VABCFeatureSet;
+
+        /**
+         * Creates a plain object from a VABCFeatureSet message. Also converts values to other types if specified.
+         * @param message VABCFeatureSet
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: chromeos_update_engine.VABCFeatureSet, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this VABCFeatureSet to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+    }
+
     /** Properties of a DynamicPartitionMetadata. */
     interface IDynamicPartitionMetadata {
 
@@ -983,6 +1085,12 @@ export namespace chromeos_update_engine {
 
         /** DynamicPartitionMetadata cowVersion */
         cowVersion?: (number|null);
+
+        /** DynamicPartitionMetadata vabcFeatureSet */
+        vabcFeatureSet?: (chromeos_update_engine.IVABCFeatureSet|null);
+
+        /** DynamicPartitionMetadata compressionFactor */
+        compressionFactor?: (number|Long|null);
     }
 
     /** Represents a DynamicPartitionMetadata. */
@@ -1008,6 +1116,12 @@ export namespace chromeos_update_engine {
 
         /** DynamicPartitionMetadata cowVersion. */
         public cowVersion: number;
+
+        /** DynamicPartitionMetadata vabcFeatureSet. */
+        public vabcFeatureSet?: (chromeos_update_engine.IVABCFeatureSet|null);
+
+        /** DynamicPartitionMetadata compressionFactor. */
+        public compressionFactor: (number|Long);
 
         /**
          * Creates a new DynamicPartitionMetadata instance using the specified properties.
