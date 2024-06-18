@@ -84,8 +84,16 @@
         {{ totalCOWSize }}
       </li>
       <li v-if="vabcCompressionParam">
-        <strong> VABC Compression Param </strong>
+        <strong> VABC Compression Algorithm </strong>
         {{ vabcCompressionParam }}
+      </li>
+      <li v-if="compressionFactor">
+        <strong> Compression Factor </strong>
+        {{ compressionFactor }}
+      </li>
+      <li v-if="cowVersion">
+        <strong> Cow Version </strong>
+        {{ cowVersion }}
       </li>
       <li v-if="securityPatchLevel">
         <strong> Security Patch Level </strong>
@@ -119,33 +127,46 @@ export default defineComponent({
   },
   computed: {
     isDataWipePackage(): boolean {
-      return this.payload.payload_properties.includes("POWERWASH=1");
+      return this.payload.payload_properties.includes('POWERWASH=1')
     },
     otaMetadata(): {
       prefix: string
       key: string
       name: string
     }[] {
-      return MetadataFormat.filter(formatter =>
-        String((this.payload as any)[formatter.key]).length > 0
-      );
+      return MetadataFormat.filter(
+        formatter => String((this.payload as any)[formatter.key]).length > 0
+      )
     },
     totalCOWSize(): number {
-      const cowSizes = this.payload?.manifest?.partitions.map(p => p.estimateCowSize || 0);
+      const cowSizes = this.payload?.manifest?.partitions.map(
+        p => p.estimateCowSize || 0
+      )
       if (!cowSizes) {
-        return 0;
+        return 0
       }
-      return cowSizes.reduce((a, b) => a + b);
+      return cowSizes.reduce((a, b) => a + b)
     },
     vabcCompressionParam(): string {
-      return this.payload?.manifest?.dynamicPartitionMetadata?.vabcCompressionParam || "";
+      return (
+        this.payload?.manifest?.dynamicPartitionMetadata
+          ?.vabcCompressionParam || ''
+      )
+    },
+    compressionFactor(): number {
+      return (
+        this.payload?.manifest?.dynamicPartitionMetadata?.compressionFactor || 0
+      )
+    },
+    cowVersion(): number {
+      return this.payload?.manifest?.dynamicPartitionMetadata?.cowVersion || 0
     },
     securityPatchLevel(): string {
-      const spl = this.payload?.manifest?.securityPatchLevel;
+      const spl = this.payload?.manifest?.securityPatchLevel
       if (!spl) {
-        return "";
+        return ''
       }
-      return spl;
+      return spl
     },
     totalDynamicPartitionSize(): number {
       const groups = this.payload?.manifest?.dynamicPartitionMetadata?.groups
