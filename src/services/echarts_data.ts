@@ -15,6 +15,7 @@
  */
 
 import { EChartsOption } from 'echarts'
+import { formatBytes } from '../util'
 
 export class EchartsData {
   statisticData: Map<string, number>
@@ -68,9 +69,26 @@ export class EchartsData {
       text: this.title,
       left: 'center'
     }
+    // option.tooltip = {
+    //   trigger: 'item',
+    //   formatter: '{a} <br/>{b} : {c} ' + this.unit + ' ({d}%)'
+    // }
     option.tooltip = {
       trigger: 'item',
-      formatter: '{a} <br/>{b} : {c} ' + this.unit + ' ({d}%)'
+      formatter: (params:any) => {
+        if (this.unit == 'blocks') {
+          return params.seriesName + ' <br/> ' + params.name + ' : ' + params.value + ' blocks' + '(' + params.percent + '%)'
+        } else {
+          return params.seriesName + ' <br/> ' + reverse(params.name) + ' : ' + formatBytes(params.value) + ' ' + '(' + params.percent + '%)'
+        }
+
+        function reverse(str:string){
+          str=str.replace(/</g,"\&lt")
+          str=str.replace(/>/g,"\&gt")
+          return str
+        }
+      
+      }
     }
     option.legend = {
       orient: 'horizontal',

@@ -55,10 +55,12 @@ export class MapParser {
    */
   async init() {
     let /** Array<Entry> */ entries = await this.build.getEntries()
-    const /** RegExp*/ regexPath = /IMAGES\/[a-z_]*\.map/g
+    // const /** RegExp*/ regexPath = /IMAGES\/[a-z_]*\.map/g
+    const /** RegExp*/ targetFileRegexPath = /IMAGES\/[a-z_]*\.map/g
+    const /** RegExp*/ flashFileRegexPath = /[a-z_]*\.map/g
     const /** RegExp*/ regexName = /[\w_]+(?=\.map)/g
     entries.forEach(entry => {
-      if (entry.filename.match(regexPath)) {
+      if (entry.filename.match(targetFileRegexPath) || entry.filename.match(flashFileRegexPath)) {
         this.mapFiles.set(entry.filename.match(regexName)![0], entry)
       }
     })

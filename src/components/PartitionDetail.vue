@@ -28,7 +28,7 @@
     <pre>Hashtree: ✅</pre>
   </p>
   <p v-if="partition.estimateCowSize">
-    <strong> Estimate COW Size: </strong> {{ partition.estimateCowSize }} Bytes
+    <strong> Estimate COW Size: </strong> {{ formatBytes(partition.estimateCowSize) }}
   </p>
   <p v-if="partition.postinstallPath">
     <strong> Postinstall Script: </strong> {{ partition.postinstallPath }}
@@ -45,7 +45,7 @@
         <strong>
           Old Partition Size:
         </strong>
-        {{ partition.oldPartitionInfo.size }} Bytes
+        {{ formatBytes(partition.oldPartitionInfo.size) }}
       </li>
       <li v-if="partition.oldPartitionInfo">
         <strong>
@@ -59,7 +59,7 @@
         <strong>
           New Partition Size:
         </strong>
-        {{ partition.newPartitionInfo.size }} Bytes
+        {{ formatBytes(partition.newPartitionInfo.size) }}
       </li>
       <li v-if="partition.newPartitionInfo.hash">
         <strong>
@@ -105,6 +105,7 @@
 import { chromeos_update_engine } from '@/services/update_metadata_pb'
 import { defineComponent } from 'vue'
 import { OpType, octToHex } from '../services/payload'
+import {formatBytes} from '../util'
 import OperationDetail from './OperationDetail.vue'
 
 export default defineComponent({
@@ -132,7 +133,8 @@ export default defineComponent({
     toggle(key: string) {
       ;(this as any)[key] = !(this as any)[key]
     },
-    octToHex: octToHex
+    octToHex: octToHex,
+    formatBytes: formatBytes
   },
   computed: {
     readableTimestamp() {

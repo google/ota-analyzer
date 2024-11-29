@@ -19,7 +19,7 @@
   <div v-if="zipFile" v-bind="$attrs">
     <ul class="align">
       <li><strong> File name </strong> {{ zipFile.getFileName() }}</li>
-      <li><strong> File size </strong> {{ zipFile.getFileSize() }} Bytes</li>
+      <li><strong> File size </strong> {{ formatBytes(zipFile.getFileSize()) }}</li>
     </ul>
   </div>
   <div v-if="payload && payload.metadata" v-bind="$attrs">
@@ -106,6 +106,7 @@
 <script lang="ts">
 import { Payload, MetadataFormat } from '../services/payload'
 import { ZipFile } from '@/services/trim_zip'
+import {formatBytes} from '../util'
 
 import { defineComponent } from 'vue'
 
@@ -124,6 +125,9 @@ export default defineComponent({
     return {
       MetadataFormat
     }
+  },
+  methods:{
+    formatBytes: formatBytes
   },
   computed: {
     isDataWipePackage(): boolean {
