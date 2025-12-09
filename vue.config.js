@@ -15,7 +15,8 @@
  */
 
 module.exports = {
-  publicPath: process.env.NODE_ENV === 'production' ? '/analyseOTA/' : '/',
+  // link assets in relative path to ease deployment on various platforms
+  publicPath: '',
 
   transpileDependencies: ['vuetify']
 }
