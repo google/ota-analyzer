@@ -18,21 +18,21 @@
   <h4 :class="{ 'new-partition': !partition.oldPartitionInfo }">
     {{ partition.partitionName }}
   </h4>
-  <p v-if="isDynamicPartition">
+  <div v-if="isDynamicPartition">
     <pre>Dynamic:  ✅</pre>
-  </p>
-  <p v-if="isFECEnabled">
+  </div>
+  <div v-if="isFECEnabled">
     <pre>FEC:      ✅</pre>
-  </p>
-  <p v-if="isHashtreeEnabled">
+  </div>
+  <div v-if="isHashtreeEnabled">
     <pre>Hashtree: ✅</pre>
-  </p>
-  <p v-if="partition.estimateCowSize">
+  </div>
+  <div v-if="partition.estimateCowSize">
     <strong> Estimate COW Size: </strong> {{ partition.estimateCowSize }} Bytes
-  </p>
-  <p v-if="partition.postinstallPath">
+  </div>
+  <div v-if="partition.postinstallPath">
     <strong> Postinstall Script: </strong> {{ partition.postinstallPath }}
-  </p>
+  </div>
   <div class="toggle">
     <h4
       @click="toggle('showInfo')"
@@ -150,12 +150,12 @@ export default defineComponent({
     },
     isFECEnabled(): boolean {
       return (
-        this.partition.fecExtent?.numBlocks > 0
+        this.partition.fecExtent?.numBlocks! > 0
       )
     },
     isHashtreeEnabled(): boolean {
       return (
-        this.partition.hashTreeExtent?.numBlocks > 0
+        this.partition.hashTreeExtent?.numBlocks! > 0
       )
     }
   }

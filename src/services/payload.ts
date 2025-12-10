@@ -29,7 +29,7 @@ import {
   Writer,
   ZipReader,
   HttpReader
-} from '@zip.js/zip.js/dist/zip.js'
+} from '@zip.js/zip.js'
 
 // import '@zip.js/zip.js'
 import { chromeos_update_engine as update_metadata_pb } from './update_metadata_pb'
@@ -43,46 +43,44 @@ const /** Number */ _MANIFEST_LEN_SIZE = 8
 const /** Number */ _METADATA_SIGNATURE_LEN_SIZE = 4
 
 const /** Number */ _PAYLOAD_HEADER_SIZE =
-    _MAGIC.length +
-    _VERSION_SIZE +
-    _MANIFEST_LEN_SIZE +
-    _METADATA_SIGNATURE_LEN_SIZE
+  _MAGIC.length +
+  _VERSION_SIZE +
+  _MANIFEST_LEN_SIZE +
+  _METADATA_SIGNATURE_LEN_SIZE
 
 const /** Number */ _BRILLO_MAJOR_PAYLOAD_VERSION = 2
 export const /** Array<Object> */ MetadataFormat = [
-    {
-      prefix: 'pre-build',
-      key: 'preBuild',
-      name: 'Pre-build'
-    },
-    {
-      prefix: 'pre-build-incremental',
-      key: 'preBuildVersion',
-      name: 'Pre-build version'
-    },
-    {
-      prefix: 'post-build',
-      key: 'postBuild',
-      name: 'Post-build'
-    },
-    {
-      prefix: 'post-build-incremental',
-      key: 'postBuildVersion',
-      name: 'Post-build version'
-    },
-    {
-      prefix: 'post-security-patch-level',
-      key: 'postSecurityPatchLevel',
-      name: 'Post-build SPL'
-    },
-    {
-      prefix: 'post-timestamp',
-      key: 'postTimestamp',
-      name: 'Post-build timestamp'
-    },
-  ]
-
-class StopIteration extends Error {}
+  {
+    prefix: 'pre-build',
+    key: 'preBuild',
+    name: 'Pre-build'
+  },
+  {
+    prefix: 'pre-build-incremental',
+    key: 'preBuildVersion',
+    name: 'Pre-build version'
+  },
+  {
+    prefix: 'post-build',
+    key: 'postBuild',
+    name: 'Post-build'
+  },
+  {
+    prefix: 'post-build-incremental',
+    key: 'postBuildVersion',
+    name: 'Post-build version'
+  },
+  {
+    prefix: 'post-security-patch-level',
+    key: 'postSecurityPatchLevel',
+    name: 'Post-build SPL'
+  },
+  {
+    prefix: 'post-timestamp',
+    key: 'postTimestamp',
+    name: 'Post-build timestamp'
+  },
+]
 
 class AbPayloadHeader {
   constructor(
@@ -90,7 +88,7 @@ class AbPayloadHeader {
     public version: number,
     public manifest_len: number,
     public metadata_signature_len: number
-  ) {}
+  ) { }
 }
 
 /**
@@ -100,10 +98,10 @@ class AbPayloadHeader {
  */
 async function readIntAt(buffer: Blob, position: number, size: number) {
   let /** DataView */ view = new DataView(
-      await buffer!.slice(position, position + size).arrayBuffer()
-    )
+    await buffer!.slice(position, position + size).arrayBuffer()
+  )
   if (typeof view.getBigUint64 !== 'function') {
-    view.getBigUint64 = function(offset) {
+    view.getBigUint64 = function (offset) {
       const a = BigInt(view.getUint32(offset))
       const b = BigInt(view.getUint32(offset + 4))
       const bigNumber = a * 4294967296n + b
@@ -122,11 +120,12 @@ async function readIntAt(buffer: Blob, position: number, size: number) {
   }
 }
 
-class OTAPayloadBlobWriter extends Writer {
+class OTAPayloadBlobWriter extends Writer<Blob> {
   offset: number
   contentType: string
   blob: Blob
   prefixLength: number
+  abortController: AbortController
 
   header?: AbPayloadHeader
 
@@ -174,11 +173,12 @@ class OTAPayloadBlobWriter extends Writer {
     this.contentType = contentType
     this.blob = new Blob([], { type: contentType })
     this.prefixLength = 0
+    this.abortController = new AbortController()
   }
 
   async writeUint8Array(array: Uint8Array) {
     super.writeUint8Array(array)
-    this.blob = new Blob([this.blob, array.buffer], { type: this.contentType })
+    this.blob = new Blob([this.blob, array.buffer as ArrayBuffer], { type: this.contentType })
     this.offset = this.blob.size
     // Once the prefixLength is non-zero, the address of manifest and signature
     // become known and can be read in. Otherwise the header needs to be read
@@ -198,18 +198,21 @@ class OTAPayloadBlobWriter extends Writer {
         // The prefix has everything we need (header, manifest, signature). Once
         // the offset is beyond the prefix, no need to move on.
         this.blob = this.blob.slice(0, this.prefixLength)
-        throw new StopIteration()
+        this.abortController.abort()
       }
     }
   }
 
-  getData() {
-    return this.blob
+  async getData() {
+    return this.blob;
   }
+}
+class PayloadParseError extends Error {
+
 }
 
 export class Payload {
-  zipreader: ZipReader
+  zipreader: ZipReader<Blob>
   buffer: Blob | undefined
   private metadata: any
   payload_properties!: string[]
@@ -245,25 +248,24 @@ export class Payload {
    * Unzip the OTA package, get payload.bin and metadata
    */
   async unzip() {
-    let entries = await this.zipreader.getEntries()
+    let entries = (await this.zipreader.getEntries()).filter(e => !e.directory);
     for (let entry of entries) {
       if (entry.filename == 'payload.bin') {
         let writer = new OTAPayloadBlobWriter('')
         try {
-          await entry.getData!(writer)
+          await entry.getData(writer, { signal: writer.abortController.signal })
         } catch (e) {
-          if (e instanceof StopIteration) {
-            // Exception used as a hack to stop reading from zip. NO need to do anything
-            // Ideally zip.js would provide an API to partialll read a zip
-            // entry, but they don't. So this is what we get
-          } else {
+          if (!writer.blob) {
             console.log(e)
             throw e
           }
         }
-        this.buffer = writer.getData()
-        await this.readManifest(this.buffer, writer.header!)
-        console.log('AB OTA manifest parsed')
+        this.buffer = await writer.getData();
+        if (!this.buffer) {
+          throw new PayloadParseError("payload.bin is invalid")
+        }
+        await this.readManifest(this.buffer, writer.header!);
+        console.log('AB OTA manifest parsed');
       } else if (entry.filename == 'META-INF/com/android/metadata') {
         this.metadata = await entry.getData!(new TextWriter())
         console.log('OTA Package metadata parsed')
@@ -276,23 +278,18 @@ export class Payload {
     }
     if (!this.manifest) {
       console.log('Failed to parse AB OTA package, falling back to non-AB')
-      try {
-        // The temporary variable manifest has to be used here, to prevent the html page
-        // being rendered before everything is read in properly
-        let manifest = new PayloadNonAB(this.zipreader)
-        await manifest.init()
-        manifest.nonAB = true
-        this.manifest = manifest
-      } catch (error) {
-        alert('Please select a legit OTA package')
-        return
-      }
+      // The temporary variable manifest has to be used here, to prevent the html page
+      // being rendered before everything is read in properly
+      let manifest = new PayloadNonAB(this.zipreader)
+      await manifest.init()
+      manifest.nonAB = true
+      this.manifest = manifest
     }
   }
 
   getPayloadHash() {
     const file_hash_prefix = "FILE_HASH=";
-    for(let line of this.payload_properties) {
+    for (let line of this.payload_properties) {
       if (line.startsWith(file_hash_prefix)) {
         return base64ToBytes(line.substring(file_hash_prefix.length));
       }
@@ -385,7 +382,7 @@ export class MergeOpType {
    */
   constructor() {
     let /** Array<{String: Number}>*/ types =
-        update_metadata_pb.CowMergeOperation.Type
+      update_metadata_pb.CowMergeOperation.Type
     this.mapType = new DefaultMap()
     for (let key of Object.keys(types)) {
       this.mapType.set(types[key as any], key)

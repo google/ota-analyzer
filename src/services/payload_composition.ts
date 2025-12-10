@@ -72,7 +72,7 @@ function partitionPayloadSize(
   }
   let size = 0
   for (let op of partition.operations!) {
-    size += op.dataLength
+    size += op.dataLength || 0
   }
   return size
 }
@@ -104,7 +104,7 @@ export function mergeOperationStatistics(
       addNumberToMap(
         mergeOperations,
         operationType,
-        operation.dstExtent!.numBlocks
+        operation.dstExtent!.numBlocks || 0
       )
     }
     // The total blocks number should be rounded up
@@ -113,7 +113,7 @@ export function mergeOperationStatistics(
         `Partition ${partition.partitionName} doesn't have new_partition_info field.`
       )
     }
-    totalBlocks += Math.ceil(partition.newPartitionInfo.size / blockSize)
+    totalBlocks += Math.ceil(partition.newPartitionInfo.size! / blockSize)
   }
   // The COW merge operation is default to be COW_replace and not shown in
   // the manifest info. We have to mannually add that part of operations,
@@ -138,7 +138,7 @@ export function operatedPayloadStatistics(
   for (let partition of partitions) {
     for (let operation of partition.operations!) {
       let operationType = opType.mapType.getWithDefault(operation.type)
-      addNumberToMap(operatedBlocks, operationType, operation.dataLength)
+      addNumberToMap(operatedBlocks, operationType, operation.dataLength || 0)
     }
   }
   return operatedBlocks
@@ -192,7 +192,7 @@ export async function operatedFilenamesStatistics(
   for (let partition of partitions) {
     await buildMap.add(
       partition.partitionName,
-      Math.ceil(partition.newPartitionInfo!.size / blockSize)
+      Math.ceil((partition.newPartitionInfo!.size || 0) / blockSize)
     )
     for (let operation of partition.operations!) {
       if (!operation.hasOwnProperty('dataLength')) continue
@@ -203,7 +203,7 @@ export async function operatedFilenamesStatistics(
       let extentDataLength = distributeFilenames(
         operatedFileNames,
         operation.dstExtents!,
-        operation.dataLength
+        operation.dataLength || 0
       )
       extentDataLength!.forEach((value, key) => {
         addNumberToMap(operatedFilenames, key, value)
@@ -310,7 +310,7 @@ export function numBlocks(
     return 0
   }
   const accumulator = (total: number, ext: chromeos_update_engine.IExtent) =>
-    total + ext.numBlocks
+    total + (ext.numBlocks || 0)
   return exts.reduce(accumulator, 0)
 }
 
@@ -346,7 +346,7 @@ export function distributeFilenames(
     addNumberToMap(
       distributedLengths,
       filenames[i],
-      Math.round((length * exts[i].numBlocks) / totalBlocks)
+      Math.round((length * (exts[i].numBlocks || 0)) / totalBlocks)
     )
   }
   return distributedLengths

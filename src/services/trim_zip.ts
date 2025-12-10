@@ -1,9 +1,8 @@
-import * as zip from '@zip.js/zip.js/dist/zip.js'
-import { ZipReader } from '@zip.js/zip.js/dist/zip.js'
+import { ZipReader, ZipWriter, Entry, BlobWriter,BlobReader, FileEntry, HttpReader } from '@zip.js/zip.js'
 import { Payload } from './payload'
 
 export class ZipFile {
-  public reader: ZipReader
+  public reader: ZipReader<unknown>
 
   constructor(private file: File | URL) {
     this.reader = getZipReader(file)
@@ -22,17 +21,20 @@ export class ZipFile {
 }
 
 export async function trimZip(
-  file: ZipReader,
-  p: (entry: zip.Entry) => boolean
-): Promise<zip.ZipWriter> {
+  file: ZipReader<Blob>,
+  p: (entry: Entry) => boolean
+): Promise<ZipWriter<Blob>> {
   const reader = file
-  const writer = new zip.ZipWriter(new zip.BlobWriter('application/zip'))
+  const writer = new ZipWriter(new BlobWriter('application/zip'))
   const entries = await reader.getEntries()
   for (const entry of entries.filter(entry => !!entry && p(entry))) {
-    const blobWriter = new zip.BlobWriter()
-    const data = (await entry.getData!(blobWriter)) as Blob
+    if (entry.directory) {
+      continue;
+    }
+    const blobWriter = new BlobWriter()
+    const data = (await (entry as FileEntry).getData!(blobWriter)) as Blob
     console.log(`Adding ${entry.filename}, ${data.size}`)
-    writer.add(entry.filename, new zip.BlobReader(blobWriter.getData()), {
+    writer.add(entry.filename, new BlobReader(await blobWriter.getData()), {
       level: 0 // no compression
     })
   }
@@ -41,9 +43,9 @@ export async function trimZip(
 
 function getZipReader(file: File | URL) {
   if (file instanceof File) {
-    return new zip.ZipReader(new zip.BlobReader(file))
+    return new ZipReader(new BlobReader(file))
   } else {
-    return new zip.ZipReader(new zip.HttpReader(file.href))
+    return new ZipReader(new HttpReader(file.href))
   }
 }
 
@@ -68,7 +70,7 @@ export async function trimOTAPackage(payload: Payload): Promise<Blob> {
   })
   await writer.add(
     'payload.bin',
-    new zip.BlobReader(payload.buffer!.slice(0, payload.getMetadataLength())),
+    new BlobReader(payload.buffer!.slice(0, payload.getMetadataLength())),
     // Most toolings assume that payload.bin and other entries are not
     // compressed, so use level 0
     {

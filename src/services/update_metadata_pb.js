@@ -112,19 +112,23 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        Extent.decode = function decode(reader, length) {
+        Extent.decode = function decode(reader, length, error) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
             let end = length === undefined ? reader.len : reader.pos + length, message = new $root.chromeos_update_engine.Extent();
             while (reader.pos < end) {
                 let tag = reader.uint32();
+                if (tag === error)
+                    break;
                 switch (tag >>> 3) {
-                case 1:
-                    message.startBlock = reader.uint64();
-                    break;
-                case 2:
-                    message.numBlocks = reader.uint64();
-                    break;
+                case 1: {
+                        message.startBlock = reader.uint64();
+                        break;
+                    }
+                case 2: {
+                        message.numBlocks = reader.uint64();
+                        break;
+                    }
                 default:
                     reader.skipType(tag & 7);
                     break;
@@ -251,6 +255,21 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
             return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
         };
 
+        /**
+         * Gets the default type url for Extent
+         * @function getTypeUrl
+         * @memberof chromeos_update_engine.Extent
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        Extent.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/chromeos_update_engine.Extent";
+        };
+
         return Extent;
     })();
 
@@ -341,18 +360,21 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        Signatures.decode = function decode(reader, length) {
+        Signatures.decode = function decode(reader, length, error) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
             let end = length === undefined ? reader.len : reader.pos + length, message = new $root.chromeos_update_engine.Signatures();
             while (reader.pos < end) {
                 let tag = reader.uint32();
-                switch (tag >>> 3) {
-                case 1:
-                    if (!(message.signatures && message.signatures.length))
-                        message.signatures = [];
-                    message.signatures.push($root.chromeos_update_engine.Signatures.Signature.decode(reader, reader.uint32()));
+                if (tag === error)
                     break;
+                switch (tag >>> 3) {
+                case 1: {
+                        if (!(message.signatures && message.signatures.length))
+                            message.signatures = [];
+                        message.signatures.push($root.chromeos_update_engine.Signatures.Signature.decode(reader, reader.uint32()));
+                        break;
+                    }
                 default:
                     reader.skipType(tag & 7);
                     break;
@@ -457,6 +479,21 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
          */
         Signatures.prototype.toJSON = function toJSON() {
             return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for Signatures
+         * @function getTypeUrl
+         * @memberof chromeos_update_engine.Signatures
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        Signatures.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/chromeos_update_engine.Signatures";
         };
 
         Signatures.Signature = (function() {
@@ -566,22 +603,27 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            Signature.decode = function decode(reader, length) {
+            Signature.decode = function decode(reader, length, error) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
                 let end = length === undefined ? reader.len : reader.pos + length, message = new $root.chromeos_update_engine.Signatures.Signature();
                 while (reader.pos < end) {
                     let tag = reader.uint32();
+                    if (tag === error)
+                        break;
                     switch (tag >>> 3) {
-                    case 1:
-                        message.version = reader.uint32();
-                        break;
-                    case 2:
-                        message.data = reader.bytes();
-                        break;
-                    case 3:
-                        message.unpaddedSignatureSize = reader.fixed32();
-                        break;
+                    case 1: {
+                            message.version = reader.uint32();
+                            break;
+                        }
+                    case 2: {
+                            message.data = reader.bytes();
+                            break;
+                        }
+                    case 3: {
+                            message.unpaddedSignatureSize = reader.fixed32();
+                            break;
+                        }
                     default:
                         reader.skipType(tag & 7);
                         break;
@@ -646,7 +688,7 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
                 if (object.data != null)
                     if (typeof object.data === "string")
                         $util.base64.decode(object.data, message.data = $util.newBuffer($util.base64.length(object.data)), 0);
-                    else if (object.data.length)
+                    else if (object.data.length >= 0)
                         message.data = object.data;
                 if (object.unpaddedSignatureSize != null)
                     message.unpaddedSignatureSize = object.unpaddedSignatureSize >>> 0;
@@ -695,6 +737,21 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
              */
             Signature.prototype.toJSON = function toJSON() {
                 return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for Signature
+             * @function getTypeUrl
+             * @memberof chromeos_update_engine.Signatures.Signature
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            Signature.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/chromeos_update_engine.Signatures.Signature";
             };
 
             return Signature;
@@ -799,19 +856,23 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        PartitionInfo.decode = function decode(reader, length) {
+        PartitionInfo.decode = function decode(reader, length, error) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
             let end = length === undefined ? reader.len : reader.pos + length, message = new $root.chromeos_update_engine.PartitionInfo();
             while (reader.pos < end) {
                 let tag = reader.uint32();
+                if (tag === error)
+                    break;
                 switch (tag >>> 3) {
-                case 1:
-                    message.size = reader.uint64();
-                    break;
-                case 2:
-                    message.hash = reader.bytes();
-                    break;
+                case 1: {
+                        message.size = reader.uint64();
+                        break;
+                    }
+                case 2: {
+                        message.hash = reader.bytes();
+                        break;
+                    }
                 default:
                     reader.skipType(tag & 7);
                     break;
@@ -880,7 +941,7 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
             if (object.hash != null)
                 if (typeof object.hash === "string")
                     $util.base64.decode(object.hash, message.hash = $util.newBuffer($util.base64.length(object.hash)), 0);
-                else if (object.hash.length)
+                else if (object.hash.length >= 0)
                     message.hash = object.hash;
             return message;
         };
@@ -931,6 +992,21 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
          */
         PartitionInfo.prototype.toJSON = function toJSON() {
             return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for PartitionInfo
+         * @function getTypeUrl
+         * @memberof chromeos_update_engine.PartitionInfo
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        PartitionInfo.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/chromeos_update_engine.PartitionInfo";
         };
 
         return PartitionInfo;
@@ -1112,44 +1188,55 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        InstallOperation.decode = function decode(reader, length) {
+        InstallOperation.decode = function decode(reader, length, error) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
             let end = length === undefined ? reader.len : reader.pos + length, message = new $root.chromeos_update_engine.InstallOperation();
             while (reader.pos < end) {
                 let tag = reader.uint32();
+                if (tag === error)
+                    break;
                 switch (tag >>> 3) {
-                case 1:
-                    message.type = reader.int32();
-                    break;
-                case 2:
-                    message.dataOffset = reader.uint64();
-                    break;
-                case 3:
-                    message.dataLength = reader.uint64();
-                    break;
-                case 4:
-                    if (!(message.srcExtents && message.srcExtents.length))
-                        message.srcExtents = [];
-                    message.srcExtents.push($root.chromeos_update_engine.Extent.decode(reader, reader.uint32()));
-                    break;
-                case 5:
-                    message.srcLength = reader.uint64();
-                    break;
-                case 6:
-                    if (!(message.dstExtents && message.dstExtents.length))
-                        message.dstExtents = [];
-                    message.dstExtents.push($root.chromeos_update_engine.Extent.decode(reader, reader.uint32()));
-                    break;
-                case 7:
-                    message.dstLength = reader.uint64();
-                    break;
-                case 8:
-                    message.dataSha256Hash = reader.bytes();
-                    break;
-                case 9:
-                    message.srcSha256Hash = reader.bytes();
-                    break;
+                case 1: {
+                        message.type = reader.int32();
+                        break;
+                    }
+                case 2: {
+                        message.dataOffset = reader.uint64();
+                        break;
+                    }
+                case 3: {
+                        message.dataLength = reader.uint64();
+                        break;
+                    }
+                case 4: {
+                        if (!(message.srcExtents && message.srcExtents.length))
+                            message.srcExtents = [];
+                        message.srcExtents.push($root.chromeos_update_engine.Extent.decode(reader, reader.uint32()));
+                        break;
+                    }
+                case 5: {
+                        message.srcLength = reader.uint64();
+                        break;
+                    }
+                case 6: {
+                        if (!(message.dstExtents && message.dstExtents.length))
+                            message.dstExtents = [];
+                        message.dstExtents.push($root.chromeos_update_engine.Extent.decode(reader, reader.uint32()));
+                        break;
+                    }
+                case 7: {
+                        message.dstLength = reader.uint64();
+                        break;
+                    }
+                case 8: {
+                        message.dataSha256Hash = reader.bytes();
+                        break;
+                    }
+                case 9: {
+                        message.srcSha256Hash = reader.bytes();
+                        break;
+                    }
                 default:
                     reader.skipType(tag & 7);
                     break;
@@ -1204,6 +1291,7 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
             case 11:
             case 12:
             case 13:
+            case 14:
                 break;
             }
             if (message.dataOffset != null && message.hasOwnProperty("dataOffset"))
@@ -1258,6 +1346,12 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
                 return object;
             let message = new $root.chromeos_update_engine.InstallOperation();
             switch (object.type) {
+            default:
+                if (typeof object.type === "number") {
+                    message.type = object.type;
+                    break;
+                }
+                break;
             case "REPLACE":
             case 0:
                 message.type = 0;
@@ -1313,6 +1407,10 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
             case "LZ4DIFF_PUFFDIFF":
             case 13:
                 message.type = 13;
+                break;
+            case "REPLACE_ZSTD":
+            case 14:
+                message.type = 14;
                 break;
             }
             if (object.dataOffset != null)
@@ -1374,12 +1472,12 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
             if (object.dataSha256Hash != null)
                 if (typeof object.dataSha256Hash === "string")
                     $util.base64.decode(object.dataSha256Hash, message.dataSha256Hash = $util.newBuffer($util.base64.length(object.dataSha256Hash)), 0);
-                else if (object.dataSha256Hash.length)
+                else if (object.dataSha256Hash.length >= 0)
                     message.dataSha256Hash = object.dataSha256Hash;
             if (object.srcSha256Hash != null)
                 if (typeof object.srcSha256Hash === "string")
                     $util.base64.decode(object.srcSha256Hash, message.srcSha256Hash = $util.newBuffer($util.base64.length(object.srcSha256Hash)), 0);
-                else if (object.srcSha256Hash.length)
+                else if (object.srcSha256Hash.length >= 0)
                     message.srcSha256Hash = object.srcSha256Hash;
             return message;
         };
@@ -1439,7 +1537,7 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
                 }
             }
             if (message.type != null && message.hasOwnProperty("type"))
-                object.type = options.enums === String ? $root.chromeos_update_engine.InstallOperation.Type[message.type] : message.type;
+                object.type = options.enums === String ? $root.chromeos_update_engine.InstallOperation.Type[message.type] === undefined ? message.type : $root.chromeos_update_engine.InstallOperation.Type[message.type] : message.type;
             if (message.dataOffset != null && message.hasOwnProperty("dataOffset"))
                 if (typeof message.dataOffset === "number")
                     object.dataOffset = options.longs === String ? String(message.dataOffset) : message.dataOffset;
@@ -1489,6 +1587,21 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
         };
 
         /**
+         * Gets the default type url for InstallOperation
+         * @function getTypeUrl
+         * @memberof chromeos_update_engine.InstallOperation
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        InstallOperation.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/chromeos_update_engine.InstallOperation";
+        };
+
+        /**
          * Type enum.
          * @name chromeos_update_engine.InstallOperation.Type
          * @enum {number}
@@ -1506,6 +1619,7 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
          * @property {number} ZUCCHINI=11 ZUCCHINI value
          * @property {number} LZ4DIFF_BSDIFF=12 LZ4DIFF_BSDIFF value
          * @property {number} LZ4DIFF_PUFFDIFF=13 LZ4DIFF_PUFFDIFF value
+         * @property {number} REPLACE_ZSTD=14 REPLACE_ZSTD value
          */
         InstallOperation.Type = (function() {
             const valuesById = {}, values = Object.create(valuesById);
@@ -1523,6 +1637,7 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
             values[valuesById[11] = "ZUCCHINI"] = 11;
             values[valuesById[12] = "LZ4DIFF_BSDIFF"] = 12;
             values[valuesById[13] = "LZ4DIFF_PUFFDIFF"] = 13;
+            values[valuesById[14] = "REPLACE_ZSTD"] = 14;
             return values;
         })();
 
@@ -1647,25 +1762,31 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        CowMergeOperation.decode = function decode(reader, length) {
+        CowMergeOperation.decode = function decode(reader, length, error) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
             let end = length === undefined ? reader.len : reader.pos + length, message = new $root.chromeos_update_engine.CowMergeOperation();
             while (reader.pos < end) {
                 let tag = reader.uint32();
+                if (tag === error)
+                    break;
                 switch (tag >>> 3) {
-                case 1:
-                    message.type = reader.int32();
-                    break;
-                case 2:
-                    message.srcExtent = $root.chromeos_update_engine.Extent.decode(reader, reader.uint32());
-                    break;
-                case 3:
-                    message.dstExtent = $root.chromeos_update_engine.Extent.decode(reader, reader.uint32());
-                    break;
-                case 4:
-                    message.srcOffset = reader.uint32();
-                    break;
+                case 1: {
+                        message.type = reader.int32();
+                        break;
+                    }
+                case 2: {
+                        message.srcExtent = $root.chromeos_update_engine.Extent.decode(reader, reader.uint32());
+                        break;
+                    }
+                case 3: {
+                        message.dstExtent = $root.chromeos_update_engine.Extent.decode(reader, reader.uint32());
+                        break;
+                    }
+                case 4: {
+                        message.srcOffset = reader.uint32();
+                        break;
+                    }
                 default:
                     reader.skipType(tag & 7);
                     break;
@@ -1739,6 +1860,12 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
                 return object;
             let message = new $root.chromeos_update_engine.CowMergeOperation();
             switch (object.type) {
+            default:
+                if (typeof object.type === "number") {
+                    message.type = object.type;
+                    break;
+                }
+                break;
             case "COW_COPY":
             case 0:
                 message.type = 0;
@@ -1787,7 +1914,7 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
                 object.srcOffset = 0;
             }
             if (message.type != null && message.hasOwnProperty("type"))
-                object.type = options.enums === String ? $root.chromeos_update_engine.CowMergeOperation.Type[message.type] : message.type;
+                object.type = options.enums === String ? $root.chromeos_update_engine.CowMergeOperation.Type[message.type] === undefined ? message.type : $root.chromeos_update_engine.CowMergeOperation.Type[message.type] : message.type;
             if (message.srcExtent != null && message.hasOwnProperty("srcExtent"))
                 object.srcExtent = $root.chromeos_update_engine.Extent.toObject(message.srcExtent, options);
             if (message.dstExtent != null && message.hasOwnProperty("dstExtent"))
@@ -1806,6 +1933,21 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
          */
         CowMergeOperation.prototype.toJSON = function toJSON() {
             return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for CowMergeOperation
+         * @function getTypeUrl
+         * @memberof chromeos_update_engine.CowMergeOperation
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        CowMergeOperation.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/chromeos_update_engine.CowMergeOperation";
         };
 
         /**
@@ -2126,79 +2268,101 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        PartitionUpdate.decode = function decode(reader, length) {
+        PartitionUpdate.decode = function decode(reader, length, error) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
             let end = length === undefined ? reader.len : reader.pos + length, message = new $root.chromeos_update_engine.PartitionUpdate();
             while (reader.pos < end) {
                 let tag = reader.uint32();
+                if (tag === error)
+                    break;
                 switch (tag >>> 3) {
-                case 1:
-                    message.partitionName = reader.string();
-                    break;
-                case 2:
-                    message.runPostinstall = reader.bool();
-                    break;
-                case 3:
-                    message.postinstallPath = reader.string();
-                    break;
-                case 4:
-                    message.filesystemType = reader.string();
-                    break;
-                case 5:
-                    if (!(message.newPartitionSignature && message.newPartitionSignature.length))
-                        message.newPartitionSignature = [];
-                    message.newPartitionSignature.push($root.chromeos_update_engine.Signatures.Signature.decode(reader, reader.uint32()));
-                    break;
-                case 6:
-                    message.oldPartitionInfo = $root.chromeos_update_engine.PartitionInfo.decode(reader, reader.uint32());
-                    break;
-                case 7:
-                    message.newPartitionInfo = $root.chromeos_update_engine.PartitionInfo.decode(reader, reader.uint32());
-                    break;
-                case 8:
-                    if (!(message.operations && message.operations.length))
-                        message.operations = [];
-                    message.operations.push($root.chromeos_update_engine.InstallOperation.decode(reader, reader.uint32()));
-                    break;
-                case 9:
-                    message.postinstallOptional = reader.bool();
-                    break;
-                case 10:
-                    message.hashTreeDataExtent = $root.chromeos_update_engine.Extent.decode(reader, reader.uint32());
-                    break;
-                case 11:
-                    message.hashTreeExtent = $root.chromeos_update_engine.Extent.decode(reader, reader.uint32());
-                    break;
-                case 12:
-                    message.hashTreeAlgorithm = reader.string();
-                    break;
-                case 13:
-                    message.hashTreeSalt = reader.bytes();
-                    break;
-                case 14:
-                    message.fecDataExtent = $root.chromeos_update_engine.Extent.decode(reader, reader.uint32());
-                    break;
-                case 15:
-                    message.fecExtent = $root.chromeos_update_engine.Extent.decode(reader, reader.uint32());
-                    break;
-                case 16:
-                    message.fecRoots = reader.uint32();
-                    break;
-                case 17:
-                    message.version = reader.string();
-                    break;
-                case 18:
-                    if (!(message.mergeOperations && message.mergeOperations.length))
-                        message.mergeOperations = [];
-                    message.mergeOperations.push($root.chromeos_update_engine.CowMergeOperation.decode(reader, reader.uint32()));
-                    break;
-                case 19:
-                    message.estimateCowSize = reader.uint64();
-                    break;
-                case 20:
-                    message.estimateOpCountMax = reader.uint64();
-                    break;
+                case 1: {
+                        message.partitionName = reader.string();
+                        break;
+                    }
+                case 2: {
+                        message.runPostinstall = reader.bool();
+                        break;
+                    }
+                case 3: {
+                        message.postinstallPath = reader.string();
+                        break;
+                    }
+                case 4: {
+                        message.filesystemType = reader.string();
+                        break;
+                    }
+                case 5: {
+                        if (!(message.newPartitionSignature && message.newPartitionSignature.length))
+                            message.newPartitionSignature = [];
+                        message.newPartitionSignature.push($root.chromeos_update_engine.Signatures.Signature.decode(reader, reader.uint32()));
+                        break;
+                    }
+                case 6: {
+                        message.oldPartitionInfo = $root.chromeos_update_engine.PartitionInfo.decode(reader, reader.uint32());
+                        break;
+                    }
+                case 7: {
+                        message.newPartitionInfo = $root.chromeos_update_engine.PartitionInfo.decode(reader, reader.uint32());
+                        break;
+                    }
+                case 8: {
+                        if (!(message.operations && message.operations.length))
+                            message.operations = [];
+                        message.operations.push($root.chromeos_update_engine.InstallOperation.decode(reader, reader.uint32()));
+                        break;
+                    }
+                case 9: {
+                        message.postinstallOptional = reader.bool();
+                        break;
+                    }
+                case 10: {
+                        message.hashTreeDataExtent = $root.chromeos_update_engine.Extent.decode(reader, reader.uint32());
+                        break;
+                    }
+                case 11: {
+                        message.hashTreeExtent = $root.chromeos_update_engine.Extent.decode(reader, reader.uint32());
+                        break;
+                    }
+                case 12: {
+                        message.hashTreeAlgorithm = reader.string();
+                        break;
+                    }
+                case 13: {
+                        message.hashTreeSalt = reader.bytes();
+                        break;
+                    }
+                case 14: {
+                        message.fecDataExtent = $root.chromeos_update_engine.Extent.decode(reader, reader.uint32());
+                        break;
+                    }
+                case 15: {
+                        message.fecExtent = $root.chromeos_update_engine.Extent.decode(reader, reader.uint32());
+                        break;
+                    }
+                case 16: {
+                        message.fecRoots = reader.uint32();
+                        break;
+                    }
+                case 17: {
+                        message.version = reader.string();
+                        break;
+                    }
+                case 18: {
+                        if (!(message.mergeOperations && message.mergeOperations.length))
+                            message.mergeOperations = [];
+                        message.mergeOperations.push($root.chromeos_update_engine.CowMergeOperation.decode(reader, reader.uint32()));
+                        break;
+                    }
+                case 19: {
+                        message.estimateCowSize = reader.uint64();
+                        break;
+                    }
+                case 20: {
+                        message.estimateOpCountMax = reader.uint64();
+                        break;
+                    }
                 default:
                     reader.skipType(tag & 7);
                     break;
@@ -2395,7 +2559,7 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
             if (object.hashTreeSalt != null)
                 if (typeof object.hashTreeSalt === "string")
                     $util.base64.decode(object.hashTreeSalt, message.hashTreeSalt = $util.newBuffer($util.base64.length(object.hashTreeSalt)), 0);
-                else if (object.hashTreeSalt.length)
+                else if (object.hashTreeSalt.length >= 0)
                     message.hashTreeSalt = object.hashTreeSalt;
             if (object.fecDataExtent != null) {
                 if (typeof object.fecDataExtent !== "object")
@@ -2562,6 +2726,21 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
             return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
         };
 
+        /**
+         * Gets the default type url for PartitionUpdate
+         * @function getTypeUrl
+         * @memberof chromeos_update_engine.PartitionUpdate
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        PartitionUpdate.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/chromeos_update_engine.PartitionUpdate";
+        };
+
         return PartitionUpdate;
     })();
 
@@ -2673,24 +2852,29 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        DynamicPartitionGroup.decode = function decode(reader, length) {
+        DynamicPartitionGroup.decode = function decode(reader, length, error) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
             let end = length === undefined ? reader.len : reader.pos + length, message = new $root.chromeos_update_engine.DynamicPartitionGroup();
             while (reader.pos < end) {
                 let tag = reader.uint32();
+                if (tag === error)
+                    break;
                 switch (tag >>> 3) {
-                case 1:
-                    message.name = reader.string();
-                    break;
-                case 2:
-                    message.size = reader.uint64();
-                    break;
-                case 3:
-                    if (!(message.partitionNames && message.partitionNames.length))
-                        message.partitionNames = [];
-                    message.partitionNames.push(reader.string());
-                    break;
+                case 1: {
+                        message.name = reader.string();
+                        break;
+                    }
+                case 2: {
+                        message.size = reader.uint64();
+                        break;
+                    }
+                case 3: {
+                        if (!(message.partitionNames && message.partitionNames.length))
+                            message.partitionNames = [];
+                        message.partitionNames.push(reader.string());
+                        break;
+                    }
                 default:
                     reader.skipType(tag & 7);
                     break;
@@ -2825,6 +3009,21 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
             return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
         };
 
+        /**
+         * Gets the default type url for DynamicPartitionGroup
+         * @function getTypeUrl
+         * @memberof chromeos_update_engine.DynamicPartitionGroup
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        DynamicPartitionGroup.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/chromeos_update_engine.DynamicPartitionGroup";
+        };
+
         return DynamicPartitionGroup;
     })();
 
@@ -2924,19 +3123,23 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        VABCFeatureSet.decode = function decode(reader, length) {
+        VABCFeatureSet.decode = function decode(reader, length, error) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
             let end = length === undefined ? reader.len : reader.pos + length, message = new $root.chromeos_update_engine.VABCFeatureSet();
             while (reader.pos < end) {
                 let tag = reader.uint32();
+                if (tag === error)
+                    break;
                 switch (tag >>> 3) {
-                case 1:
-                    message.threaded = reader.bool();
-                    break;
-                case 2:
-                    message.batchWrites = reader.bool();
-                    break;
+                case 1: {
+                        message.threaded = reader.bool();
+                        break;
+                    }
+                case 2: {
+                        message.batchWrites = reader.bool();
+                        break;
+                    }
                 default:
                     reader.skipType(tag & 7);
                     break;
@@ -3035,6 +3238,21 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
             return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
         };
 
+        /**
+         * Gets the default type url for VABCFeatureSet
+         * @function getTypeUrl
+         * @memberof chromeos_update_engine.VABCFeatureSet
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        VABCFeatureSet.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/chromeos_update_engine.VABCFeatureSet";
+        };
+
         return VABCFeatureSet;
     })();
 
@@ -3051,6 +3269,7 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
          * @property {number|null} [cowVersion] DynamicPartitionMetadata cowVersion
          * @property {chromeos_update_engine.IVABCFeatureSet|null} [vabcFeatureSet] DynamicPartitionMetadata vabcFeatureSet
          * @property {number|Long|null} [compressionFactor] DynamicPartitionMetadata compressionFactor
+         * @property {boolean|null} [disableUblk] DynamicPartitionMetadata disableUblk
          */
 
         /**
@@ -3126,6 +3345,14 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
         DynamicPartitionMetadata.prototype.compressionFactor = $util.Long ? $util.Long.fromBits(0,0,true) : 0;
 
         /**
+         * DynamicPartitionMetadata disableUblk.
+         * @member {boolean} disableUblk
+         * @memberof chromeos_update_engine.DynamicPartitionMetadata
+         * @instance
+         */
+        DynamicPartitionMetadata.prototype.disableUblk = false;
+
+        /**
          * Creates a new DynamicPartitionMetadata instance using the specified properties.
          * @function create
          * @memberof chromeos_update_engine.DynamicPartitionMetadata
@@ -3164,6 +3391,8 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
                 $root.chromeos_update_engine.VABCFeatureSet.encode(message.vabcFeatureSet, writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
             if (message.compressionFactor != null && Object.hasOwnProperty.call(message, "compressionFactor"))
                 writer.uint32(/* id 7, wireType 0 =*/56).uint64(message.compressionFactor);
+            if (message.disableUblk != null && Object.hasOwnProperty.call(message, "disableUblk"))
+                writer.uint32(/* id 8, wireType 0 =*/64).bool(message.disableUblk);
             return writer;
         };
 
@@ -3191,36 +3420,49 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        DynamicPartitionMetadata.decode = function decode(reader, length) {
+        DynamicPartitionMetadata.decode = function decode(reader, length, error) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
             let end = length === undefined ? reader.len : reader.pos + length, message = new $root.chromeos_update_engine.DynamicPartitionMetadata();
             while (reader.pos < end) {
                 let tag = reader.uint32();
+                if (tag === error)
+                    break;
                 switch (tag >>> 3) {
-                case 1:
-                    if (!(message.groups && message.groups.length))
-                        message.groups = [];
-                    message.groups.push($root.chromeos_update_engine.DynamicPartitionGroup.decode(reader, reader.uint32()));
-                    break;
-                case 2:
-                    message.snapshotEnabled = reader.bool();
-                    break;
-                case 3:
-                    message.vabcEnabled = reader.bool();
-                    break;
-                case 4:
-                    message.vabcCompressionParam = reader.string();
-                    break;
-                case 5:
-                    message.cowVersion = reader.uint32();
-                    break;
-                case 6:
-                    message.vabcFeatureSet = $root.chromeos_update_engine.VABCFeatureSet.decode(reader, reader.uint32());
-                    break;
-                case 7:
-                    message.compressionFactor = reader.uint64();
-                    break;
+                case 1: {
+                        if (!(message.groups && message.groups.length))
+                            message.groups = [];
+                        message.groups.push($root.chromeos_update_engine.DynamicPartitionGroup.decode(reader, reader.uint32()));
+                        break;
+                    }
+                case 2: {
+                        message.snapshotEnabled = reader.bool();
+                        break;
+                    }
+                case 3: {
+                        message.vabcEnabled = reader.bool();
+                        break;
+                    }
+                case 4: {
+                        message.vabcCompressionParam = reader.string();
+                        break;
+                    }
+                case 5: {
+                        message.cowVersion = reader.uint32();
+                        break;
+                    }
+                case 6: {
+                        message.vabcFeatureSet = $root.chromeos_update_engine.VABCFeatureSet.decode(reader, reader.uint32());
+                        break;
+                    }
+                case 7: {
+                        message.compressionFactor = reader.uint64();
+                        break;
+                    }
+                case 8: {
+                        message.disableUblk = reader.bool();
+                        break;
+                    }
                 default:
                     reader.skipType(tag & 7);
                     break;
@@ -3285,6 +3527,9 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
             if (message.compressionFactor != null && message.hasOwnProperty("compressionFactor"))
                 if (!$util.isInteger(message.compressionFactor) && !(message.compressionFactor && $util.isInteger(message.compressionFactor.low) && $util.isInteger(message.compressionFactor.high)))
                     return "compressionFactor: integer|Long expected";
+            if (message.disableUblk != null && message.hasOwnProperty("disableUblk"))
+                if (typeof message.disableUblk !== "boolean")
+                    return "disableUblk: boolean expected";
             return null;
         };
 
@@ -3332,6 +3577,8 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
                     message.compressionFactor = object.compressionFactor;
                 else if (typeof object.compressionFactor === "object")
                     message.compressionFactor = new $util.LongBits(object.compressionFactor.low >>> 0, object.compressionFactor.high >>> 0).toNumber(true);
+            if (object.disableUblk != null)
+                message.disableUblk = Boolean(object.disableUblk);
             return message;
         };
 
@@ -3361,6 +3608,7 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
                     object.compressionFactor = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
                 } else
                     object.compressionFactor = options.longs === String ? "0" : 0;
+                object.disableUblk = false;
             }
             if (message.groups && message.groups.length) {
                 object.groups = [];
@@ -3382,6 +3630,8 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
                     object.compressionFactor = options.longs === String ? String(message.compressionFactor) : message.compressionFactor;
                 else
                     object.compressionFactor = options.longs === String ? $util.Long.prototype.toString.call(message.compressionFactor) : options.longs === Number ? new $util.LongBits(message.compressionFactor.low >>> 0, message.compressionFactor.high >>> 0).toNumber(true) : message.compressionFactor;
+            if (message.disableUblk != null && message.hasOwnProperty("disableUblk"))
+                object.disableUblk = message.disableUblk;
             return object;
         };
 
@@ -3394,6 +3644,21 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
          */
         DynamicPartitionMetadata.prototype.toJSON = function toJSON() {
             return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for DynamicPartitionMetadata
+         * @function getTypeUrl
+         * @memberof chromeos_update_engine.DynamicPartitionMetadata
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        DynamicPartitionMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/chromeos_update_engine.DynamicPartitionMetadata";
         };
 
         return DynamicPartitionMetadata;
@@ -3517,25 +3782,31 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        ApexInfo.decode = function decode(reader, length) {
+        ApexInfo.decode = function decode(reader, length, error) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
             let end = length === undefined ? reader.len : reader.pos + length, message = new $root.chromeos_update_engine.ApexInfo();
             while (reader.pos < end) {
                 let tag = reader.uint32();
+                if (tag === error)
+                    break;
                 switch (tag >>> 3) {
-                case 1:
-                    message.packageName = reader.string();
-                    break;
-                case 2:
-                    message.version = reader.int64();
-                    break;
-                case 3:
-                    message.isCompressed = reader.bool();
-                    break;
-                case 4:
-                    message.decompressedSize = reader.int64();
-                    break;
+                case 1: {
+                        message.packageName = reader.string();
+                        break;
+                    }
+                case 2: {
+                        message.version = reader.int64();
+                        break;
+                    }
+                case 3: {
+                        message.isCompressed = reader.bool();
+                        break;
+                    }
+                case 4: {
+                        message.decompressedSize = reader.int64();
+                        break;
+                    }
                 default:
                     reader.skipType(tag & 7);
                     break;
@@ -3678,6 +3949,21 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
             return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
         };
 
+        /**
+         * Gets the default type url for ApexInfo
+         * @function getTypeUrl
+         * @memberof chromeos_update_engine.ApexInfo
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        ApexInfo.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/chromeos_update_engine.ApexInfo";
+        };
+
         return ApexInfo;
     })();
 
@@ -3768,18 +4054,21 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        ApexMetadata.decode = function decode(reader, length) {
+        ApexMetadata.decode = function decode(reader, length, error) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
             let end = length === undefined ? reader.len : reader.pos + length, message = new $root.chromeos_update_engine.ApexMetadata();
             while (reader.pos < end) {
                 let tag = reader.uint32();
-                switch (tag >>> 3) {
-                case 1:
-                    if (!(message.apexInfo && message.apexInfo.length))
-                        message.apexInfo = [];
-                    message.apexInfo.push($root.chromeos_update_engine.ApexInfo.decode(reader, reader.uint32()));
+                if (tag === error)
                     break;
+                switch (tag >>> 3) {
+                case 1: {
+                        if (!(message.apexInfo && message.apexInfo.length))
+                            message.apexInfo = [];
+                        message.apexInfo.push($root.chromeos_update_engine.ApexInfo.decode(reader, reader.uint32()));
+                        break;
+                    }
                 default:
                     reader.skipType(tag & 7);
                     break;
@@ -3884,6 +4173,21 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
          */
         ApexMetadata.prototype.toJSON = function toJSON() {
             return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for ApexMetadata
+         * @function getTypeUrl
+         * @memberof chromeos_update_engine.ApexMetadata
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        ApexMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/chromeos_update_engine.ApexMetadata";
         };
 
         return ApexMetadata;
@@ -4077,47 +4381,59 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        DeltaArchiveManifest.decode = function decode(reader, length) {
+        DeltaArchiveManifest.decode = function decode(reader, length, error) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
             let end = length === undefined ? reader.len : reader.pos + length, message = new $root.chromeos_update_engine.DeltaArchiveManifest();
             while (reader.pos < end) {
                 let tag = reader.uint32();
+                if (tag === error)
+                    break;
                 switch (tag >>> 3) {
-                case 3:
-                    message.blockSize = reader.uint32();
-                    break;
-                case 4:
-                    message.signaturesOffset = reader.uint64();
-                    break;
-                case 5:
-                    message.signaturesSize = reader.uint64();
-                    break;
-                case 12:
-                    message.minorVersion = reader.uint32();
-                    break;
-                case 13:
-                    if (!(message.partitions && message.partitions.length))
-                        message.partitions = [];
-                    message.partitions.push($root.chromeos_update_engine.PartitionUpdate.decode(reader, reader.uint32()));
-                    break;
-                case 14:
-                    message.maxTimestamp = reader.int64();
-                    break;
-                case 15:
-                    message.dynamicPartitionMetadata = $root.chromeos_update_engine.DynamicPartitionMetadata.decode(reader, reader.uint32());
-                    break;
-                case 16:
-                    message.partialUpdate = reader.bool();
-                    break;
-                case 17:
-                    if (!(message.apexInfo && message.apexInfo.length))
-                        message.apexInfo = [];
-                    message.apexInfo.push($root.chromeos_update_engine.ApexInfo.decode(reader, reader.uint32()));
-                    break;
-                case 18:
-                    message.securityPatchLevel = reader.string();
-                    break;
+                case 3: {
+                        message.blockSize = reader.uint32();
+                        break;
+                    }
+                case 4: {
+                        message.signaturesOffset = reader.uint64();
+                        break;
+                    }
+                case 5: {
+                        message.signaturesSize = reader.uint64();
+                        break;
+                    }
+                case 12: {
+                        message.minorVersion = reader.uint32();
+                        break;
+                    }
+                case 13: {
+                        if (!(message.partitions && message.partitions.length))
+                            message.partitions = [];
+                        message.partitions.push($root.chromeos_update_engine.PartitionUpdate.decode(reader, reader.uint32()));
+                        break;
+                    }
+                case 14: {
+                        message.maxTimestamp = reader.int64();
+                        break;
+                    }
+                case 15: {
+                        message.dynamicPartitionMetadata = $root.chromeos_update_engine.DynamicPartitionMetadata.decode(reader, reader.uint32());
+                        break;
+                    }
+                case 16: {
+                        message.partialUpdate = reader.bool();
+                        break;
+                    }
+                case 17: {
+                        if (!(message.apexInfo && message.apexInfo.length))
+                            message.apexInfo = [];
+                        message.apexInfo.push($root.chromeos_update_engine.ApexInfo.decode(reader, reader.uint32()));
+                        break;
+                    }
+                case 18: {
+                        message.securityPatchLevel = reader.string();
+                        break;
+                    }
                 default:
                     reader.skipType(tag & 7);
                     break;
@@ -4361,6 +4677,21 @@ export const chromeos_update_engine = $root.chromeos_update_engine = (() => {
          */
         DeltaArchiveManifest.prototype.toJSON = function toJSON() {
             return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for DeltaArchiveManifest
+         * @function getTypeUrl
+         * @memberof chromeos_update_engine.DeltaArchiveManifest
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        DeltaArchiveManifest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/chromeos_update_engine.DeltaArchiveManifest";
         };
 
         return DeltaArchiveManifest;

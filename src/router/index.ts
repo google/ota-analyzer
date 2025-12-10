@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createMemoryHistory } from 'vue-router'
 import PackageAnalysis from '@/views/PackageAnalysis.vue'
 import Demo from'@/views/Demo.vue'
 import About from '@/views/About.vue'
@@ -47,7 +47,7 @@ const routes = [
 ]
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createMemoryHistory(),
   routes
 })
 

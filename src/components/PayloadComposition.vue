@@ -26,17 +26,17 @@
   <v-divider />
   <v-row>
     <v-col cols="12" md="4">
-      <v-btn block @click="updateChart('blocks')">
-        Analyse Installed Blocks (in target build)
+      <v-btn @click="updateChart('blocks')">
+        Analyse Installed Blocks
       </v-btn>
     </v-col>
     <v-col cols="12" md="4">
-      <v-btn block @click="updateChart('payload')">
+      <v-btn @click="updateChart('payload')">
         Analyse Payload Composition
       </v-btn>
     </v-col>
     <v-col cols="12" md="4">
-      <v-btn block @click="updateChart('partitions')">
+      <v-btn @click="updateChart('partitions')">
         Analyse Partition Payload Composition
       </v-btn>
     </v-col>
@@ -187,6 +187,11 @@ export default defineComponent({
 </script>
 
 <style scoped>
+
+:deep(.v-btn__content) {
+  white-space: pre-wrap;
+}
+
 .list-data {
   text-align: center;
 }

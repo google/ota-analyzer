@@ -16,7 +16,7 @@
 
 <template>
   <v-row>
-    <v-alert style="color: yellow;">
+    <v-alert type="info">
       Your files will not be uploaded anywhere. All analysis are done in the frontend using Javascript.
     </v-alert>
   </v-row>

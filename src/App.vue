@@ -18,7 +18,6 @@
   <v-app>
     <v-app-bar
       rounded
-      color="primary"
     >
       <v-app-bar-title> OTA Analyzer </v-app-bar-title>
       <v-spacer />
@@ -27,7 +26,6 @@
         :key="`${link}-header-link`"
         :to="{ name: link }"
         class="ml-5"
-        color="primary"
       >
         {{ link }}
       </v-btn>

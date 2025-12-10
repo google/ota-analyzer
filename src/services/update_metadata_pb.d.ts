@@ -1,4 +1,5 @@
 import * as $protobuf from "protobufjs";
+import Long = require("long");
 /** Namespace chromeos_update_engine. */
 export namespace chromeos_update_engine {
 
@@ -6,10 +7,10 @@ export namespace chromeos_update_engine {
     interface IExtent {
 
         /** Extent startBlock */
-        startBlock?: (number|Long|null);
+        startBlock?: (number|null);
 
         /** Extent numBlocks */
-        numBlocks?: (number|Long|null);
+        numBlocks?: (number|null);
     }
 
     /** Represents an Extent. */
@@ -22,10 +23,10 @@ export namespace chromeos_update_engine {
         constructor(properties?: chromeos_update_engine.IExtent);
 
         /** Extent startBlock. */
-        public startBlock: (number|Long);
+        public startBlock: (number);
 
         /** Extent numBlocks. */
-        public numBlocks: (number|Long);
+        public numBlocks: (number);
 
         /**
          * Creates a new Extent instance using the specified properties.
@@ -96,6 +97,13 @@ export namespace chromeos_update_engine {
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for Extent
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     /** Properties of a Signatures. */
@@ -186,6 +194,13 @@ export namespace chromeos_update_engine {
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for Signatures
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     namespace Signatures {
@@ -290,6 +305,13 @@ export namespace chromeos_update_engine {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for Signature
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
     }
 
@@ -297,7 +319,7 @@ export namespace chromeos_update_engine {
     interface IPartitionInfo {
 
         /** PartitionInfo size */
-        size?: (number|Long|null);
+        size?: (number|null);
 
         /** PartitionInfo hash */
         hash?: (Uint8Array|null);
@@ -313,7 +335,7 @@ export namespace chromeos_update_engine {
         constructor(properties?: chromeos_update_engine.IPartitionInfo);
 
         /** PartitionInfo size. */
-        public size: (number|Long);
+        public size: (number);
 
         /** PartitionInfo hash. */
         public hash: Uint8Array;
@@ -387,6 +409,13 @@ export namespace chromeos_update_engine {
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for PartitionInfo
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     /** Properties of an InstallOperation. */
@@ -396,22 +425,22 @@ export namespace chromeos_update_engine {
         type: chromeos_update_engine.InstallOperation.Type;
 
         /** InstallOperation dataOffset */
-        dataOffset?: (number|Long|null);
+        dataOffset?: (number|null);
 
         /** InstallOperation dataLength */
-        dataLength?: (number|Long|null);
+        dataLength?: (number|null);
 
         /** InstallOperation srcExtents */
         srcExtents?: (chromeos_update_engine.IExtent[]|null);
 
         /** InstallOperation srcLength */
-        srcLength?: (number|Long|null);
+        srcLength?: (number|null);
 
         /** InstallOperation dstExtents */
         dstExtents?: (chromeos_update_engine.IExtent[]|null);
 
         /** InstallOperation dstLength */
-        dstLength?: (number|Long|null);
+        dstLength?: (number|null);
 
         /** InstallOperation dataSha256Hash */
         dataSha256Hash?: (Uint8Array|null);
@@ -433,22 +462,22 @@ export namespace chromeos_update_engine {
         public type: chromeos_update_engine.InstallOperation.Type;
 
         /** InstallOperation dataOffset. */
-        public dataOffset: (number|Long);
+        public dataOffset: (number);
 
         /** InstallOperation dataLength. */
-        public dataLength: (number|Long);
+        public dataLength: (number);
 
         /** InstallOperation srcExtents. */
         public srcExtents: chromeos_update_engine.IExtent[];
 
         /** InstallOperation srcLength. */
-        public srcLength: (number|Long);
+        public srcLength: (number);
 
         /** InstallOperation dstExtents. */
         public dstExtents: chromeos_update_engine.IExtent[];
 
         /** InstallOperation dstLength. */
-        public dstLength: (number|Long);
+        public dstLength: (number);
 
         /** InstallOperation dataSha256Hash. */
         public dataSha256Hash: Uint8Array;
@@ -525,6 +554,13 @@ export namespace chromeos_update_engine {
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for InstallOperation
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     namespace InstallOperation {
@@ -544,7 +580,8 @@ export namespace chromeos_update_engine {
             PUFFDIFF = 9,
             ZUCCHINI = 11,
             LZ4DIFF_BSDIFF = 12,
-            LZ4DIFF_PUFFDIFF = 13
+            LZ4DIFF_PUFFDIFF = 13,
+            REPLACE_ZSTD = 14
         }
     }
 
@@ -654,6 +691,13 @@ export namespace chromeos_update_engine {
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for CowMergeOperation
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     namespace CowMergeOperation {
@@ -724,10 +768,10 @@ export namespace chromeos_update_engine {
         mergeOperations?: (chromeos_update_engine.ICowMergeOperation[]|null);
 
         /** PartitionUpdate estimateCowSize */
-        estimateCowSize?: (number|Long|null);
+        estimateCowSize?: (number|null);
 
         /** PartitionUpdate estimateOpCountMax */
-        estimateOpCountMax?: (number|Long|null);
+        estimateOpCountMax?: (number|null);
     }
 
     /** Represents a PartitionUpdate. */
@@ -794,10 +838,10 @@ export namespace chromeos_update_engine {
         public mergeOperations: chromeos_update_engine.ICowMergeOperation[];
 
         /** PartitionUpdate estimateCowSize. */
-        public estimateCowSize: (number|Long);
+        public estimateCowSize: (number);
 
         /** PartitionUpdate estimateOpCountMax. */
-        public estimateOpCountMax: (number|Long);
+        public estimateOpCountMax: (number);
 
         /**
          * Creates a new PartitionUpdate instance using the specified properties.
@@ -868,6 +912,13 @@ export namespace chromeos_update_engine {
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for PartitionUpdate
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     /** Properties of a DynamicPartitionGroup. */
@@ -877,7 +928,7 @@ export namespace chromeos_update_engine {
         name: string;
 
         /** DynamicPartitionGroup size */
-        size?: (number|Long|null);
+        size?: (number|null);
 
         /** DynamicPartitionGroup partitionNames */
         partitionNames?: (string[]|null);
@@ -896,7 +947,7 @@ export namespace chromeos_update_engine {
         public name: string;
 
         /** DynamicPartitionGroup size. */
-        public size: (number|Long);
+        public size: (number);
 
         /** DynamicPartitionGroup partitionNames. */
         public partitionNames: string[];
@@ -970,6 +1021,13 @@ export namespace chromeos_update_engine {
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for DynamicPartitionGroup
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     /** Properties of a VABCFeatureSet. */
@@ -1066,6 +1124,13 @@ export namespace chromeos_update_engine {
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for VABCFeatureSet
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     /** Properties of a DynamicPartitionMetadata. */
@@ -1090,7 +1155,10 @@ export namespace chromeos_update_engine {
         vabcFeatureSet?: (chromeos_update_engine.IVABCFeatureSet|null);
 
         /** DynamicPartitionMetadata compressionFactor */
-        compressionFactor?: (number|Long|null);
+        compressionFactor?: (number|null);
+
+        /** DynamicPartitionMetadata disableUblk */
+        disableUblk?: (boolean|null);
     }
 
     /** Represents a DynamicPartitionMetadata. */
@@ -1121,7 +1189,10 @@ export namespace chromeos_update_engine {
         public vabcFeatureSet?: (chromeos_update_engine.IVABCFeatureSet|null);
 
         /** DynamicPartitionMetadata compressionFactor. */
-        public compressionFactor: (number|Long);
+        public compressionFactor: (number);
+
+        /** DynamicPartitionMetadata disableUblk. */
+        public disableUblk: boolean;
 
         /**
          * Creates a new DynamicPartitionMetadata instance using the specified properties.
@@ -1192,6 +1263,13 @@ export namespace chromeos_update_engine {
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for DynamicPartitionMetadata
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     /** Properties of an ApexInfo. */
@@ -1201,13 +1279,13 @@ export namespace chromeos_update_engine {
         packageName?: (string|null);
 
         /** ApexInfo version */
-        version?: (number|Long|null);
+        version?: (number|null);
 
         /** ApexInfo isCompressed */
         isCompressed?: (boolean|null);
 
         /** ApexInfo decompressedSize */
-        decompressedSize?: (number|Long|null);
+        decompressedSize?: (number|null);
     }
 
     /** Represents an ApexInfo. */
@@ -1223,13 +1301,13 @@ export namespace chromeos_update_engine {
         public packageName: string;
 
         /** ApexInfo version. */
-        public version: (number|Long);
+        public version: (number);
 
         /** ApexInfo isCompressed. */
         public isCompressed: boolean;
 
         /** ApexInfo decompressedSize. */
-        public decompressedSize: (number|Long);
+        public decompressedSize: (number);
 
         /**
          * Creates a new ApexInfo instance using the specified properties.
@@ -1300,6 +1378,13 @@ export namespace chromeos_update_engine {
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for ApexInfo
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     /** Properties of an ApexMetadata. */
@@ -1390,6 +1475,13 @@ export namespace chromeos_update_engine {
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for ApexMetadata
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     /** Properties of a DeltaArchiveManifest. */
@@ -1399,10 +1491,10 @@ export namespace chromeos_update_engine {
         blockSize?: (number|null);
 
         /** DeltaArchiveManifest signaturesOffset */
-        signaturesOffset?: (number|Long|null);
+        signaturesOffset?: (number|null);
 
         /** DeltaArchiveManifest signaturesSize */
-        signaturesSize?: (number|Long|null);
+        signaturesSize?: (number|null);
 
         /** DeltaArchiveManifest minorVersion */
         minorVersion?: (number|null);
@@ -1411,7 +1503,7 @@ export namespace chromeos_update_engine {
         partitions?: (chromeos_update_engine.IPartitionUpdate[]|null);
 
         /** DeltaArchiveManifest maxTimestamp */
-        maxTimestamp?: (number|Long|null);
+        maxTimestamp?: (number|null);
 
         /** DeltaArchiveManifest dynamicPartitionMetadata */
         dynamicPartitionMetadata?: (chromeos_update_engine.IDynamicPartitionMetadata|null);
@@ -1439,10 +1531,10 @@ export namespace chromeos_update_engine {
         public blockSize: number;
 
         /** DeltaArchiveManifest signaturesOffset. */
-        public signaturesOffset: (number|Long);
+        public signaturesOffset: (number);
 
         /** DeltaArchiveManifest signaturesSize. */
-        public signaturesSize: (number|Long);
+        public signaturesSize: (number);
 
         /** DeltaArchiveManifest minorVersion. */
         public minorVersion: number;
@@ -1451,7 +1543,7 @@ export namespace chromeos_update_engine {
         public partitions: chromeos_update_engine.IPartitionUpdate[];
 
         /** DeltaArchiveManifest maxTimestamp. */
-        public maxTimestamp: (number|Long);
+        public maxTimestamp: (number);
 
         /** DeltaArchiveManifest dynamicPartitionMetadata. */
         public dynamicPartitionMetadata?: (chromeos_update_engine.IDynamicPartitionMetadata|null);
@@ -1534,5 +1626,12 @@ export namespace chromeos_update_engine {
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for DeltaArchiveManifest
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 }

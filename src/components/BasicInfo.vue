@@ -142,7 +142,7 @@ export default defineComponent({
       const cowSizes = this.payload?.manifest?.partitions.map(
         p => p.estimateCowSize || 0
       )
-      if (!cowSizes) {
+      if (!cowSizes || cowSizes.length == 0) {
         return 0
       }
       return cowSizes.reduce((a, b) => a + b)

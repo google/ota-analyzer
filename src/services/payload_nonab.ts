@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { TextWriter, ZipReader } from '@zip.js/zip.js/dist/zip.js'
+import { TextWriter, ZipReader } from '@zip.js/zip.js'
 import { chromeos_update_engine } from './update_metadata_pb.js'
 
 /**
@@ -24,8 +24,8 @@ import { chromeos_update_engine } from './update_metadata_pb.js'
 export class PayloadNonAB extends chromeos_update_engine.DeltaArchiveManifest {
   nonAB: boolean = true
   Blocksize: number = 4096
-  packedFile: ZipReader
-  constructor(packedFile: ZipReader) {
+  packedFile: ZipReader<Blob>
+  constructor(packedFile: ZipReader<Blob>) {
     super()
     this.packedFile = packedFile
   }
@@ -40,7 +40,7 @@ export class PayloadNonAB extends chromeos_update_engine.DeltaArchiveManifest {
 
     const /** RegExp*/ regexName = /[\w_]+(?=\.transfer.list)/g
     const /** Array<Entry> */ entries = await this.packedFile.getEntries()
-    for (const entry of entries) {
+    for (const entry of entries.filter(e => !e.directory)) {
       if (entry.filename.match(regexName)) {
         const match = entry.filename.match(regexName)![0]
         let newPartition: any = new chromeos_update_engine.PartitionUpdate({
@@ -50,6 +50,9 @@ export class PayloadNonAB extends chromeos_update_engine.DeltaArchiveManifest {
         await this.parseTransferList(newPartition)
         this.partitions.push(newPartition)
       }
+    }
+    if (this.partitions.length == 0) {
+      throw new Error("Invalid OTA package");
     }
   }
 
@@ -103,7 +106,7 @@ export class PayloadNonAB extends chromeos_update_engine.DeltaArchiveManifest {
           // The new ops do not have any information about data length.
           // what we do here is: read in the size of .new.data, assume the first new
           // op have the data length of the size of .new.data.
-          op.dataLength = newDataSize
+          op.dataLength = newDataSize || 0
           newDataSize = 0
           op.dstExtents = elements.slice(1).reduce(parseRange, [])
           break

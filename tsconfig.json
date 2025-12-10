@@ -5,7 +5,7 @@
     "strict": true,
     "jsx": "preserve",
     "importHelpers": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "experimentalDecorators": true,
     "allowJs": true,
     "skipLibCheck": true,
@@ -21,6 +21,7 @@
       "@/*": [
         "src/*"
       ],
+      "vuex": ["node_modules/vuex/types/index.d.ts"]
     },
     "lib": [
       "esnext",

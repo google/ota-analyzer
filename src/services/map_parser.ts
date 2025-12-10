@@ -27,12 +27,12 @@ import {
   BlobReader,
   TextWriter,
   HttpReader
-} from '@zip.js/zip.js/dist/zip.js'
+} from '@zip.js/zip.js'
 
 import { chromeos_update_engine } from './update_metadata_pb'
 
 export class MapParser {
-  build: ZipReader
+  build: ZipReader<Blob>
   mapFiles: Map<any, any>
   maps: Map<any, any>
   /**
@@ -113,7 +113,7 @@ export class MapParser {
     let /** Array<String> */ names = []
     let /** Array<String> */ map = this.maps.get(partitionName)
     for (let ext of extents) {
-      names.push(queryMap(map, ext.startBlock, ext.startBlock + ext.numBlocks))
+      names.push(queryMap(map, (ext.startBlock as number) || 0, (ext.startBlock as number || 0) + (ext.numBlocks as number || 0)))
     }
     return names
   }
