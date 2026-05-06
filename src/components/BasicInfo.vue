@@ -83,6 +83,10 @@
         <strong> Total VABC COW Size </strong>
         {{ totalCOWSize }}
       </li>
+      <li v-if="totalDataSize">
+        <strong> Total Data Size </strong>
+        {{ totalDataSize }} Bytes
+      </li>
       <li v-if="vabcCompressionParam">
         <strong> VABC Compression Algorithm </strong>
         {{ vabcCompressionParam }}
@@ -186,6 +190,21 @@ export default defineComponent({
       return dynamicPartitions
         .map(p => p.newPartitionInfo?.size || 0)
         .reduce((acc, cur) => acc + cur)
+    },
+    totalDataSize(): number {
+      const partitions = this.payload?.manifest?.partitions
+      if (!partitions) {
+        return 0
+      }
+      let total = 0
+      for (const partition of partitions) {
+        if (partition.operations) {
+          for (const op of partition.operations) {
+            total += op.dataLength || 0
+          }
+        }
+      }
+      return total
     }
   }
 })
